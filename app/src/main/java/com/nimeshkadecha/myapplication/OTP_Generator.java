@@ -8,15 +8,24 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.Objects;
 import java.util.Random;
@@ -31,6 +40,8 @@ public class OTP_Generator extends AppCompatActivity {
 
     private String b = "Biller";
 
+    private FirebaseAuth mAuth;
+
     //    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +51,10 @@ public class OTP_Generator extends AppCompatActivity {
         Bundle otpp = getIntent().getExtras();
         String OTP = otpp.getString("OTP");
 
+        mAuth = FirebaseAuth.getInstance();
 //        Caclling notification
         BackgroungTask backgroungTask = new BackgroungTask();
-        backgroungTask.execute(OTP);
+//        backgroungTask.execute(OTP);
 
 //        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
 //        Removing Suport bar / top line containing name
@@ -62,23 +74,47 @@ public class OTP_Generator extends AppCompatActivity {
         verifyy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("ENimesh","OTP form FIrebase ="+OTP);
                 otp = findViewById(R.id.OTP);
-                String otpInput = otp.getText().toString();
+                String otpInput = otp.getText().toString().trim();
                 boolean OTP_V = OTPValidate(otpInput);
                 if (OTP_V) {
-                    if (otp.getText().toString().equals(OTP)) {
-                        Intent GoToResetPassword = new Intent(OTP_Generator.this, resetPassword.class);
+                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(OTP,otpInput);
 
-                        Bundle bundle = getIntent().getExtras();
-                        String number = bundle.getString("number");
+                    mAuth.signInWithCredential(credential)
+                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                @Override
+                                public void onSuccess(AuthResult authResult) {
+                                    Intent GoToResetPassword = new Intent(OTP_Generator.this, resetPassword.class);
+
+                                    Bundle bundle = getIntent().getExtras();
+                                    String number = bundle.getString("number");
 //                Fowarding number to intent reset password
-                        GoToResetPassword.putExtra("number", number);
+                                    GoToResetPassword.putExtra("number", number);
 
-                        startActivity(GoToResetPassword);
-                        finish();
-                    } else {
-                        Toast.makeText(OTP_Generator.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
-                    }
+                                    startActivity(GoToResetPassword);
+                                    finish();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(OTP_Generator.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+//                    if (otp.getText().toString().equals(OTP)) {
+//                        Intent GoToResetPassword = new Intent(OTP_Generator.this, resetPassword.class);
+//
+//                        Bundle bundle = getIntent().getExtras();
+//                        String number = bundle.getString("number");
+////                Fowarding number to intent reset password
+//                        GoToResetPassword.putExtra("number", number);
+//
+//                        startActivity(GoToResetPassword);
+//                        finish();
+//                    } else {
+//                        Toast.makeText(OTP_Generator.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
+//                    }
                 } else {
                     Toast.makeText(OTP_Generator.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
                 }
@@ -151,7 +187,7 @@ public class OTP_Generator extends AppCompatActivity {
                         Thread.sleep(time);
                         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(OTP_Generator.this);
                         // notificationId is a unique int for each notification that you must define
-                        notificationManager.notify(1, builder.build());
+//                        notificationManager.notify(1, builder.build());
                     } catch (Exception e) {
                         Toast.makeText(OTP_Generator.this, "e", Toast.LENGTH_SHORT).show();
                     }
