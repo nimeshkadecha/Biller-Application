@@ -8,14 +8,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.google.common.base.MoreObjects;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -44,6 +48,9 @@ public class customer_Info extends AppCompatActivity {
     private ImageView menuclick;
 
     private DBManager DB = new DBManager(this);
+
+    private Spinner spinner;
+    String[] shorting = {"Name", "Number", "Date", "BillId"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +110,58 @@ public class customer_Info extends AppCompatActivity {
 //      Working with button
 
         searchbtn = findViewById(R.id.searchbtn);
+
+        spinner = findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(customer_Info.this, android.R.layout.simple_spinner_item, shorting);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String value = parent.getItemAtPosition(position).toString();
+
+//                nameedt = findViewById(R.id.name);
+//                dateedt = findViewById(R.id.date);
+//                billidedt = findViewById(R.id.billID);
+//                contactedt = findViewById(R.id.contact);
+//                todateedt = findViewById(R.id.rangeDatetEDT);
+                if(value.equals("Name")){
+                    nameedt.setVisibility(View.VISIBLE);
+                    dateedt.setVisibility(View.GONE);
+                    billidedt.setVisibility(View.GONE);
+                    contactedt.setVisibility(View.GONE);
+                    todateedt.setVisibility(View.GONE);
+                }else if(value.equals("Number")){
+                    nameedt.setVisibility(View.GONE);
+                    dateedt.setVisibility(View.GONE);
+                    billidedt.setVisibility(View.GONE);
+                    contactedt.setVisibility(View.VISIBLE);
+                    todateedt.setVisibility(View.GONE);
+
+                }else if(value.equals("Date")){
+                    nameedt.setVisibility(View.GONE);
+                    dateedt.setVisibility(View.VISIBLE);
+                    billidedt.setVisibility(View.GONE);
+                    contactedt.setVisibility(View.GONE);
+                    todateedt.setVisibility(View.VISIBLE);
+                }else if(value.equals("BillId")){
+                    nameedt.setVisibility(View.GONE);
+                    dateedt.setVisibility(View.GONE);
+                    billidedt.setVisibility(View.VISIBLE);
+                    contactedt.setVisibility(View.GONE);
+                    todateedt.setVisibility(View.GONE);
+
+                }else{
+                    Toast.makeText(customer_Info.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(customer_Info.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 //        Searcing -------------------------
         searchbtn.setOnClickListener(new View.OnClickListener() {

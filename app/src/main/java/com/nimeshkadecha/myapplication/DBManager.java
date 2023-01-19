@@ -200,6 +200,16 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
+//    Getting Seller COntact NUmber for OTP
+//    getting from EMail
+    public Cursor Seller_Contact (String email){
+        SQLiteDatabase DB = this.getReadableDatabase();
+
+        Cursor cursor = DB.rawQuery("select contact from users where email =? ", new String[]{email});
+
+        return cursor;
+    }
+
 //------------------------------------- Working on customer tables ---------------------------------
 
     //    ADDING ITEM in list/ in recycilerview / in display TABLE

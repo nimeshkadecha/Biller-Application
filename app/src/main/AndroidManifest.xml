@@ -11,7 +11,6 @@
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+        <activity
+            android:name=".Firestore_Backup"
+            android:exported="false" />
         <activity
             android:name=".Backup_Working"
             android:exported="false">
@@ -115,9 +117,7 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity>
-
-        <!--You need to have provider attributes to read file from a storage without adding this line you will get the error of missing meta data for provider-->
+        </activity> <!-- You need to have provider attributes to read file from a storage without adding this line you will get the error of missing meta data for provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -127,8 +127,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
-
-
     </application>
 
 </manifest>

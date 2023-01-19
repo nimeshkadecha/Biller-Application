@@ -5,8 +5,10 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private DBManager DBM;
 
     private ImageView menuclick;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
 //        END Working with Permision -------------------------------------------------------
 
+//        Checking if user is already loged in or not
+        alreadyLogin();
     }
 
     //    Working on requesting STORAGE permision ----------------------------------------
@@ -157,6 +163,13 @@ public class MainActivity extends AppCompatActivity {
             String passwordTXT = password.getText().toString();
             verify = DBM.loginUser(emailTXT, passwordTXT);
             if (verify) {
+                SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("Login","true");
+                editor.putString("UserName",emailTXT);
+//                Log.d("ENimesh","Putting Email = " + emailTXT);
+                editor.apply();
+
                 SucessfullyLogin.putExtra("Email", emailTXT);
                 startActivity(SucessfullyLogin);
                 finish();
@@ -183,4 +196,20 @@ public class MainActivity extends AppCompatActivity {
         startActivity(forgotpassword);
         finish();
     }
+
+    private void alreadyLogin() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        String checkLogin = sharedPreferences.getString("Login", "");
+        String username = sharedPreferences.getString("UserName","");
+        if(Objects.equals(checkLogin, "true")) {
+
+            Intent SucessfullyLogin = new Intent(this, home.class);
+            SucessfullyLogin.putExtra("Email", username);
+            startActivity(SucessfullyLogin);
+//            Log.d("ENimesh","Activity started");
+
+            finish();
+        }
+    }
+
 }

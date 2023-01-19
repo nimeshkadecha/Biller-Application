@@ -1,23 +1,35 @@
 package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class home extends AppCompatActivity {
 
@@ -25,39 +37,35 @@ public class home extends AppCompatActivity {
 
     private Button product;
 
-    private TextView customerInfo, editInfo, backup;
+    private Button customerInfo, editInfo, backup, logout,report;
 
     private View navagationDrawer;
 
     private DBManager DB = new DBManager(this);
 
+    public static final String SHARED_PREFS = "sharedPrefs";
+
     private EditText name, number, date;
 
-    //    Generate OTP
-    @SuppressLint("DefaultLocale")
-    private static String getOTP() {
-        Random rnd = new Random();
-        int otp = rnd.nextInt(999999);
-        return String.format("%06d", otp);
-    }
+    private FirebaseAuth mAuth;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        mAuth = FirebaseAuth.getInstance();
 
-//        final int[] billIDd = {DB.getbillid()};
-//        billIDd[0]++;
-
-//        Finding edit texts
+//      Finding edit texts -------------------------------------------------------------------------
         name = findViewById(R.id.name);
         number = findViewById(R.id.contact);
         date = findViewById(R.id.date);
-        backup = findViewById(R.id.backup);
-        backup.setVisibility(View.INVISIBLE);
+//  ------------------------------------------------------------------------------------------------
 
-//        Generating and formating date --------------------------
+//        backup.setVisibility(View.INVISIBLE);
+
+//        Generating and formating Date ------------------------------------------------------------
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
@@ -65,24 +73,27 @@ public class home extends AppCompatActivity {
         String formattedDate = df.format(c);
 
         date.setText(formattedDate);
+//  ------------------------------------------------------------------------------------------------
 
-//        FINDING BUTTONS
-        product = findViewById(R.id.products);
-
-//        Adding seller email from INTENT
+//        Adding seller email from INTENT-----------------------------------------------------------
         Bundle bundle = getIntent().getExtras();
         String email = bundle.getString("Email");
+//  ------------------------------------------------------------------------------------------------
 
 //        Working with TOOLBAR STARTS --------------------------------------------------------------
 
-//        Removing Suport bar / top line containing name
+//        Removing Suport bar / top line containing name--------------------------------------------
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        Hiding navigationgrawer
+//  ------------------------------------------------------------------------------------------------
+
+//        Finding and hinding navagation drawer ----------------------------------------------------
         navagationDrawer = findViewById(R.id.navigation);
         navagationDrawer.setVisibility(View.INVISIBLE);
 
-//        FINDING menu
+//  ------------------------------------------------------------------------------------------------
+
+//      Menu btn work ------------------------------------------------------------------------------
         menu = findViewById(R.id.Menu);
 
         menu.setOnClickListener(new View.OnClickListener() {
@@ -93,13 +104,11 @@ public class home extends AppCompatActivity {
 
             }
         });
+// -------------------------------------------------------------------------------------------------
 
-//        FINDING Backbtn
+//      BackBtn in drawer --------------------------------------------------------------------------
         backBtn = findViewById(R.id.btnBack);
 
-//        WORKING IN NAVAGATION DRAWER starts  -----------------------------------------------------
-
-//        hiding navagation on back btn click------------
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,11 +116,10 @@ public class home extends AppCompatActivity {
                 product.setVisibility(View.VISIBLE);
             }
         });
-//        Working with TOOLBAR Ends --------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 
-//        finding customer info btn and edit info btn
+//      Customer Info Button -----------------------------------------------------------------------
         customerInfo = findViewById(R.id.customerinfo);
-        editInfo = findViewById(R.id.editInfo);
 
         customerInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +130,10 @@ public class home extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+//  ------------------------------------------------------------------------------------------------
 
+//      Edit Info btn ------------------------------------------------------------------------------
+        editInfo = findViewById(R.id.editInfo);
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,22 +146,64 @@ public class home extends AppCompatActivity {
 
             }
         });
+//  ------------------------------------------------------------------------------------------------
 
-//        Working on Backup ---------------------------------------------------------------
+//      Backup Btn ---------------------------------------------------------------------------------
+
+        backup = findViewById(R.id.backup);
         backup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String OTP = getOTP();
-                Intent backup = new Intent(home.this, Backup.class);
-                backup.putExtra("user", email);
-                backup.putExtra("bOTP", OTP);
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                String username = sharedPreferences.getString("UserName","");
+
+                Intent backup = new Intent(home.this, Firestore_Backup.class);
+                backup.putExtra("user", username);
                 startActivity(backup);
+
+//                TODO : remove comment in getOTP so that user have to pass OTP and verify before accessing backup facility And Change INtent on backup to go to firestore if firestore is working;
+//                getOTP(username);
+            }
+        });
+//  ------------------------------------------------------------------------------------------------
+
+//        Report button ----------------------------------------------------------------------------
+        report = findViewById(R.id.report);
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(home.this, "Report button clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
-//        WORKING IN NAVAGATION DRAWER Ends  -----------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+
+//      Log Out btn --------------------------------------------------------------------------------
+        logout = findViewById(R.id.logOutButton);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("Login", "false");
+                editor.putString("UserName", "");
+                editor.apply();
+
+                Intent logOUT = new Intent(home.this, MainActivity.class);
+                startActivity(logOUT);
+                finish();
+            }
+        });
+//  ------------------------------------------------------------------------------------------------
+
+//        WORKING IN NAVAGATION DRAWER Ends  -------------------------------------------------------
+
+//        Enter Product BTN ------------------------------------------------------------------------
 
 //        Products enter intent add customer and go to next INTENT for adding product this will add customer information
+
+        product = findViewById(R.id.products);
         product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,5 +245,86 @@ public class home extends AppCompatActivity {
                 }
             }
         });
+//  ------------------------------------------------------------------------------------------------
     }
+//    Generating OTP -------------------------------------------------------------------------------
+    private void getOTP(String email) {
+
+//        OTP From Firebase
+        Cursor number = DB.Seller_Contact(email);
+
+        number.moveToFirst();
+//        Log.d("ENimesh","count ="+number.getCount());
+//        Log.d("ENimesh","test2 ="+number.getString(0));
+        String  CN = number.getString(0);
+//        Log.d("ENimesh","NUmber ="+CN);
+
+        mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+
+                Toast.makeText(home.this, "Verified...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                Toast.makeText(home.this, "Failed to send OTP, Try Again", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+
+                Toast.makeText(home.this, "Sending OTP ...", Toast.LENGTH_SHORT).show();
+
+                Intent GETOTP = new Intent(home.this, Backup.class);
+//                Log.d("ENimesh","Sussecc OTP ="+s);
+                GETOTP.putExtra("number", CN);
+                GETOTP.putExtra("user", email);
+                GETOTP.putExtra("OTP", s);
+                startActivity(GETOTP);
+
+            }
+        };
+        PhoneAuthOptions options =
+                PhoneAuthOptions.newBuilder(mAuth)
+                        .setPhoneNumber("+91 "+CN)
+                        .setTimeout(60L, TimeUnit.SECONDS)
+                        .setActivity(this)
+                        .setCallbacks(mCAllbacks)
+                        .build();
+        PhoneAuthProvider.verifyPhoneNumber(options);
+//  ------------------------------------------------------------------------------------------------
+    }
+//  ------------------------------------------------------------------------------------------------
+
+//  Alert dialog box for Exiting Application -------------------------------------------------------
+    @Override
+    public void onBackPressed() {
+//        Log.d("ENimesh", "status == " + String.valueOf(navagationDrawer.getVisibility()));
+
+        if (String.valueOf(navagationDrawer.getVisibility()).equals("0")) {
+            navagationDrawer.setVisibility(View.INVISIBLE);
+            product.setVisibility(View.VISIBLE);
+
+        } else {
+            AlertDialog.Builder alert = new AlertDialog.Builder(home.this);
+            alert.setTitle("Exit App");
+            alert.setMessage("Confirm Exit");
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finishAffinity();
+                }
+            });
+            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            alert.show();
+        }
+    }
+//  ------------------------------------------------------------------------------------------------
 }

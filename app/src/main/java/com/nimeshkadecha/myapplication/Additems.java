@@ -1,6 +1,8 @@
 package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -126,6 +128,8 @@ public class Additems extends AppCompatActivity {
         Bundle seller = getIntent().getExtras();
         sellertxt = seller.getString("seller");
 
+        final int[] validator = {0};
+
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +161,8 @@ public class Additems extends AppCompatActivity {
 
                         boolean check = DB.Insert_List(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0);
                         if (check) {
+                            validator[0]++;
+                            show.setVisibility(View.VISIBLE);
                             Toast.makeText(Additems.this, "Inserted", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(Additems.this, "Not Inserted", Toast.LENGTH_SHORT).show();
@@ -167,6 +173,10 @@ public class Additems extends AppCompatActivity {
         });
 
 //        ON click Shsow
+
+        if(validator[0] == 0){
+            show.setVisibility(View.GONE);
+        }
 
         show.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,5 +197,9 @@ public class Additems extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Click on Show list to see list & Add Item to insert item in list ", Toast.LENGTH_SHORT).show();
     }
 }

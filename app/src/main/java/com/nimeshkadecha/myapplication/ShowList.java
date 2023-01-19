@@ -2,6 +2,7 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -47,7 +48,9 @@ public class ShowList extends AppCompatActivity {
 
     private StorageVolume storageVolume;
 
-    private Button back, next, display, pdf, addmore;
+    private Button back, save, display, pdf, addmore;
+
+    final int[] save_CLicked = {0};
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast", "SuspiciousIndentation"})
     @Override
@@ -89,10 +92,11 @@ public class ShowList extends AppCompatActivity {
         addmore = findViewById(R.id.addMore);
 
         //      SAVE button --------------------------
-        next = findViewById(R.id.print);
-        next.setOnClickListener(new View.OnClickListener() {
+        save = findViewById(R.id.print);
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                save_CLicked[0]++;
 //                Toast.makeText(ShowList.this, "Toast Item saved", Toast.LENGTH_SHORT).show();
 
 //                INSERTING data in customer table
@@ -103,7 +107,7 @@ public class ShowList extends AppCompatActivity {
                 check = DB.InsertCustomer(id, cName, cNumber, date, sellertxt, 0);
 
                 if (check) {
-                    next.setVisibility(View.INVISIBLE);
+                    save.setVisibility(View.INVISIBLE);
                     pdf.setVisibility(View.VISIBLE);
                     back.setVisibility(View.VISIBLE);
                     display.setVisibility(View.VISIBLE);
@@ -122,6 +126,7 @@ public class ShowList extends AppCompatActivity {
                 Intent intent2 = new Intent(ShowList.this, home.class);
                 intent2.putExtra("Email", sellertxt);
                 startActivity(intent2);
+                finish();
             }
         });
 
@@ -358,6 +363,22 @@ public class ShowList extends AppCompatActivity {
                 aquantity.add(cursor.getString(3));
                 asubtotal.add(cursor.getString(4));
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (save_CLicked[0] == 0) {
+            Toast.makeText(this, "Click on Save and Then Press Back", Toast.LENGTH_SHORT).show();
+        } else {
+            //        Intent data
+            Bundle seller = getIntent().getExtras();
+            String sellertxt = seller.getString("seller");
+
+            Intent intent2 = new Intent(ShowList.this, home.class);
+            intent2.putExtra("Email", sellertxt);
+            startActivity(intent2);
+            finish();
         }
     }
 }

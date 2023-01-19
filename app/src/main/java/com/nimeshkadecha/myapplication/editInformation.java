@@ -2,6 +2,7 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,9 +23,9 @@ public class editInformation extends AppCompatActivity {
     private View conformationDialog;
 
     private DBManager DBM;
-    private Button show, update, delete, yes, no;
+    private Button show, update, delete;
     private EditText name, password, gst, contact, address;
-    private TextView header, text;
+    private TextView header;
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n", "ResourceType"})
     @Override
@@ -38,7 +39,7 @@ public class editInformation extends AppCompatActivity {
         conformationDialog = findViewById(R.id.confirm);
         conformationDialog.setVisibility(View.INVISIBLE);
 
-//        Displaying Email of the person Who is Loged in --------------------------------------------
+//      Displaying name and filling edittext of that user data -------------------------------------
         Bundle bundle = getIntent().getExtras();
         String email = bundle.getString("Email");
 
@@ -61,12 +62,10 @@ public class editInformation extends AppCompatActivity {
                 contact.setText(getuserinfo.getString(4));
                 address.setText(getuserinfo.getString(5));
             } while (getuserinfo.moveToNext());
-
         }
+//  ------------------------------------------------------------------------------------------------
 
-//        Adding data in edit text -/-----------------------------------------------------
-
-//        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
+//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
 //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
@@ -155,18 +154,14 @@ public class editInformation extends AppCompatActivity {
 //        DELETE BUTTON ----------------------------------------------------------------------------
         delete = findViewById(R.id.Delete);
         delete.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("WrongViewCast")
             @Override
             public void onClick(View v) {
-                conformationDialog.setVisibility(View.VISIBLE);
-                text = findViewById(R.id.text);
-                text.setText("Confirm Delete User { " + email + " }");
-                yes = findViewById(R.id.yes);
-                no = findViewById(R.id.no);
-
-                yes.setOnClickListener(new View.OnClickListener() {
+                AlertDialog.Builder alert = new AlertDialog.Builder(editInformation.this);
+                alert.setTitle("Delete user");
+                alert.setMessage("Confirm deleting Account permanently ");
+                alert.setPositiveButton("Confirm Delete", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         boolean check;
                         check = DBM.DeleteUser(email);
                         if (check) {
@@ -176,21 +171,20 @@ public class editInformation extends AppCompatActivity {
                             Intent intent = new Intent(editInformation.this, MainActivity.class);
                             startActivity(intent);
                             finish();
-                            Toast.makeText(editInformation.this, "User DELETED", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(editInformation.this, "User DELETED ...", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(editInformation.this, "User NOT Deleted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(editInformation.this, "Unable to delete user at this Time", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-
-                no.setOnClickListener(new View.OnClickListener() {
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        conformationDialog.setVisibility(View.INVISIBLE);
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(editInformation.this, "Deletion Cancel", Toast.LENGTH_SHORT).show();
+                        dialogInterface.dismiss();
                     }
                 });
-
+                alert.show();
             }
         });
     }
