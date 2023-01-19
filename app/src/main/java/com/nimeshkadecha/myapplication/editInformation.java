@@ -35,10 +35,6 @@ public class editInformation extends AppCompatActivity {
 //        Creating object DBM for database activity
         DBM = new DBManager(this);
 
-//       CODE  HIDING Confirmation layout ---------------------------------------------------------
-        conformationDialog = findViewById(R.id.confirm);
-        conformationDialog.setVisibility(View.INVISIBLE);
-
 //      Displaying name and filling edittext of that user data -------------------------------------
         Bundle bundle = getIntent().getExtras();
         String email = bundle.getString("Email");
