@@ -1,0 +1,40 @@
+COllection 1 (Email of user)
+
+	doc 1.1	(User Data)
+
+//        Name | TEXT
+//        E-Mail | TEXT
+//        Password | TEXT
+//        GST | TEXT
+//        Contact | TEXT
+//        Address | TEXT
+
+		document 1.2 (bill id)
+			
+			collection 1.2.1 (customer information)
+				
+				(doc)	billId
+					customer Name
+					customer Number
+					date
+					total
+					seller
+					backup
+
+			collection 1.2.2 (all bill with their detail inforamtion)
+						
+					
+		    "indexs Integer primary key autoincrement," +  // 0
+                "product TEXT ," + //1
+                "price TEXT," + //2
+                "quantity TEXT," + //3
+                "subtotal Integer," +//4
+                "customerName TEXT," +//5
+                "customerNumber TEXT," +//6
+                "date Date," +//7
+                "billId TEXT ," +//8
+                "seller TEXT," +//9
+                "backup Integer)");//10
+	
+				
+	

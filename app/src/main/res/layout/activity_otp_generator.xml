@@ -40,7 +40,9 @@
         app:counterMaxLength="6"
         app:endIconMode="clear_text"
         app:helperText="Require*"
-        app:helperTextTextColor="@color/design_default_color_error"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
@@ -49,6 +51,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/OTP"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"

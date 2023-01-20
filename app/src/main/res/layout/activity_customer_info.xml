@@ -28,11 +28,12 @@
 
     <Spinner
         android:id="@+id/spinner"
+        android:backgroundTint="#3c85f2"
+        android:backgroundTintMode="add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_marginTop="25dp"
-
+        android:layout_marginTop="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title1" />
@@ -50,10 +51,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/ic_baseline_person_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="text"
@@ -75,10 +81,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/namelayout"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/ic_phone">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/contact"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="number"
@@ -101,10 +112,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contactlayout"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/date">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/date"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="date"
@@ -126,10 +142,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/datelayout"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/date">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/rangeDatetEDT"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="date"
@@ -155,6 +176,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/billID"
+            android:textColor="@color/white"
+            android:textColorHint="@color/test"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="number"
@@ -186,7 +209,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchbtn"
-        tools:ignore="TextContrastCheck"></Button>
+        tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/pdfC"

@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +48,7 @@ public class home extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
+    private int[] billIdtxt;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -56,6 +56,7 @@ public class home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mAuth = FirebaseAuth.getInstance();
+        int billIdtxt[] = new int[5] ;
 
 //      Finding edit texts -------------------------------------------------------------------------
         name = findViewById(R.id.name);
@@ -78,6 +79,8 @@ public class home extends AppCompatActivity {
 //        Adding seller email from INTENT-----------------------------------------------------------
         Bundle bundle = getIntent().getExtras();
         String email = bundle.getString("Email");
+        String origin = "Test";
+        origin = bundle.getString("Origin");
 //  ------------------------------------------------------------------------------------------------
 
 //        Working with TOOLBAR STARTS --------------------------------------------------------------
@@ -172,7 +175,9 @@ public class home extends AppCompatActivity {
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(home.this, "Report button clicked", Toast.LENGTH_SHORT).show();
+                Intent goTOReport = new Intent(home.this,Report.class);
+                goTOReport.putExtra("seller",email);
+                startActivity(goTOReport);
             }
         });
 
@@ -203,7 +208,39 @@ public class home extends AppCompatActivity {
 
 //        Products enter intent add customer and go to next INTENT for adding product this will add customer information
 
+        Log.d("ENimesh","Origin is="+origin);
+        if(origin!= null && origin.equalsIgnoreCase("addItem")){
+            String cNametxt, cNumbertxt, datetext, sellertxt;
+//            int[] billIdtxt ;
+            Bundle name1 = getIntent().getExtras();
+            cNametxt = name1.getString("cName");
+
+            Bundle num = getIntent().getExtras();
+            cNumbertxt = num.getString("cNumber");
+
+            Bundle dat = getIntent().getExtras();
+            datetext = dat.getString("date");
+
+            Bundle bID = getIntent().getExtras();
+//            billIdtxt = new int[]{0};
+            billIdtxt [0] = bID.getInt("billId");
+
+            Bundle seller = getIntent().getExtras();
+            sellertxt = seller.getString("seller");
+
+            if(cNametxt.length() != 0){
+                name.setText(cNametxt);
+                number.setText(cNumbertxt);
+                date.setText(datetext);
+            }
+        }else{
+//            int[] billIdtxt ;
+            billIdtxt [0] = 0;
+        }
+        final int[] finalBillIdtxt = billIdtxt;
+
         product = findViewById(R.id.products);
+
         product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,12 +254,18 @@ public class home extends AppCompatActivity {
 
                 if (nametxt.isEmpty() || numbertxt.isEmpty() || datetxt.isEmpty()) {
                     if (nametxt.isEmpty() && numbertxt.isEmpty() && datetxt.isEmpty()) {
+                        name.setError("Enter Name Here");
+                        number.setError("Enter Number Here");
+                        date.setError("Enter Date Here");
                         Toast.makeText(home.this, "Fill up above detail", Toast.LENGTH_SHORT).show();
                     } else if (nametxt.isEmpty()) {
+                        name.setError("Enter Name Here");
                         Toast.makeText(home.this, "Enter Customer Name", Toast.LENGTH_SHORT).show();
                     } else if (numbertxt.isEmpty()) {
+                        number.setError("Enter Number Here");
                         Toast.makeText(home.this, "Enter Customer Number", Toast.LENGTH_SHORT).show();
                     } else if (datetxt.isEmpty()) {
+                        date.setError("Enter Date Here");
                         Toast.makeText(home.this, "Enter Date", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(home.this, "Error", Toast.LENGTH_SHORT).show();
@@ -232,15 +275,20 @@ public class home extends AppCompatActivity {
                         Toast.makeText(home.this, "Invalid Number", Toast.LENGTH_SHORT).show();
                     } else {
                         datetxt = date.getText().toString();
-
-                        int billIDd = DB.getbillid();
+                        Log.d("ENimesh","finalBillIdtxt = " + finalBillIdtxt[0]);
+                        if(finalBillIdtxt[0] == 0){
+                            finalBillIdtxt[0] = DB.getbillid();
+                        }
+//                        int billIDd = DB.getbillid();
+//                        Log.d("ENimesh","billIDd = " + billIDd);
 
                         intent.putExtra("cName", nametxt);
                         intent.putExtra("cNumber", numbertxt);
                         intent.putExtra("date", datetxt);
-                        intent.putExtra("billId", billIDd);
+                        intent.putExtra("billId", finalBillIdtxt[0]);
                         intent.putExtra("seller", email);
                         startActivity(intent);
+                        finish();
                     }
                 }
             }

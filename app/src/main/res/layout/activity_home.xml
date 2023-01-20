@@ -25,15 +25,20 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:hint="@string/number"
+
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout9"
         app:prefixText="+91"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/ic_phone">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/contact"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -50,14 +55,21 @@
         android:layout_marginTop="35dp"
         android:layout_marginRight="10dp"
         android:hint="@string/customer_name"
+        app:hintTextColor="@color/white"
+        android:textColorHint="@color/white"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:endIconTint="@color/white"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:startIconDrawable="@drawable/ic_baseline_person_24">
+        app:startIconDrawable="@drawable/ic_baseline_person_24"
+        app:startIconTint="@color/white"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="TextContrastCheck" />
@@ -83,14 +95,19 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:hint="@string/date"
+        app:hintTextColor="@color/white"
+        android:textColorHint="@color/white"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutNumber"
-        app:startIconDrawable="@drawable/date">
+        app:startIconDrawable="@drawable/date"
+        app:startIconTint="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/date"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="date"

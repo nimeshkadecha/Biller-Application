@@ -2,6 +2,7 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.common.base.MoreObjects;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -50,12 +52,50 @@ public class customer_Info extends AppCompatActivity {
     private DBManager DB = new DBManager(this);
 
     private Spinner spinner;
+
+    private TextInputLayout cl,dl,edl,bl,CN;
     String[] shorting = {"Name", "Number", "Date", "BillId"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_info);
+
+        cl = findViewById(R.id.contactlayout);
+        dl = findViewById(R.id.datelayout);
+        edl = findViewById(R.id.rangedate);
+        bl = findViewById(R.id.billIDlayout);
+        CN = findViewById(R.id.namelayout);
+        cl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(customer_Info.this, "Select Number from dropdown menu", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(customer_Info.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
+            }
+        });
+        edl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(customer_Info.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
+            }
+        });
+        bl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(customer_Info.this, "Select BillId from dropdown menu", Toast.LENGTH_SHORT).show();
+            }
+        });
+        CN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(customer_Info.this, "Select Name from dropdown menu", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 //        Getting User from INTENT
         Bundle seller = getIntent().getExtras();
@@ -121,11 +161,6 @@ public class customer_Info extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String value = parent.getItemAtPosition(position).toString();
 
-//                nameedt = findViewById(R.id.name);
-//                dateedt = findViewById(R.id.date);
-//                billidedt = findViewById(R.id.billID);
-//                contactedt = findViewById(R.id.contact);
-//                todateedt = findViewById(R.id.rangeDatetEDT);
                 if(value.equals("Name")){
                     nameedt.setVisibility(View.VISIBLE);
                     dateedt.setVisibility(View.GONE);
@@ -620,5 +655,9 @@ public class customer_Info extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

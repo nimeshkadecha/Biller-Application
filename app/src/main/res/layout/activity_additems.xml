@@ -32,12 +32,17 @@
         android:layout_marginTop="32dp"
         android:layout_marginRight="10dp"
         android:hint="@string/item_name"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:endIconMode="clear_text"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/productname"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="TextContrastCheck" />
@@ -52,16 +57,21 @@
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/price"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutitemname"
         app:startIconDrawable="@drawable/ic_money">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/price"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            tools:ignore="TextContrastCheck" />
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -73,17 +83,22 @@
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/quantity"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
-        app:startIconDrawable="@drawable/ic_baseline_storage_24">
+        app:startIconDrawable="@drawable/menu">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/quantity"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            tools:ignore="TextContrastCheck" />
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
 

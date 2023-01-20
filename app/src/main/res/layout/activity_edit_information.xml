@@ -35,7 +35,9 @@
             android:hint="@string/name"
             app:endIconMode="clear_text"
             app:helperText="Don't change 'Name' if you have Backup in cloud*"
-            app:helperTextTextColor="@color/design_default_color_error"
+            app:helperTextTextColor="#FF002E"
+            android:textColorHint="@color/white"
+            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,9 +45,10 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/rName"
+                android:textColor="@color/white"
+                android:textColorHint="#FA0202"
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
-                android:textColorHint="#757575"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -58,7 +61,9 @@
             android:hint="@string/password"
             app:endIconMode="password_toggle"
             app:helperText="Required*"
-            app:helperTextTextColor="@color/design_default_color_error"
+            app:helperTextTextColor="#FF002E"
+            android:textColorHint="@color/white"
+            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
@@ -66,6 +71,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
+                android:textColor="@color/white"
+                android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
@@ -84,7 +91,10 @@
             app:counterMaxLength="200"
             app:endIconMode="clear_text"
             app:helperText="Require*"
-            app:helperTextTextColor="@color/design_default_color_error"
+            app:helperTextTextColor="#FF002E"
+            android:textColorHint="@color/white"
+            app:prefixTextColor="@color/white"
+            app:counterTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
@@ -92,10 +102,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/address"
+                android:textColor="@color/white"
+                android:textColorHint="#FA0202"
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
                 android:maxLength="200"
-                android:textColorHint="#757575"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,13 +119,17 @@
             android:hint="@string/gst_number"
             app:endIconMode="clear_text"
             app:helperText="Require*"
-            app:helperTextTextColor="@color/design_default_color_error"
+            app:helperTextTextColor="#FF002E"
+            android:textColorHint="@color/white"
+            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/gst"
+                android:textColor="@color/white"
+                android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:ignore="TextContrastCheck" />
@@ -129,7 +144,9 @@
             android:hint="@string/contact_number"
             app:endIconMode="clear_text"
             app:helperText="Don't change 'Number' if you have Backup in cloud*"
-            app:helperTextTextColor="@color/design_default_color_error"
+            app:helperTextTextColor="#FF002E"
+            android:textColorHint="@color/white"
+            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
@@ -138,6 +155,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/contactNumber"
+                android:textColor="@color/white"
+                android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"

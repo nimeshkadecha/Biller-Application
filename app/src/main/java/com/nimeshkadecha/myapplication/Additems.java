@@ -143,12 +143,18 @@ public class Additems extends AppCompatActivity {
                 quantity_ST = quantity.getText().toString();
                 if (productName_ST.isEmpty() || price_ST.isEmpty() || quantity_ST.isEmpty()) {
                     if (productName_ST.isEmpty() && price_ST.isEmpty() && quantity_ST.isEmpty()) {
+                        productName.setError("Enter Item Name here");
+                        price.setError("Enter Item Price here");
+                        quantity.setError("Enter Quantity here");
                         Toast.makeText(Additems.this, "Entry details", Toast.LENGTH_SHORT).show();
                     } else if (productName_ST.isEmpty()) {
+                        productName.setError("Enter Item Name here");
                         Toast.makeText(Additems.this, "Product filed is Empty", Toast.LENGTH_SHORT).show();
                     } else if (price_ST.isEmpty()) {
+                        price.setError("Enter Item Price here");
                         Toast.makeText(Additems.this, "Price filed is Empty", Toast.LENGTH_SHORT).show();
                     } else if (quantity_ST.isEmpty()) {
+                        quantity.setError("Enter Quantity here");
                         Toast.makeText(Additems.this, "Quantity filed is Empty", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(Additems.this, "Error", Toast.LENGTH_SHORT).show();
@@ -200,6 +206,22 @@ public class Additems extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Toast.makeText(this, "Click on Show list to see list & Add Item to insert item in list ", Toast.LENGTH_SHORT).show();
+        Intent intent2 = new Intent(Additems.this, home.class);
+
+        intent2.putExtra("Email", sellertxt);
+        intent2.putExtra("Origin", "addItem");
+
+        intent2.putExtra("cName", cNametxt);
+
+        intent2.putExtra("cNumber", cNumbertxt);
+
+        intent2.putExtra("date", datetext);
+
+        intent2.putExtra("billId", billIdtxt);
+
+        startActivity(intent2);
+        finish();
+
+//        Toast.makeText(this, "Add item and then press on SHow list", Toast.LENGTH_SHORT).show();
     }
 }

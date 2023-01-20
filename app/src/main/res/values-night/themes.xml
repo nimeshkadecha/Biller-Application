@@ -1,30 +1,35 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#00BCD4</item>
-        <item name="colorPrimaryVariant">#15E5FF</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">#3c85f2</item> <!--  // button color -->
+        <item name="colorPrimaryVariant">#E6FF00</item>
+        <item name="colorOnPrimary">@color/white</item><!--  // button text color -->
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">#257DFF</item><!--  // sellection color (highlited) -->
+        <item name="colorSecondaryVariant">#FF0000</item>
+        <item name="colorOnSecondary">#FF0000</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">#333333</item> <!-- // status bar color -->
         <!-- Customize your theme here. -->
+        <item name="android:colorBackground">#1f1f1f</item><!-- >// background color -->
+        <item name="android:textColor" >#888888</item> <!--  // text colore -->
 
-        <item name="textInputOutlinedStyle">@color/test</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item> <!--// forces to use my colors-->
     </style>
 
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <!--        <item name="boxStrokeColor">#00CCFF</item>-->
-        <item name="boxBackgroundColor">#313335</item>
-        <!--        <item name="editTextColor">#00FF19</item>-->
-        <item name="android:layout_marginTop">5dp</item>
+        <item name="boxStrokeColor">@color/white</item> <!-- // click karya pachi je color ave ee -->
+        <item name="boxBackgroundColor">#474747</item> <!-- // box no background color -->
+        <item name="android:textColorHint">@color/white</item><!-- // Hint text colore (Placeholder color) -->
+        <item name="startIconTint">@color/white</item>
+        <item name="endIconTint">@color/white</item>
+        <item name="hintTextColor">@color/white</item>
     </style>
 
     <style name="Navagation">
-        <item name="android:background">#15E5FF</item>
-        <item name="android:text">@color/black</item>
+        <item name="android:background">#363636</item>
+        <item name="android:text">@color/ic_launcher_background</item>
     </style>
+
 </resources>

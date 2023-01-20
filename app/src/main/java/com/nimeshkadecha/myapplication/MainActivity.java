@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
     public void register(View view) {
         Intent register = new Intent(this, register.class);
         startActivity(register);
-        finish();
     }
 
     //    Going to HOME Page if ID Password Is correct----------------------------------------------
@@ -171,15 +170,18 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
 
                 SucessfullyLogin.putExtra("Email", emailTXT);
+                SucessfullyLogin.putExtra("Origin", "Login");
                 startActivity(SucessfullyLogin);
                 finish();
             } else {
-                Toast.makeText(this, "Invalid information", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "wrong email OR password", Toast.LENGTH_SHORT).show();
             }
         } else if (!EV) {
             if (email.getText().length() == 0) {
+                email.setError("Enter E-mail here");
                 Toast.makeText(this, "Please Enter E-Mail", Toast.LENGTH_SHORT).show();
             } else {
+                email.setError("Enter Valid E-mail");
                 Toast.makeText(this, "Invalid E-Mail", Toast.LENGTH_SHORT).show();
             }
         } else if (!EP) {
@@ -205,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent SucessfullyLogin = new Intent(this, home.class);
             SucessfullyLogin.putExtra("Email", username);
+            SucessfullyLogin.putExtra("Origin", "Login");
             startActivity(SucessfullyLogin);
 //            Log.d("ENimesh","Activity started");
 

@@ -5,7 +5,7 @@
     android:id="@+id/customToolBar"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="#FF03A9F4">
+    android:background="#272727">
 
     <ImageView
         android:id="@+id/Menu"
@@ -17,10 +17,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_storage_24"
+        app:srcCompat="@drawable/menu"
         tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

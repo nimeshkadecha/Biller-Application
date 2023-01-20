@@ -70,14 +70,18 @@
         app:endIconMode="clear_text"
         app:errorEnabled="true"
         app:helperText="Required*"
-        app:helperTextTextColor="@color/design_default_color_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:helperTextTextColor="#FF002E"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/ic_email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -96,14 +100,18 @@
         android:hint="@string/password"
         app:endIconMode="password_toggle"
         app:helperText="Required*"
-        app:helperTextTextColor="@color/design_default_color_error"
+        app:helperTextTextColor="#FF0331"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        android:textColorHint="@color/white"
+        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -116,9 +124,11 @@
         android:layout_height="24dp"
         android:onClick="Forgot_Password"
         android:text="@string/forgot_password"
-        android:textColor="#6200ED"
+        android:textColor="#D0AFFF"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
+        app:layout_constraintHorizontal_bias="0.636"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
         tools:ignore="TouchTargetSizeCheck,UsingOnClickInXml" />

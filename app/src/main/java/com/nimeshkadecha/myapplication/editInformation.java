@@ -184,4 +184,8 @@ public class editInformation extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
