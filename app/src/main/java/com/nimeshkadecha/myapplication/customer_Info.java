@@ -162,12 +162,22 @@ public class customer_Info extends AppCompatActivity {
                 String value = parent.getItemAtPosition(position).toString();
 
                 if(value.equals("Name")){
+                    contactedt.setText("");
+                    dateedt.setText("");
+                    billidedt.setText("");
+                    todateedt.setText("");
+
                     nameedt.setVisibility(View.VISIBLE);
                     dateedt.setVisibility(View.GONE);
                     billidedt.setVisibility(View.GONE);
                     contactedt.setVisibility(View.GONE);
                     todateedt.setVisibility(View.GONE);
                 }else if(value.equals("Number")){
+                    nameedt.setText("");
+                    dateedt.setText("");
+                    billidedt.setText("");
+                    todateedt.setText("");
+
                     nameedt.setVisibility(View.GONE);
                     dateedt.setVisibility(View.GONE);
                     billidedt.setVisibility(View.GONE);
@@ -175,12 +185,21 @@ public class customer_Info extends AppCompatActivity {
                     todateedt.setVisibility(View.GONE);
 
                 }else if(value.equals("Date")){
+                    nameedt.setText("");
+                    contactedt.setText("");
+                    billidedt.setText("");
+
                     nameedt.setVisibility(View.GONE);
                     dateedt.setVisibility(View.VISIBLE);
                     billidedt.setVisibility(View.GONE);
                     contactedt.setVisibility(View.GONE);
                     todateedt.setVisibility(View.VISIBLE);
                 }else if(value.equals("BillId")){
+                    nameedt.setText("");
+                    dateedt.setText("");
+                    contactedt.setText("");
+                    todateedt.setText("");
+
                     nameedt.setVisibility(View.GONE);
                     dateedt.setVisibility(View.GONE);
                     billidedt.setVisibility(View.VISIBLE);

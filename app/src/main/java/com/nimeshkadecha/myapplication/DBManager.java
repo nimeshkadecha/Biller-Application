@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBManager extends SQLiteOpenHelper {
     public DBManager(Context context) {
@@ -192,6 +193,8 @@ public class DBManager extends SQLiteOpenHelper {
             if (check1 == -1 || check2 == -1) {
                 return false;
             } else {
+//                Resetting Auto increment to 0
+                 DB.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = ?", new String[]{"display"});
                 return true;
             }
         } else {
@@ -271,19 +274,22 @@ public class DBManager extends SQLiteOpenHelper {
     public int getbillid() {
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from customer", null);
-
         int id = 0;
-        if (cursor.getCount() > 0) {
-            cursor.moveToLast();
-            id = cursor.getInt(0);
+        try{
+            Cursor cursor = DB.rawQuery("select * from customer", null);
+            if (cursor.getCount() > 0) {
+                cursor.moveToLast();
+                id = cursor.getInt(0);
+            }
+            id++;
+        }catch (Exception e){
+            Log.d("ENimesh","Error is = "+e);
         }
-        id++;
         return id;
     }
 
     //    Fetching all customer --- [select * from customer where seller =?]---------------
-    public Cursor cusInfo(String email) {
+    public Cursor  cusInfo(String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
         Cursor cursor = DB.rawQuery("select * from customer where seller =?", new String[]{email});
@@ -409,6 +415,28 @@ public class DBManager extends SQLiteOpenHelper {
         if (cursor.getCount() > 0) {
             long check;
             check = DB.update("display", contentValues, "billid =?", new String[]{billID});
+            if (check == -1) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+    //  Updating State of BACKUP ------------------------------------------------------------------------------
+    public boolean UpdateBackupcus(String billID, int state) {
+        SQLiteDatabase DB = this.getWritableDatabase();
+
+        //        Getting all values in
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("backup", state);
+
+        Cursor cursor = DB.rawQuery("SELECT * From customer where billid =?", new String[]{billID});
+
+        if (cursor.getCount() > 0) {
+            long check;
+            check = DB.update("customer", contentValues, "billid =?", new String[]{billID});
             if (check == -1) {
                 return false;
             } else {

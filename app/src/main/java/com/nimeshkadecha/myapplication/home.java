@@ -12,12 +12,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
@@ -47,6 +51,9 @@ public class home extends AppCompatActivity {
     private EditText name, number, date;
 
     private FirebaseAuth mAuth;
+
+    private ProgressBar lodingPB;
+
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
     private int[] billIdtxt;
 
@@ -57,6 +64,9 @@ public class home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         mAuth = FirebaseAuth.getInstance();
         int billIdtxt[] = new int[5] ;
+
+//        PB
+        lodingPB = findViewById(R.id.Ploding);
 
 //      Finding edit texts -------------------------------------------------------------------------
         name = findViewById(R.id.name);
@@ -159,13 +169,12 @@ public class home extends AppCompatActivity {
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
                 String username = sharedPreferences.getString("UserName","");
-
-                Intent backup = new Intent(home.this, Firestore_Backup.class);
-                backup.putExtra("user", username);
-                startActivity(backup);
+//                Intent backup = new Intent(home.this, Firestore_Backup.class);
+//                backup.putExtra("user", username);
+//                startActivity(backup);
 
 //                TODO : remove comment in getOTP so that user have to pass OTP and verify before accessing backup facility And Change INtent on backup to go to firestore if firestore is working;
-//                getOTP(username);
+                getOTP(username);
             }
         });
 //  ------------------------------------------------------------------------------------------------
@@ -208,7 +217,7 @@ public class home extends AppCompatActivity {
 
 //        Products enter intent add customer and go to next INTENT for adding product this will add customer information
 
-        Log.d("ENimesh","Origin is="+origin);
+//        Log.d("ENimesh","Origin is="+origin);
         if(origin!= null && origin.equalsIgnoreCase("addItem")){
             String cNametxt, cNumbertxt, datetext, sellertxt;
 //            int[] billIdtxt ;
@@ -275,7 +284,7 @@ public class home extends AppCompatActivity {
                         Toast.makeText(home.this, "Invalid Number", Toast.LENGTH_SHORT).show();
                     } else {
                         datetxt = date.getText().toString();
-                        Log.d("ENimesh","finalBillIdtxt = " + finalBillIdtxt[0]);
+//                        Log.d("ENimesh","finalBillIdtxt = " + finalBillIdtxt[0]);
                         if(finalBillIdtxt[0] == 0){
                             finalBillIdtxt[0] = DB.getbillid();
                         }
@@ -298,6 +307,7 @@ public class home extends AppCompatActivity {
 //    Generating OTP -------------------------------------------------------------------------------
     private void getOTP(String email) {
 
+        lodingPB.setVisibility(View.VISIBLE);
 //        OTP From Firebase
         Cursor number = DB.Seller_Contact(email);
 
@@ -310,12 +320,28 @@ public class home extends AppCompatActivity {
         mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-
-                Toast.makeText(home.this, "Verified...", Toast.LENGTH_SHORT).show();
+                lodingPB.setVisibility(View.GONE);
+                mAuth.signInWithCredential(phoneAuthCredential)
+                                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                    @Override
+                                    public void onSuccess(AuthResult authResult) {
+                                        Toast.makeText(home.this, "Verified...", Toast.LENGTH_SHORT).show();
+                                        Intent backup = new Intent(home.this, Firestore_Backup.class);
+                                        backup.putExtra("user", email);
+                                        startActivity(backup);
+                                        finish();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(home.this, "Auto sign in Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
+                lodingPB.setVisibility(View.GONE);
                 Toast.makeText(home.this, "Failed to send OTP, Try Again", Toast.LENGTH_SHORT).show();
             }
 
@@ -330,6 +356,7 @@ public class home extends AppCompatActivity {
                 GETOTP.putExtra("user", email);
                 GETOTP.putExtra("OTP", s);
                 startActivity(GETOTP);
+                lodingPB.setVisibility(View.GONE);
 
             }
         };
@@ -341,6 +368,7 @@ public class home extends AppCompatActivity {
                         .setCallbacks(mCAllbacks)
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
+
 //  ------------------------------------------------------------------------------------------------
     }
 //  ------------------------------------------------------------------------------------------------

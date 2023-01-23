@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,10 +26,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Backup extends AppCompatActivity {
 
@@ -41,6 +44,7 @@ public class Backup extends AppCompatActivity {
     private String OTP, usertxt;
 
     private FirebaseAuth mAuth;
+    private TextView resend;
 
 
     @Override
@@ -90,7 +94,7 @@ public class Backup extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
 //                                    Intent backup = new Intent(Backup.this, Backup_Working.class);
-                                    Intent backup = new Intent(Backup.this, Backup_Working.class);
+                                    Intent backup = new Intent(Backup.this, Firestore_Backup.class);
                                     Bundle user = getIntent().getExtras();
                                     usertxt = user.getString("user");
                                     backup.putExtra("user", usertxt);
@@ -105,20 +109,28 @@ public class Backup extends AppCompatActivity {
                                     Toast.makeText(Backup.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
                                 }
                             });
-//                    if (otptxt.equals(OTP)) {
-//                        Intent backup = new Intent(Backup.this, Backup_Working.class);
-//                        Bundle user = getIntent().getExtras();
-//                        usertxt = user.getString("user");
-//                        backup.putExtra("user", usertxt);
-//                        startActivity(backup);
-//                    } else {
-//                        Toast.makeText(Backup.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
-//                    }
                 } else {
                     Toast.makeText(Backup.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+//        resend = findViewById(R.id.resend);
+//        resend.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                PhoneAuthOptions options =
+//                        PhoneAuthOptions.newBuilder(mAuth)
+//                                .setPhoneNumber("+91 "+CN)
+//                                .setTimeout(60L, TimeUnit.SECONDS)
+//                                .setActivity(this)
+//                                .setCallbacks(mCAllbacks)
+//                                .setForceResendingToken(OTP)
+//                                .build();
+//                PhoneAuthProvider.verifyPhoneNumber(options);
+//            }
+//        });
+
     }
 
     //    Validating OTP

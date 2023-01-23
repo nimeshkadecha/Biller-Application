@@ -3,10 +3,13 @@ package com.nimeshkadecha.myapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private int StoragePermisionCode = 1;
     //    initlizing varablwe
     private EditText email, password;
-    private Button login, permisions;
+    private Button login, permisions,Data_cloud;
 
     //    Creating object
     private DBManager DBM;
@@ -37,10 +40,31 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
 
+    //    Verifying internet is ON
+    boolean checkConnection() {
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo net = manager.getActiveNetworkInfo();
+
+        if (net == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Data_cloud = findViewById(R.id.Data_cloud);
+        if(checkConnection()){
+
+        }else{
+            Toast.makeText(this, "NO Internet", Toast.LENGTH_SHORT).show();
+        }
+
 
 //        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
 //        Removing Suport bar / top line containing name

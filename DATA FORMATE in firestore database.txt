@@ -1,4 +1,72 @@
-COllection 1 (Email of user)
+COllection 1 (Contact)
+	document 1 (Business)
+
+		Collection 1 (Bill_Info)
+			document 1 (Index from display table)
+				fields 
+					:- BillID
+					:- Customer_Name
+					:- Customer_Number
+					:- Date
+					:- Index
+					:- P_Name
+					:- P_Price
+					:- P_Qty
+					:- Seller
+					:- Subtotal
+			document 2 (Index from display table)
+					:
+					:
+					:
+			document N (Index from display table)
+
+		Collection 2 (Customer_Info)
+			document 1 (BillID from customer)
+				fields 
+					:- BillID
+					:- Customer_Name
+					:- Customer_Number
+					:- Date
+					:- Seller
+					:- Total
+			document 2 (BillID from customer)
+					:
+					:
+					:
+			document N (BillID from customer)
+
+	document 2 (Seller)
+		fields
+			:- Address
+			:- Contact
+			:- Email
+			:- GST
+			:- Name
+			:- Password
+
+
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	doc 1.1	(User Data)
 
