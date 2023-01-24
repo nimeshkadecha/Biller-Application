@@ -59,12 +59,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Data_cloud = findViewById(R.id.Data_cloud);
-        if(checkConnection()){
-
-        }else{
-            Toast.makeText(this, "NO Internet", Toast.LENGTH_SHORT).show();
-        }
-
+        Data_cloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkConnection()){
+                    Intent forgotpassword = new Intent(MainActivity.this, ForgotPassword.class);
+                    forgotpassword.putExtra("Origin","Cloud");
+                    startActivity(forgotpassword);
+//                    finish();
+                }else{
+                    Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 //        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
 //        Removing Suport bar / top line containing name
@@ -217,10 +224,16 @@ public class MainActivity extends AppCompatActivity {
 
     //    ON Click Forgot Password----------------------------------------------------------------
     public void Forgot_Password(View view) {
-        Intent forgotpassword = new Intent(this, ForgotPassword.class);
+        if(checkConnection()){
+            Intent forgotpassword = new Intent(this, ForgotPassword.class);
 
-        startActivity(forgotpassword);
-        finish();
+            forgotpassword.putExtra("Origin","Forgot");
+            startActivity(forgotpassword);
+//            finish();
+        }else{
+            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void alreadyLogin() {

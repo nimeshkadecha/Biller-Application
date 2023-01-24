@@ -169,12 +169,12 @@ public class home extends AppCompatActivity {
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
                 String username = sharedPreferences.getString("UserName","");
+                getOTP(username);
+
 //                Intent backup = new Intent(home.this, Firestore_Backup.class);
 //                backup.putExtra("user", username);
 //                startActivity(backup);
 
-//                TODO : remove comment in getOTP so that user have to pass OTP and verify before accessing backup facility And Change INtent on backup to go to firestore if firestore is working;
-                getOTP(username);
             }
         });
 //  ------------------------------------------------------------------------------------------------
@@ -342,7 +342,8 @@ public class home extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 lodingPB.setVisibility(View.GONE);
-                Toast.makeText(home.this, "Failed to send OTP, Try Again", Toast.LENGTH_SHORT).show();
+                Log.d("ENimesh","ERROE = "+e);
+                Toast.makeText(home.this, "Failed to send OTP, Try Again after SOme time | " + e, Toast.LENGTH_SHORT).show();
             }
 
             @Override

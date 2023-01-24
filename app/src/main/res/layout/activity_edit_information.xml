@@ -137,17 +137,15 @@
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="@string/contact_number"
+            android:hint="@string/e_mail"
             app:endIconMode="clear_text"
-            app:helperText="Don't change 'Number' if you have Backup in cloud*"
             app:helperTextTextColor="#FF002E"
             android:textColorHint="@color/white"
             app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
-            app:prefixText="+91"
-            app:startIconDrawable="@drawable/ic_phone">
+            app:startIconDrawable="@drawable/ic_email">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/contactNumber"

@@ -402,6 +402,30 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
+    public boolean InsertCustomerCloud(String billId, String name, String number, String date, String email, int state,String total) {
+
+        int ID = Integer.parseInt(billId);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("billId", billId);
+        contentValues.put("customerName", name);
+        contentValues.put("customerNumber", number);
+        contentValues.put("date", date);
+        contentValues.put("total", total);
+        contentValues.put("seller", email);
+        contentValues.put("backup", state);
+
+        SQLiteDatabase DB = this.getWritableDatabase();
+
+        long check;
+        check = DB.insert("customer", null, contentValues);
+        if (check == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     //  Updating State of BACKUP ------------------------------------------------------------------------------
     public boolean UpdateBackup(String billID, int state) {
         SQLiteDatabase DB = this.getWritableDatabase();

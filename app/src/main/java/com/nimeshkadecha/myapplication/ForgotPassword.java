@@ -7,12 +7,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
@@ -30,6 +34,8 @@ public class ForgotPassword extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
+
+    private TextView heading;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,6 +56,15 @@ public class ForgotPassword extends AppCompatActivity {
 
 //        Finding -----
         number = findViewById(R.id.contactnumber);
+
+        heading = findViewById(R.id.textView5);
+
+        Bundle bundle = getIntent().getExtras();
+        String origin = bundle.getString("Origin");
+        if (origin != null && origin.equalsIgnoreCase("Cloud")) {
+            heading.setText("Cloud Login");
+        }
+
     }
 
     //    Validation on NUMBER
@@ -66,7 +81,15 @@ public class ForgotPassword extends AppCompatActivity {
     public void GetOTP(View view) {
         boolean NV = numberValidation(number);
         if (NV) {
+//    TODO : remove coment from getOTP() in next line and remove intent
             getOTP();
+//            Intent TestDownload = new Intent(ForgotPassword.this,OTP_Generator.class);
+//
+//            TestDownload.putExtra("Origin", "Cloud");
+//            TestDownload.putExtra("number", number.getText().toString());
+//
+//            startActivity(TestDownload);
+
         } else {
             Toast.makeText(this, "Invalid Number", Toast.LENGTH_SHORT).show();
         }
@@ -77,16 +100,15 @@ public class ForgotPassword extends AppCompatActivity {
     private void getOTP() {
 //        OTP From Firebase
         String CN = number.getText().toString();
-        Log.d("ENimesh","NUmber ="+CN);
+        Log.d("ENimesh", "NUmber =" + CN);
         mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                Log.d("ENimesh" , "Error is ="+e);
+                Log.d("ENimesh", "Error is =" + e);
                 Toast.makeText(ForgotPassword.this, "Failed to send OTP, Try Again", Toast.LENGTH_SHORT).show();
             }
 
@@ -95,7 +117,12 @@ public class ForgotPassword extends AppCompatActivity {
 
                 Toast.makeText(ForgotPassword.this, "Sending OTP ...", Toast.LENGTH_SHORT).show();
                 Intent GETOTP = new Intent(ForgotPassword.this, OTP_Generator.class);
-                Log.d("ENImesh","Sussecc OTP ="+s);
+//                Log.d("ENImesh","Sussecc OTP ="+s);
+                Bundle bundle = getIntent().getExtras();
+                String origin = bundle.getString("Origin");
+                if (origin != null && origin.equalsIgnoreCase("Cloud")) {
+                    GETOTP.putExtra("Origin", "Cloud");
+                }
                 GETOTP.putExtra("number", CN);
                 GETOTP.putExtra("OTP", s);
                 startActivity(GETOTP);
@@ -105,7 +132,7 @@ public class ForgotPassword extends AppCompatActivity {
         };
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber("+91 "+CN)
+                        .setPhoneNumber("+91 " + CN)
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
                         .setCallbacks(mCAllbacks)

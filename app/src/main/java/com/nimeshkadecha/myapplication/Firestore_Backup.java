@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,9 @@ public class Firestore_Backup extends AppCompatActivity {
 
     private ProgressBar lodingPB;
 
+    private ImageView menuclick;
+
+
     //    Verifying internet is ON
     boolean checkConnection() {
         ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -74,6 +78,17 @@ public class Firestore_Backup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firestore_backup);
+
+//        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
+//        Removing Suport bar / top line containing name
+        Objects.requireNonNull(getSupportActionBar()).hide();
+
+//        FINDING menu
+        menuclick = findViewById(R.id.Menu);
+
+//        Keeping MENUE Invisible
+        menuclick.setVisibility(View.INVISIBLE);
+//        WORKING WITH TOOLBAR Ends-------------------------------------------------------------
 
         lodingPB = findViewById(R.id.Ploding);
         lodingPB.setVisibility(View.GONE);
@@ -134,40 +149,44 @@ public class Firestore_Backup extends AppCompatActivity {
                                     Cursor Customer = local_db.cusInfo(Seller_Email);
                                     Customer.moveToFirst();
                                     do {
-                                        if (Customer.getInt(6) == 0) {
-                                            Customer_Info.put("Bill_ID", Customer.getString(0));
-                                            Customer_Info.put("C_Name", Customer.getString(1));
-                                            Customer_Info.put("C_Number", Customer.getString(2));
-                                            Customer_Info.put("Date", Customer.getString(3));
-                                            Customer_Info.put("Total", Customer.getString(4));
-                                            Customer_Info.put("Seller", Customer.getString(5));
+                                        if(Customer.getCount() > 0){
+                                            if (Customer.getInt(6) == 0) {
+                                                Customer_Info.put("Bill_ID", Customer.getString(0));
+                                                Customer_Info.put("C_Name", Customer.getString(1));
+                                                Customer_Info.put("C_Number", Customer.getString(2));
+                                                Customer_Info.put("Date", Customer.getString(3));
+                                                Customer_Info.put("Total", Customer.getString(4));
+                                                Customer_Info.put("Seller", Customer.getString(5));
 //                                        Customer_Info.put("backup", Customer.getString(6));
 
-                                            db.collection(seller_cursor.getString(4))
-                                                    .document("Business")
-                                                    .collection("Customer_Info")
-                                                    .document(Customer.getString(0))
-                                                    .set(Customer_Info)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void unused) {
-                                                            int id = Integer.parseInt(String.valueOf(Customer_Info.get("Bill_ID")));
-                                                            for (int i = 1; i <= id; i++) {
-                                                                String idd = String.valueOf(i);
-                                                                local_db.UpdateBackupcus(idd, 1);
-                                                            }
+                                                db.collection(seller_cursor.getString(4))
+                                                        .document("Business")
+                                                        .collection("Customer_Info")
+                                                        .document(Customer.getString(0))
+                                                        .set(Customer_Info)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                int id = Integer.parseInt(String.valueOf(Customer_Info.get("Bill_ID")));
+                                                                for (int i = 1; i <= id; i++) {
+                                                                    String idd = String.valueOf(i);
+                                                                    local_db.UpdateBackupcus(idd, 1);
+                                                                }
 //                                                    Log.d("ENimesh","CUSBIllID =" + Customer_Info.get("Bill_ID"));
 //                                                    local_db.UpdateBackupcus(String.valueOf(Customer_Info.get("Bill_ID")), 1);
 //                                                        Toast.makeText(Firestore_Backup.this, "Customer info ADDED", Toast.LENGTH_SHORT).show();
-                                                            lodingPB.setVisibility(View.GONE);
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(Firestore_Backup.this, "Failed to add Customer", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
+                                                                lodingPB.setVisibility(View.GONE);
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(Firestore_Backup.this, "Failed to add Customer", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            }
+                                        }else{
+                                            Toast.makeText(Firestore_Backup.this, "No customer Data Available", Toast.LENGTH_SHORT).show();
                                         }
                                     } while (Customer.moveToNext());
 
@@ -178,55 +197,57 @@ public class Firestore_Backup extends AppCompatActivity {
 
                                     bill.moveToFirst();
                                     do {
-                                        if (bill.getInt(10) == 0) {
-                                            Billes.put("Index", bill.getString(0));
-                                            Billes.put("P_Name", bill.getString(1));
-                                            Billes.put("P_Price", bill.getString(2));
-                                            Billes.put("P_Qty", bill.getString(3));
-                                            Billes.put("Subtotal", bill.getString(4));
-                                            Billes.put("Customer_Name", bill.getString(5));
-                                            Billes.put("Customer_Number", bill.getString(6));
-                                            Billes.put("Date", bill.getString(7));
-                                            Billes.put("BillId", bill.getString(8));
-                                            Billes.put("Seller", bill.getString(9));
+                                        if(bill.getCount() > 0){
+                                            if (bill.getInt(10) == 0) {
+                                                Billes.put("Index", bill.getString(0));
+                                                Billes.put("P_Name", bill.getString(1));
+                                                Billes.put("P_Price", bill.getString(2));
+                                                Billes.put("P_Qty", bill.getString(3));
+                                                Billes.put("Subtotal", bill.getString(4));
+                                                Billes.put("Customer_Name", bill.getString(5));
+                                                Billes.put("Customer_Number", bill.getString(6));
+                                                Billes.put("Date", bill.getString(7));
+                                                Billes.put("BillId", bill.getString(8));
+                                                Billes.put("Seller", bill.getString(9));
 //                                        Billes.put("backup", bill.getString(10));
 
-                                            db.collection(seller_cursor.getString(4))
-                                                    .document("Business")
-                                                    .collection("Bill_Info")
-                                                    .document(bill.getString(0))
-                                                    .set(Billes)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void unused) {
-                                                            SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                                                            SharedPreferences.Editor editor = sp.edit();
-                                                            editor.putString("Last Upload", formattedDate);
-                                                            editor.apply();
-                                                            uploadDate.setText(formattedDate);
+                                                db.collection(seller_cursor.getString(4))
+                                                        .document("Business")
+                                                        .collection("Bill_Info")
+                                                        .document(bill.getString(0))
+                                                        .set(Billes)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                                                SharedPreferences.Editor editor = sp.edit();
+                                                                editor.putString("Last Upload", formattedDate);
+                                                                editor.apply();
+                                                                uploadDate.setText(formattedDate);
 
 //                                                    Log.d("ENimesh","dis BILL =" + bill.getString(0));
-                                                            int id = Integer.parseInt(String.valueOf(Billes.get("BillId")));
-                                                            for (int i = 1; i <= id; i++) {
-                                                                String idd = String.valueOf(i);
-                                                                local_db.UpdateBackup(idd, 1);
-                                                            }
-                                                            lodingPB.setVisibility(View.GONE);
+                                                                int id = Integer.parseInt(String.valueOf(Billes.get("BillId")));
+                                                                for (int i = 1; i <= id; i++) {
+                                                                    String idd = String.valueOf(i);
+                                                                    local_db.UpdateBackup(idd, 1);
+                                                                }
+                                                                lodingPB.setVisibility(View.GONE);
 //                                                    Log.d("ENimesh","BILLID is == "+String.valueOf(Billes.get("BillId")));
 
 //                                            Log.d("ENimesh","Added");
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(Firestore_Backup.this, "Failed to upload", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                        } else {
-
-                                            continue;
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(Firestore_Backup.this, "Failed to upload", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            } else {
+                                                continue;
+                                            }
+                                        }else{
+                                            Toast.makeText(Firestore_Backup.this, "No Bille Available to Upload", Toast.LENGTH_SHORT).show();
                                         }
-
                                     } while (bill.moveToNext());
                                     lodingPB.setVisibility(View.GONE);
                                     Toast.makeText(Firestore_Backup.this, "Uploading Data...", Toast.LENGTH_SHORT).show();
@@ -324,8 +345,9 @@ public class Firestore_Backup extends AppCompatActivity {
                                                         String cNum = String.valueOf(data.get("C_Number"));
                                                         String date = String.valueOf(data.get("Date"));
                                                         String Seller = String.valueOf(data.get("Seller"));
+                                                        String Total = String.valueOf(data.get("Total"));
 
-                                                        boolean ins = local_db.InsertCustomer(bID, cNmae, cNum, date, Seller, 1);
+                                                        boolean ins = local_db.InsertCustomerCloud(bID, cNmae, cNum, date, Seller, 1,Total);
                                                         if (ins) {
                                                             SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                                                             SharedPreferences.Editor editor = sp.edit();
