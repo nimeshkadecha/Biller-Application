@@ -54,32 +54,34 @@ public class Backup extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-//        TOOL BAR ---------------------------------------------------------------------
-        //        Removing Suport bar / top line containing name
+//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
+//          Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+//          menu Button ----------------------------------------------------------------------------
         menuclick = findViewById(R.id.Menu);
-
-//        Keeping MENUE Invisible
+//          Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
+//--------------------------------------------------------------------------------------------------
 
 
-//        TOOL BAR /---------------------------------------------------------------------
-
-//        Finding
+//        Finding ----------------------------------------------------------------------------------
         otpedt = findViewById(R.id.bOTP);
         verify = findViewById(R.id.bVerify);
+//--------------------------------------------------------------------------------------------------
 
-//        Getting OTP in INTENT
+//        Getting OTP in INTENT --------------------------------------------------------------------
         Bundle bOTP = getIntent().getExtras();
         OTP = bOTP.getString("OTP");
+//--------------------------------------------------------------------------------------------------
 
-//        Calling Backgroung class
-//        BackgroungTask backgroungTask = new BackgroungTask();
-//        backgroungTask.execute(OTP);
+//        OLD COde to create Notification ----------------------------------------------------------
+        //        Calling Backgroung class
+    //        BackgroungTask backgroungTask = new BackgroungTask();
+    //        backgroungTask.execute(OTP);
+//--------------------------------------------------------------------------------------------------
 
-//        Verify Button
+//        Verify Button ----------------------------------------------------------------------------
         verify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +116,9 @@ public class Backup extends AppCompatActivity {
                 }
             }
         });
+//--------------------------------------------------------------------------------------------------
 
+//        Resend Button ----------------------------------------------------------------------------
 //        resend = findViewById(R.id.resend);
 //        resend.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -130,10 +134,10 @@ public class Backup extends AppCompatActivity {
 //                PhoneAuthProvider.verifyPhoneNumber(options);
 //            }
 //        });
-
+//--------------------------------------------------------------------------------------------------
     }
 
-    //    Validating OTP
+//    OTP Validation Function ----------------------------------------------------------------------
     private boolean OTPValidate(String otpInput) {
         if (otpInput.length() == 6) {
             return true;
@@ -141,4 +145,5 @@ public class Backup extends AppCompatActivity {
             return false;
         }
     }
+//--------------------------------------------------------------------------------------------------
 }

@@ -46,9 +46,9 @@ import java.util.Objects;
 
 public class Firestore_Backup extends AppCompatActivity {
 
-    FirebaseFirestore db;
+    private  FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    DBManager local_db = new DBManager(this);
+    private DBManager local_db = new DBManager(this);
 
     public static final String SHARED_PREFS = "sharedPrefs";
 
@@ -61,7 +61,7 @@ public class Firestore_Backup extends AppCompatActivity {
     private ImageView menuclick;
 
 
-    //    Verifying internet is ON
+    //    Verifying internet is ON -----------------------------------------------------------------
     boolean checkConnection() {
         ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -73,47 +73,55 @@ public class Firestore_Backup extends AppCompatActivity {
             return true;
         }
     }
-
+//--------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firestore_backup);
 
-//        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
-//        Removing Suport bar / top line containing name
+//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
+//          Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+//          menu Button ----------------------------------------------------------------------------
         menuclick = findViewById(R.id.Menu);
-
-//        Keeping MENUE Invisible
+//          Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//        WORKING WITH TOOLBAR Ends-------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
+//        Progressbar ------------------------------------------------------------------------------
         lodingPB = findViewById(R.id.Ploding);
         lodingPB.setVisibility(View.GONE);
+//--------------------------------------------------------------------------------------------------
 
+//      Getting Current Date to put ----------------------------------------------------------------
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = df.format(c);
+//--------------------------------------------------------------------------------------------------
 
+//        Getting User EMail FRom Intent -----------------------------------------------------------
         Bundle user = getIntent().getExtras();
         String Seller_Email = user.getString("user");
+//--------------------------------------------------------------------------------------------------
 
-        uploadDate = findViewById(R.id.uploadDate);
-        Download = findViewById(R.id.Download);
-
+//        Using Shared Preference to store Last Date -----------------------------------------------
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String UploadDate = sharedPreferences.getString("Last Upload", "Not Uploaded");
         String DownloadDate = sharedPreferences.getString("Last Download", "Not Downloaded");
 
+        //Upload Date
+        uploadDate = findViewById(R.id.uploadDate);
         uploadDate.setText(UploadDate);
+
+        // Download Date
+        Download = findViewById(R.id.Download);
         Download.setText(DownloadDate);
+//--------------------------------------------------------------------------------------------------
 
-        db = FirebaseFirestore.getInstance();
-
+//      Upload Button ------------------------------------------------------------------------------
         upload = findViewById(R.id.uploadDatabtn);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,9 +180,6 @@ public class Firestore_Backup extends AppCompatActivity {
                                                                     String idd = String.valueOf(i);
                                                                     local_db.UpdateBackupcus(idd, 1);
                                                                 }
-//                                                    Log.d("ENimesh","CUSBIllID =" + Customer_Info.get("Bill_ID"));
-//                                                    local_db.UpdateBackupcus(String.valueOf(Customer_Info.get("Bill_ID")), 1);
-//                                                        Toast.makeText(Firestore_Backup.this, "Customer info ADDED", Toast.LENGTH_SHORT).show();
                                                                 lodingPB.setVisibility(View.GONE);
                                                             }
                                                         })
@@ -224,17 +229,12 @@ public class Firestore_Backup extends AppCompatActivity {
                                                                 editor.putString("Last Upload", formattedDate);
                                                                 editor.apply();
                                                                 uploadDate.setText(formattedDate);
-
-//                                                    Log.d("ENimesh","dis BILL =" + bill.getString(0));
                                                                 int id = Integer.parseInt(String.valueOf(Billes.get("BillId")));
                                                                 for (int i = 1; i <= id; i++) {
                                                                     String idd = String.valueOf(i);
                                                                     local_db.UpdateBackup(idd, 1);
                                                                 }
                                                                 lodingPB.setVisibility(View.GONE);
-//                                                    Log.d("ENimesh","BILLID is == "+String.valueOf(Billes.get("BillId")));
-
-//                                            Log.d("ENimesh","Added");
                                                             }
                                                         }).addOnFailureListener(new OnFailureListener() {
                                                             @Override
@@ -267,10 +267,10 @@ public class Firestore_Backup extends AppCompatActivity {
                 }
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-
+//        Download Button --------------------------------------------------------------------------
         Downloadbtn = findViewById(R.id.Downloadbtn);
-
         Downloadbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -382,4 +382,6 @@ public class Firestore_Backup extends AppCompatActivity {
             }
         });
     }
+//--------------------------------------------------------------------------------------------------
+
 }

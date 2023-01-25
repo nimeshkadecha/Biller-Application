@@ -43,31 +43,33 @@ public class ForgotPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
         mAuth = FirebaseAuth.getInstance();
-//        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
-//        Removing Suport bar / top line containing name
+//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
+    //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+    //        FINDING menu
         menuclick = findViewById(R.id.Menu);
 
-//        Keeping MENUE Invisible
+    //        Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//        WORKING WITH TOOLBAR Ends-------------------------------------------------------------
+//        WORKING WITH TOOLBAR Ends-----------------------------------------------------------------
 
-//        Finding -----
+//        Finding  ---------------------------------------------------------------------------------
         number = findViewById(R.id.contactnumber);
-
         heading = findViewById(R.id.textView5);
 
+        // Getting Data From Intent to find where it come from
+        // if KEY "origin" has value CLoud then it come from Login CLoud Button and it change function according to it
         Bundle bundle = getIntent().getExtras();
         String origin = bundle.getString("Origin");
         if (origin != null && origin.equalsIgnoreCase("Cloud")) {
             heading.setText("Cloud Login");
         }
+//--------------------------------------------------------------------------------------------------
 
     }
 
-    //    Validation on NUMBER
+//    Function to Validate Number ------------------------------------------------------------------
     private boolean numberValidation(EditText number) {
         String numberInput = number.getText().toString().trim();
         if (numberInput.length() == 10) {
@@ -76,13 +78,17 @@ public class ForgotPassword extends AppCompatActivity {
             return false;
         }
     }
+//--------------------------------------------------------------------------------------------------
 
-    //    Verifying otp and go to OTP_GEN
+//   "Get OTP" button On click -----------------------------------------------------------------------
     public void GetOTP(View view) {
         boolean NV = numberValidation(number);
         if (NV) {
-//    TODO : remove coment from getOTP() in next line and remove intent
+            //     remove coment from getOTP() in next line and remove intent
+            // Calling Function to get OTP
             getOTP();
+
+            // Testing Code to BY PASS OTP REQUIREMENT THERE IS FEW MORE TO COMMENT
 //            Intent TestDownload = new Intent(ForgotPassword.this,OTP_Generator.class);
 //
 //            TestDownload.putExtra("Origin", "Cloud");
@@ -94,7 +100,10 @@ public class ForgotPassword extends AppCompatActivity {
             Toast.makeText(this, "Invalid Number", Toast.LENGTH_SHORT).show();
         }
     }
+//--------------------------------------------------------------------------------------------------
 
+
+// Get OTP Function body ---------------------------------------------------------------------------
     @SuppressLint("DefaultLocale")
 //    Generating OTP
     private void getOTP() {
@@ -104,6 +113,7 @@ public class ForgotPassword extends AppCompatActivity {
         mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                Toast.makeText(ForgotPassword.this, "Verified..?", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -117,7 +127,8 @@ public class ForgotPassword extends AppCompatActivity {
 
                 Toast.makeText(ForgotPassword.this, "Sending OTP ...", Toast.LENGTH_SHORT).show();
                 Intent GETOTP = new Intent(ForgotPassword.this, OTP_Generator.class);
-//                Log.d("ENImesh","Sussecc OTP ="+s);
+
+                // If Origin is from Cloud Then it Going TO download Data Else it go to Reset password
                 Bundle bundle = getIntent().getExtras();
                 String origin = bundle.getString("Origin");
                 if (origin != null && origin.equalsIgnoreCase("Cloud")) {
@@ -126,8 +137,6 @@ public class ForgotPassword extends AppCompatActivity {
                 GETOTP.putExtra("number", CN);
                 GETOTP.putExtra("OTP", s);
                 startActivity(GETOTP);
-
-
             }
         };
         PhoneAuthOptions options =
@@ -138,6 +147,6 @@ public class ForgotPassword extends AppCompatActivity {
                         .setCallbacks(mCAllbacks)
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
-//       ENDS Working with NOTIFICATIOn -----------------------------------------------
+//--------------------------------------------------------------------------------------------------
     }
 }

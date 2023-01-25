@@ -48,7 +48,7 @@ public class OTP_Generator extends AppCompatActivity {
 
     private String b = "Biller";
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private DBManager DB_local = new DBManager(this);
 
@@ -61,39 +61,39 @@ public class OTP_Generator extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp_generator);
-        //        Getting OTP HERE
+
+//      Getting Verification ID from INTENT --------------------------------------------------------
         Bundle otpp = getIntent().getExtras();
         String OTP = otpp.getString("OTP");
+//--------------------------------------------------------------------------------------------------
 
+//      Getting Origin From Intent -----------------------------------------------------------------
         Bundle bundle = getIntent().getExtras();
         String origin = bundle.getString("Origin");
+//--------------------------------------------------------------------------------------------------
 
-//        --------------------------------------------------------------------------
+//        OLD CODE to Generate Notification --------------------------------------------------------
+            //        Caclling notification
+    //        BackgroungTask backgroungTask = new BackgroungTask();
+    //        backgroungTask.execute(OTP);
+//--------------------------------------------------------------------------------------------------
 
-        mAuth = FirebaseAuth.getInstance();
-//        Caclling notification
-//        BackgroungTask backgroungTask = new BackgroungTask();
-//        backgroungTask.execute(OTP);
-
-//        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
-//        Removing Suport bar / top line containing name
+//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
+    //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+    //        FINDING menu
         menuclick = findViewById(R.id.Menu);
 
-//        Keeping MENUE Invisible
+    //        Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//        WORKING WITH TOOLBAR Ends-------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-//        VERIFY BUTON
+//      Verifying OTP ------------------------------------------------------------------------------
         verifyy = findViewById(R.id.Verify);
-
-//ON CLICK VERIFY
         verifyy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Log.d("ENimesh", "OTP form FIrebase =" + OTP);
                 otp = findViewById(R.id.OTP);
                 String otpInput = otp.getText().toString().trim();
                 boolean OTP_V = OTPValidate(otpInput);
@@ -111,7 +111,7 @@ public class OTP_Generator extends AppCompatActivity {
                                         downloadData(number);
                                     } else {
                                         Intent GoToResetPassword = new Intent(OTP_Generator.this, resetPassword.class);
-//                Fowarding number to intent reset password
+                                        //                Fowarding number to intent reset password
                                         GoToResetPassword.putExtra("number", number);
 
                                         startActivity(GoToResetPassword);
@@ -144,8 +144,10 @@ public class OTP_Generator extends AppCompatActivity {
             }
         });
     }
+//--------------------------------------------------------------------------------------------------
 
-    // data
+
+//    If Origin is cloud then Downloading Data From CLoud ------------------------------------------
     private void downloadData(String num){
         db.collection(num)
                 .document("Seller")
@@ -163,7 +165,6 @@ public class OTP_Generator extends AppCompatActivity {
                             String Password = String.valueOf(document.get("Password"));
                             String Address = String.valueOf(document.get("Address"));
 
-                            Log.d("ENimesh","User = " + Enail);
                             boolean reg = DB_local.registerUser(name,Enail,Password,GST,Contact,Address);
                             if(reg){
                                 Query q = db.collection(num)
@@ -171,11 +172,11 @@ public class OTP_Generator extends AppCompatActivity {
                                         .collection("Customer_Info").orderBy("Bill_ID", Query.Direction.DESCENDING)
                                         .limit(1);
 
-                                q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                Task<QuerySnapshot> querySnapshotTask = q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if(task.isSuccessful()){
-                                            for(QueryDocumentSnapshot dq : task.getResult()){
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot dq : task.getResult()) {
                                                 String bID = String.valueOf(dq.get("Bill_ID"));
                                                 String cNmae = String.valueOf(dq.get("C_Name"));
                                                 String cNum = String.valueOf(dq.get("C_Number"));
@@ -183,20 +184,20 @@ public class OTP_Generator extends AppCompatActivity {
                                                 String Seller = String.valueOf(dq.get("Seller"));
                                                 String Total = String.valueOf(dq.get("Total"));
 
-                                                boolean ins = DB_local.InsertCustomerCloud(bID, cNmae, cNum, date, Seller, 1,Total);
-                                                if(ins){
+                                                boolean ins = DB_local.InsertCustomerCloud(bID, cNmae, cNum, date, Seller, 1, Total);
+                                                if (ins) {
                                                     Toast.makeText(OTP_Generator.this, "Customer information Added", Toast.LENGTH_SHORT).show();
                                                 }
 
                                                 Query q2 = db.collection(num)
                                                         .document("Business")
-                                                        .collection("Bill_Info").whereEqualTo("BillId",bID);
+                                                        .collection("Bill_Info").whereEqualTo("BillId", bID);
 
                                                 q2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if(task.isSuccessful()){
-                                                            for(QueryDocumentSnapshot qd : task.getResult()){
+                                                        if (task.isSuccessful()) {
+                                                            for (QueryDocumentSnapshot qd : task.getResult()) {
                                                                 int bID = Integer.parseInt(String.valueOf(qd.get("BillId")));
                                                                 String cNmae = String.valueOf(qd.get("Customer_Name"));
                                                                 String cNum = String.valueOf(qd.get("Customer_Number"));
@@ -220,11 +221,12 @@ public class OTP_Generator extends AppCompatActivity {
                                         }
                                     }
                                 });
+
+                                // Login in user after Successfully Download ---------
                                 SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sp.edit();
                                 editor.putString("Login","true");
                                 editor.putString("UserName",Enail);
-//                Log.d("ENimesh","Putting Email = " + emailTXT);
                                 editor.apply();
 
                                 Intent SucessfullyLogin = new Intent(OTP_Generator.this, home.class);
@@ -234,14 +236,16 @@ public class OTP_Generator extends AppCompatActivity {
                                 finish();
                             }
                             else {
+                                // IF User is already in SQLite then it create error so ---
                                 Toast.makeText(OTP_Generator.this, "Already have data in", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
                 });
     }
+//--------------------------------------------------------------------------------------------------
 
-    //    OTP validation
+//    OTP validation -------------------------------------------------------------------------------
     private boolean OTPValidate(String otpInput) {
         if (otpInput.length() < 6) {
             return false;
@@ -249,6 +253,10 @@ public class OTP_Generator extends AppCompatActivity {
             return true;
         }
     }
+//--------------------------------------------------------------------------------------------------
+
+
+//    OLD CODE TO SEND NOTIFICATION ----------------------------------------------------------------
 
     //    Notification code -----------------------------------------------------------------
 //    class BackgroungTask extends AsyncTask<String, Void, Void> {
@@ -326,4 +334,6 @@ public class OTP_Generator extends AppCompatActivity {
 //            return null;
 //        }
 //    }
+
+//--------------------------------------------------------------------------------------------------
 }

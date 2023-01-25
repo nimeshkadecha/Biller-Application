@@ -47,50 +47,54 @@ public class resetPassword extends AppCompatActivity {
         confirmPassword = findViewById(R.id.ConfirmPassword);
         DBM = new DBManager(this);
 
-//        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
-//        Removing Suport bar / top line containing name
+//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
+    //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+    //        FINDING menu
         menuclick = findViewById(R.id.Menu);
 
-//        Keeping MENUE Invisible
+    //        Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//        WORKING WITH TOOLBAR Ends-------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
+//        Confirm Button ---------------------------------------------------------------------------
         confirm = findViewById(R.id.confirm);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Calling Function
                 Confirm();
             }
         });
+//--------------------------------------------------------------------------------------------------
 
     }
 
-    //    validating
+//    validating Password length >= 6 --------------------------------------------------------------
     private boolean PasswordValidation(EditText password, EditText confirmPassword) {
-        String passwordInput = password.getText().toString();
-        String confirmPasswordInput = confirmPassword.getText().toString();
-        if (passwordInput.length() != confirmPasswordInput.length() || passwordInput.isEmpty()) {
+        String passwordInput = password.getText().toString().trim();
+        String confirmPasswordInput = confirmPassword.getText().toString().trim();
+        if (passwordInput.length() != confirmPasswordInput.length() || passwordInput.length()<6) {
             return false;
         } else {
             return true;
         }
     }
+//--------------------------------------------------------------------------------------------------
 
-    //    RESETING PASSWORD
+//    RESETTING PASSWORD ---------------------------------------------------------------------------
     public void Confirm() {
         boolean VP = PasswordValidation(password, confirmPassword);
         if (VP) {
             if (password.getText().toString().equals(confirmPassword.getText().toString())) {
-                Intent gotoMAIN = new Intent(this, MainActivity.class);
                 Bundle bundle = getIntent().getExtras();
                 String number = bundle.getString("number");
                 boolean check;
                 check = DBM.resetPassword(number, confirmPassword.getText().toString().trim());
 
                 if (check) {
+                    // After updating Locally Updating it to Cloud
                     db.collection(number)
                             .document("Seller")
                             .get()
@@ -116,6 +120,7 @@ public class resetPassword extends AppCompatActivity {
                                                     if(task.isSuccessful()){
                                                         String emailTXT = String.valueOf(Reset.get("Enail"));
 
+                                                        // Login in user After Reset
                                                         SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
                                                         SharedPreferences.Editor editor = sp.edit();
                                                         editor.putString("Login","true");
@@ -145,4 +150,5 @@ public class resetPassword extends AppCompatActivity {
             Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show();
         }
     }
+//--------------------------------------------------------------------------------------------------
 }

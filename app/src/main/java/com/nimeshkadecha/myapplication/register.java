@@ -16,33 +16,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
 public class register extends AppCompatActivity {
-
     private EditText name, email, password, gst, contact, address;
-
     private MainActivity MA = new MainActivity();
     private DBManager DBM;
     private Button show;
     private ImageView menuclick;
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-//        WORKING WITH TOOLBAR Starts-------------------------------------------------------------
-//        Removing Suport bar / top line containing name
+
+//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
+    //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+    //        FINDING menu
         menuclick = findViewById(R.id.Menu);
 
-//        Keeping MENUE Invisible
+    //        Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//        WORKING WITH TOOLBAR Ends-------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
+//        Assigning object it's value for SQLite Assess --------------------------------------------
         DBM = new DBManager(this);
-//        Finding ------------------------------
+//--------------------------------------------------------------------------------------------------
 
+//        Finding editText and Buttons  ------------------------------------------------------------
         name = findViewById(R.id.rName);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
@@ -52,8 +52,9 @@ public class register extends AppCompatActivity {
 
         show = findViewById(R.id.show);
         show.setVisibility(View.INVISIBLE);
+//--------------------------------------------------------------------------------------------------
 
-//        Display all information of users but it's hidden it is for testing purposes
+//        Display all information of users but it's hidden it is for testing purposes --------------
         show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,9 +81,10 @@ public class register extends AppCompatActivity {
                 builder.show();
             }
         });
-
+//--------------------------------------------------------------------------------------------------
     }
 
+//    Register button ------------------------------------------------------------------------------
     public void register(View view) {
         Intent login = new Intent(this, MainActivity.class);
 
@@ -94,7 +96,6 @@ public class register extends AppCompatActivity {
         String addressTXT = address.getText().toString();
 
         if (emailTXT.isEmpty() || passwordTXT.isEmpty() || nameTXT.isEmpty() || gstTXT.isEmpty() || contactTXT.isEmpty() || addressTXT.isEmpty()) {
-//            Toast.makeText(this, "Fillup FORM", Toast.LENGTH_SHORT).show();
             if (emailTXT.isEmpty() && passwordTXT.isEmpty() && nameTXT.isEmpty() && gstTXT.isEmpty() && contactTXT.isEmpty() && addressTXT.isEmpty()) {
                 Toast.makeText(this, "Fillup FORM", Toast.LENGTH_SHORT).show();
             } else if (emailTXT.isEmpty()) {
@@ -136,4 +137,5 @@ public class register extends AppCompatActivity {
             }
         }
     }
+//--------------------------------------------------------------------------------------------------
 }

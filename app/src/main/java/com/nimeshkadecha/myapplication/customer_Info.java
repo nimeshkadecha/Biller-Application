@@ -61,11 +61,15 @@ public class customer_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_info);
 
+//        Finding Layout for Spinner (DropDown MEnu) -----------------------------------------------
         cl = findViewById(R.id.contactlayout);
         dl = findViewById(R.id.datelayout);
         edl = findViewById(R.id.rangedate);
         bl = findViewById(R.id.billIDlayout);
         CN = findViewById(R.id.namelayout);
+//--------------------------------------------------------------------------------------------------
+
+//        CLick Listener to inform user to select Respective Layout --------------------------------
         cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,38 +100,39 @@ public class customer_Info extends AppCompatActivity {
                 Toast.makeText(customer_Info.this, "Select Name from dropdown menu", Toast.LENGTH_SHORT).show();
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-//        Getting User from INTENT
+//        Getting User from INTENT -----------------------------------------------------------------
         Bundle seller = getIntent().getExtras();
         String sellertxt = seller.getString("seller");
 
-//------------------------------------------------------------------Working on toolbar
-        //        Removing Suport bar / top line containing name
+//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
+//          Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+//          menu Button ----------------------------------------------------------------------------
         menuclick = findViewById(R.id.Menu);
-
-//        Keeping MENUE Invisible
+//          Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//---------------------------------------------------------------END working on toolbar
+//--------------------------------------------------------------------------------------------------
 
-
-//        Finding everything---------------------------
+//        Finding Edittext -------------------------------------------------------------------------
         nameedt = findViewById(R.id.name);
         dateedt = findViewById(R.id.date);
         billidedt = findViewById(R.id.billID);
         contactedt = findViewById(R.id.contact);
         todateedt = findViewById(R.id.rangeDatetEDT);
+//--------------------------------------------------------------------------------------------------
 
-//        Calculating And Formating DATE
+//        Calculating And Formatting DATE ----------------------------------------------------------
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = df.format(c);
+//--------------------------------------------------------------------------------------------------
 
-//        Adding todays date On click of edit text
+//        Adding current date On click of edit text ------------------------------------------------
         dateedt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +142,6 @@ public class customer_Info extends AppCompatActivity {
                 }
             }
         });
-// adding todays date on click in it
         todateedt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,10 +151,11 @@ public class customer_Info extends AppCompatActivity {
                 }
             }
         });
-//      Working with button
+//--------------------------------------------------------------------------------------------------
 
         searchbtn = findViewById(R.id.searchbtn);
 
+//        Adding Spinner (Dropdown menu) -----------------------------------------------------------
         spinner = findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(customer_Info.this, android.R.layout.simple_spinner_item, shorting);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -216,8 +221,9 @@ public class customer_Info extends AppCompatActivity {
                 Toast.makeText(customer_Info.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-//        Searcing -------------------------
+//      Search Button ------------------------------------------------------------------------------
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -259,9 +265,7 @@ public class customer_Info extends AppCompatActivity {
                     } else {
                         res = DB.cusInfo(sellertxt);
                         Toast.makeText(customer_Info.this, "Error", Toast.LENGTH_SHORT).show();
-
                     }
-
 
                     if (res.getCount() == 0) {
                         Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
@@ -293,9 +297,9 @@ public class customer_Info extends AppCompatActivity {
                 }
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-//        PDF WORKING
-
+//      PDF Button ---------------------------------------------------------------------------------
         pdf = findViewById(R.id.pdfC);
         pdf.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -642,7 +646,9 @@ public class customer_Info extends AppCompatActivity {
                 }
             }
         });
+//--------------------------------------------------------------------------------------------------
 
+//        Show ALl Customer Button -----------------------------------------------------------------
         showbtn = findViewById(R.id.showallData);
 
         showbtn.setOnClickListener(new View.OnClickListener() {
@@ -673,8 +679,8 @@ public class customer_Info extends AppCompatActivity {
 
             }
         });
-
     }
+//--------------------------------------------------------------------------------------------------
     @Override
     public void onBackPressed() {
         finish();

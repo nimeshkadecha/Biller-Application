@@ -58,21 +58,28 @@ public class ShowList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_list);
 
-//        Intent data
+//        Getting data from intent -----------------------------------------------------------------
         Bundle seller = getIntent().getExtras();
         String sellertxt = seller.getString("seller");
+//--------------------------------------------------------------------------------------------------
 
-//        Finding
-        pdf = findViewById(R.id.pdf);
+//      Finding ------------------------------------------------------------------------------------
+        // Display Button
         display = findViewById(R.id.display);
         display.setVisibility(View.INVISIBLE);
+        // PDF Button
+        pdf = findViewById(R.id.pdf);
         pdf.setVisibility(View.INVISIBLE);
+        //    Back button;
+        back = findViewById(R.id.Back);
+        back.setVisibility(View.INVISIBLE);
+//--------------------------------------------------------------------------------------------------
 
-//        Getting all data
+//        Getting all data -------------------------------------------------------------------------
         String cName, cNumber, date;
         int billId;
 
-//        GETTING INTENT DATA
+    //        GETTING INTENT DATA
         Bundle name = getIntent().getExtras();
         cName = name.getString("cName");
 
@@ -84,22 +91,19 @@ public class ShowList extends AppCompatActivity {
 
         Bundle bID = getIntent().getExtras();
         billId = bID.getInt("billId");
+//--------------------------------------------------------------------------------------------------
 
-        //    Back button;
-        back = findViewById(R.id.Back);
-        back.setVisibility(View.INVISIBLE);
-
+        // add more button
         addmore = findViewById(R.id.addMore);
 
-        //      SAVE button --------------------------
+
+//      SAVE button --------------------------------------------------------------------------------
         save = findViewById(R.id.print);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 save_CLicked[0]++;
-//                Toast.makeText(ShowList.this, "Toast Item saved", Toast.LENGTH_SHORT).show();
-
-//                INSERTING data in customer table
+            //                INSERTING data in customer table
                 boolean check;
 
                 String id = String.valueOf(billId);
@@ -118,8 +122,9 @@ public class ShowList extends AppCompatActivity {
                 }
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-        //    Back button;
+//    Back button ----------------------------------------------------------------------------------
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,8 +134,9 @@ public class ShowList extends AppCompatActivity {
                 finish();
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-        //        Addmore button
+//        Addmore button ---------------------------------------------------------------------------
         addmore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,8 +150,9 @@ public class ShowList extends AppCompatActivity {
                 finish();
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-        //        Display total and all stuff from customer table--------------
+//        Display Button ---------------------------------------------------------------------------
         display.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +165,7 @@ public class ShowList extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
-//                    DATE | name | number | Total |
+                //                    DATE | name | number | Total |
                     buffer.append("Bill ID = " + res.getString(0) + "\n");
                     buffer.append("Customer Name = " + res.getString(1) + "\n");
                     buffer.append("Customer Number = " + res.getString(2) + "\n");
@@ -174,16 +181,15 @@ public class ShowList extends AppCompatActivity {
 
             }
         });
+//--------------------------------------------------------------------------------------------------
 
 
         StorageManager storageManager = (StorageManager) getSystemService(STORAGE_SERVICE);
-
         List<StorageVolume> storageVolumes = storageManager.getStorageVolumes();
-
 
         storageVolume = storageVolumes.get(0);
 
-        //        Creating PDF --------------------------
+//        Creating PDF button ----------------------------------------------------------------------
         pdf.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("IntentReset")
             @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -202,8 +208,10 @@ public class ShowList extends AppCompatActivity {
                 int otp = rnd.nextInt(999999999);
                 return String.format("%09d", otp);
             }
+//--------------------------------------------------------------------------------------------------
 
-//            Creating PDF -------------------------
+
+//         Creating PDF ----------------------------------------------------------------------------
 
             class createPDF extends Thread {
                 createPDF() throws FileNotFoundException {
@@ -338,8 +346,9 @@ public class ShowList extends AppCompatActivity {
             }
 
         });
+//--------------------------------------------------------------------------------------------------
 
-        //                -----------------------RECYCILER VIEW
+//  Recycler View ----------------------------------------------------------------------------------
 
 //        aindex = new ArrayList<>();
         ainput = new ArrayList<>();
@@ -365,7 +374,9 @@ public class ShowList extends AppCompatActivity {
             }
         }
     }
+//--------------------------------------------------------------------------------------------------
 
+//     Making Sure User Saved Data Before Going Back -----------------------------------------------
     @Override
     public void onBackPressed() {
         if (save_CLicked[0] == 0) {
@@ -381,4 +392,5 @@ public class ShowList extends AppCompatActivity {
             finish();
         }
     }
+//--------------------------------------------------------------------------------------------------
 }

@@ -40,21 +40,21 @@ public class Additems extends AppCompatActivity {
         setContentView(R.layout.activity_additems);
 
 //        Finding buttons
-        menu = findViewById(R.id.Menu);
-        menu.setVisibility(View.INVISIBLE);
         Add = findViewById(R.id.button3);
         show = findViewById(R.id.show);
 
 //        Working with TOOLBAR STARTS --------------------------------------------------------------
 
-//        Removing Suport bar / top line containing name
+    //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        Hiding navigationgrawer
+    //        Hiding navigationgrawer
         navagationDrawer = findViewById(R.id.navigation);
         navagationDrawer.setVisibility(View.INVISIBLE);
 
-//        FINDING menu
+    //        FINDING menu
+        menu = findViewById(R.id.Menu);
+        menu.setVisibility(View.INVISIBLE);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,12 +65,10 @@ public class Additems extends AppCompatActivity {
             }
         });
 
-//        FINDING Backbtn
+    //        FINDING Backbtn
         backBtn = findViewById(R.id.btnBack);
 
-//        WORKING IN NAVAGATION DRAWER starts  -----------------------------------------------------
-
-//        hiding navagation on back btn click------------
+    //        hiding navagation on back btn click
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,10 +77,10 @@ public class Additems extends AppCompatActivity {
                 show.setVisibility(View.VISIBLE);
             }
         });
-//        Working with TOOLBAR Ends --------------------------------------------------------------
-//        finding customer info btn and edit info btn
+
+    //   customer info btn
         customerInfo = findViewById(R.id.customerinfo);
-        editInfo = findViewById(R.id.editInfo);
+
 
         customerInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,12 +89,11 @@ public class Additems extends AppCompatActivity {
             }
         });
 
+    //  Edit Info Button
+        editInfo = findViewById(R.id.editInfo);
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(home.this, "Edit info btn CLICKED", Toast.LENGTH_SHORT).show();
-
-//                This intent go to editinformation.class
                 Intent intent = new Intent(Additems.this, editInformation.class);
                 Bundle bundle = getIntent().getExtras();
                 String email = bundle.getString("Email");
@@ -107,12 +104,11 @@ public class Additems extends AppCompatActivity {
             }
         });
 
-//        WORKING IN NAVAGATION DRAWER Ends  -----------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-//  INSERT OPERATION IN DISPLAY TABLE ------------------------------------------------------------------
-//        INSERTING DATA
+//  INSERT OPERATION IN DISPLAY TABLE --------------------------------------------------------------
 
-//        Getting INTENT
+    //        Getting INTENT
         Bundle name = getIntent().getExtras();
         cNametxt = name.getString("cName");
 
@@ -130,6 +126,7 @@ public class Additems extends AppCompatActivity {
 
         final int[] validator = {0};
 
+//  Add Item Button --------------------------------------------------------------------------------
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,13 +174,13 @@ public class Additems extends AppCompatActivity {
                 }
             }
         });
-
-//        ON click Shsow
+//--------------------------------------------------------------------------------------------------
 
         if(validator[0] == 0){
             show.setVisibility(View.GONE);
         }
 
+// Show List Button --------------------------------------------------------------------------------
         show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,7 +200,10 @@ public class Additems extends AppCompatActivity {
                 finish();
             }
         });
+//--------------------------------------------------------------------------------------------------
     }
+
+//    Going TO Home With User DATA ON BAck Button Press --------------------------------------------
     @Override
     public void onBackPressed() {
         Intent intent2 = new Intent(Additems.this, home.class);
@@ -221,7 +221,6 @@ public class Additems extends AppCompatActivity {
 
         startActivity(intent2);
         finish();
-
-//        Toast.makeText(this, "Add item and then press on SHow list", Toast.LENGTH_SHORT).show();
     }
+//--------------------------------------------------------------------------------------------------
 }

@@ -65,16 +65,15 @@ public class home extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         int billIdtxt[] = new int[5] ;
 
-//        PB
+//      Progressbar Finding ------------------------------------------------------------------------
         lodingPB = findViewById(R.id.Ploding);
+//--------------------------------------------------------------------------------------------------
 
 //      Finding edit texts -------------------------------------------------------------------------
         name = findViewById(R.id.name);
         number = findViewById(R.id.contact);
         date = findViewById(R.id.date);
 //  ------------------------------------------------------------------------------------------------
-
-//        backup.setVisibility(View.INVISIBLE);
 
 //        Generating and formating Date ------------------------------------------------------------
         Date c = Calendar.getInstance().getTime();
@@ -217,10 +216,8 @@ public class home extends AppCompatActivity {
 
 //        Products enter intent add customer and go to next INTENT for adding product this will add customer information
 
-//        Log.d("ENimesh","Origin is="+origin);
         if(origin!= null && origin.equalsIgnoreCase("addItem")){
             String cNametxt, cNumbertxt, datetext, sellertxt;
-//            int[] billIdtxt ;
             Bundle name1 = getIntent().getExtras();
             cNametxt = name1.getString("cName");
 
@@ -372,13 +369,11 @@ public class home extends AppCompatActivity {
 
 //  ------------------------------------------------------------------------------------------------
     }
-//  ------------------------------------------------------------------------------------------------
+
 
 //  Alert dialog box for Exiting Application -------------------------------------------------------
     @Override
     public void onBackPressed() {
-//        Log.d("ENimesh", "status == " + String.valueOf(navagationDrawer.getVisibility()));
-
         if (String.valueOf(navagationDrawer.getVisibility()).equals("0")) {
             navagationDrawer.setVisibility(View.INVISIBLE);
             product.setVisibility(View.VISIBLE);

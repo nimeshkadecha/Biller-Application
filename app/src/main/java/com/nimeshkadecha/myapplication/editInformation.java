@@ -90,18 +90,17 @@ public class editInformation extends AppCompatActivity {
 
 //  ------------------------------------------------------------------------------------------------
 
-//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
-//        Removing Suport bar / top line containing name
+//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
+//          Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//        FINDING menu
+//          menu Button ----------------------------------------------------------------------------
         menuclick = findViewById(R.id.Menu);
-
-//        Keeping MENUE Invisible
+//          Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//        WORKING WITH TOOLBAR Ends-------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-//        SHOW Btn Works starts -------------------------------------------------------------------
+//        SHOW Btn Works starts --------------------------------------------------------------------
         show = findViewById(R.id.show);
         show.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,8 +128,9 @@ public class editInformation extends AppCompatActivity {
                 builder.show();
             }
         });
+//--------------------------------------------------------------------------------------------------
 
-//       UPDATE btn Code Starts --------------------------------------------------------------
+//       UPDATE btn Code Starts --------------------------------------------------------------------
         update = findViewById(R.id.update);
         String finalNumber = number;
         update.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +177,6 @@ public class editInformation extends AppCompatActivity {
                                 Update.put("Contact", finalNumber);
                                 Update.put("Address", addressTXT);
 
-
                                 db.collection(finalNumber)
                                         .document("Seller")
                                         .set(Update)
@@ -205,6 +204,7 @@ public class editInformation extends AppCompatActivity {
                 }
             }
         });
+//--------------------------------------------------------------------------------------------------
 
 //        DELETE BUTTON ----------------------------------------------------------------------------
         delete = findViewById(R.id.Delete);
@@ -243,6 +243,7 @@ public class editInformation extends AppCompatActivity {
             }
         });
     }
+    //--------------------------------------------------------------------------------------------------
 
     @Override
     public void onBackPressed() {
