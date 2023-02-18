@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,15 +42,17 @@ public class home extends AppCompatActivity {
 
     private Button product;
 
-    private Button customerInfo, editInfo, backup, logout,report;
+    private Button customerInfo, editInfo, backup, logout, report, stock;
 
-    private View navagationDrawer;
+    private View navagationDrawer, homeLayout;
 
     private DBManager DB = new DBManager(this);
 
     public static final String SHARED_PREFS = "sharedPrefs";
 
-    private EditText name, number, date;
+    private EditText number, date;
+
+    private AutoCompleteTextView name;
 
     private FirebaseAuth mAuth;
 
@@ -63,15 +67,92 @@ public class home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mAuth = FirebaseAuth.getInstance();
-        int billIdtxt[] = new int[5] ;
+        int billIdtxt[] = new int[5];
 
 //      Progressbar Finding ------------------------------------------------------------------------
         lodingPB = findViewById(R.id.Ploding);
 //--------------------------------------------------------------------------------------------------
 
+//        Adding seller email from INTENT-----------------------------------------------------------
+        Bundle bundle = getIntent().getExtras();
+        String email = bundle.getString("Email");
+        String origin = "Test";
+        origin = bundle.getString("Origin");
+//  ------------------------------------------------------------------------------------------------
+
+
 //      Finding edit texts -------------------------------------------------------------------------
         name = findViewById(R.id.name);
+
+//        adding auto complete facility
+        String[] NameSuggestion;
+        String[] Names;
+
+        Cursor Name_Sugg = DB.cusInfo(email);
+        Name_Sugg.moveToFirst();
+        if (Name_Sugg.getCount() > 0) {
+            int i = 0;
+            boolean insert = true;
+            Log.d("ENimesh", "Count = " + Name_Sugg.getCount());
+            NameSuggestion = new String[Name_Sugg.getCount()];
+            do {
+                if (i != 0) {
+                    for (int j = 0; j < i; j++) {
+                        if (NameSuggestion[j].equals(Name_Sugg.getString(1))) {
+                            insert = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (insert) {
+                    NameSuggestion[i] = Name_Sugg.getString(1);
+                    Log.d("ENimesh", "dataa = " + NameSuggestion[i]);
+                    i++;
+                }
+            } while (Name_Sugg.moveToNext());
+            Log.d("ENimesh", "i = " + i);
+
+            Names = new String[i];
+            for (int j = 0; j < i; j++) {
+                Names[j] = NameSuggestion[j];
+            }
+        } else {
+            Names = new String[]{"No DAta"};
+        }
+        name.setAdapter(new ArrayAdapter<>(home.this, android.R.layout.simple_list_item_1, Names));
+
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (navagationDrawer.getVisibility() == View.VISIBLE) {
+                    navagationDrawer.setVisibility(View.INVISIBLE);
+                    product.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         number = findViewById(R.id.contact);
+
+        number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (navagationDrawer.getVisibility() == View.VISIBLE) {
+                    navagationDrawer.setVisibility(View.INVISIBLE);
+                    product.setVisibility(View.VISIBLE);
+                }
+                if (number.getText().toString().equals("")) {
+                    Cursor numberC = DB.individualCustomerInfo(email, name.getText().toString());
+                    numberC.moveToFirst();
+                    if (numberC.getCount() > 0) {
+                        number.setText(numberC.getString(2));
+                    } else {
+                        Toast.makeText(home.this, "New Customer", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         date = findViewById(R.id.date);
 //  ------------------------------------------------------------------------------------------------
 
@@ -83,13 +164,6 @@ public class home extends AppCompatActivity {
         String formattedDate = df.format(c);
 
         date.setText(formattedDate);
-//  ------------------------------------------------------------------------------------------------
-
-//        Adding seller email from INTENT-----------------------------------------------------------
-        Bundle bundle = getIntent().getExtras();
-        String email = bundle.getString("Email");
-        String origin = "Test";
-        origin = bundle.getString("Origin");
 //  ------------------------------------------------------------------------------------------------
 
 //        Working with TOOLBAR STARTS --------------------------------------------------------------
@@ -160,15 +234,48 @@ public class home extends AppCompatActivity {
         });
 //  ------------------------------------------------------------------------------------------------
 
+//      Edit Info btn ------------------------------------------------------------------------------
+        stock = findViewById(R.id.stock);
+        stock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(home.this, "Edit info btn CLICKED", Toast.LENGTH_SHORT).show();
+
+//                This intent go to editinformation.class
+                Intent intent = new Intent(home.this, manageStock.class);
+                intent.putExtra("Email", email);
+                startActivity(intent);
+
+            }
+        });
+//  ------------------------------------------------------------------------------------------------
+
 //      Backup Btn ---------------------------------------------------------------------------------
 
         backup = findViewById(R.id.backup);
         backup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-                String username = sharedPreferences.getString("UserName","");
-                getOTP(username);
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(home.this);
+                alert.setTitle("Backup");
+                alert.setMessage("This would require OTP to Access ");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                        String username = sharedPreferences.getString("UserName", "");
+                        getOTP(username);
+                    }
+                });
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                alert.show();
 
 //                Intent backup = new Intent(home.this, Firestore_Backup.class);
 //                backup.putExtra("user", username);
@@ -183,8 +290,8 @@ public class home extends AppCompatActivity {
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goTOReport = new Intent(home.this,Report.class);
-                goTOReport.putExtra("seller",email);
+                Intent goTOReport = new Intent(home.this, Report.class);
+                goTOReport.putExtra("seller", email);
                 startActivity(goTOReport);
             }
         });
@@ -212,11 +319,27 @@ public class home extends AppCompatActivity {
 
 //        WORKING IN NAVAGATION DRAWER Ends  -------------------------------------------------------
 
+//        Clossing navagation drawer ---------------------------------------------------------------
+
+        homeLayout = findViewById(R.id.homeLayout);
+
+        homeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (navagationDrawer.getVisibility() == View.VISIBLE) {
+                    navagationDrawer.setVisibility(View.INVISIBLE);
+                    product.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+//  ------------------------------------------------------------------------------------------------
+
 //        Enter Product BTN ------------------------------------------------------------------------
 
 //        Products enter intent add customer and go to next INTENT for adding product this will add customer information
 
-        if(origin!= null && origin.equalsIgnoreCase("addItem")){
+        if (origin != null && origin.equalsIgnoreCase("addItem")) {
             String cNametxt, cNumbertxt, datetext, sellertxt;
             Bundle name1 = getIntent().getExtras();
             cNametxt = name1.getString("cName");
@@ -229,19 +352,19 @@ public class home extends AppCompatActivity {
 
             Bundle bID = getIntent().getExtras();
 //            billIdtxt = new int[]{0};
-            billIdtxt [0] = bID.getInt("billId");
+            billIdtxt[0] = bID.getInt("billId");
 
             Bundle seller = getIntent().getExtras();
             sellertxt = seller.getString("seller");
 
-            if(cNametxt.length() != 0){
+            if (cNametxt.length() != 0) {
                 name.setText(cNametxt);
                 number.setText(cNumbertxt);
                 date.setText(datetext);
             }
-        }else{
+        } else {
 //            int[] billIdtxt ;
-            billIdtxt [0] = 0;
+            billIdtxt[0] = 0;
         }
         final int[] finalBillIdtxt = billIdtxt;
 
@@ -282,7 +405,7 @@ public class home extends AppCompatActivity {
                     } else {
                         datetxt = date.getText().toString();
 //                        Log.d("ENimesh","finalBillIdtxt = " + finalBillIdtxt[0]);
-                        if(finalBillIdtxt[0] == 0){
+                        if (finalBillIdtxt[0] == 0) {
                             finalBillIdtxt[0] = DB.getbillid();
                         }
 //                        int billIDd = DB.getbillid();
@@ -293,6 +416,7 @@ public class home extends AppCompatActivity {
                         intent.putExtra("date", datetxt);
                         intent.putExtra("billId", finalBillIdtxt[0]);
                         intent.putExtra("seller", email);
+                        intent.putExtra("origin", "home");
                         startActivity(intent);
                         finish();
                     }
@@ -301,7 +425,8 @@ public class home extends AppCompatActivity {
         });
 //  ------------------------------------------------------------------------------------------------
     }
-//    Generating OTP -------------------------------------------------------------------------------
+
+    //    Generating OTP -------------------------------------------------------------------------------
     private void getOTP(String email) {
 
         lodingPB.setVisibility(View.VISIBLE);
@@ -311,7 +436,7 @@ public class home extends AppCompatActivity {
         number.moveToFirst();
 //        Log.d("ENimesh","count ="+number.getCount());
 //        Log.d("ENimesh","test2 ="+number.getString(0));
-        String  CN = number.getString(0);
+        String CN = number.getString(0);
 //        Log.d("ENimesh","NUmber ="+CN);
 
         mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -319,16 +444,16 @@ public class home extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 lodingPB.setVisibility(View.GONE);
                 mAuth.signInWithCredential(phoneAuthCredential)
-                                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                    @Override
-                                    public void onSuccess(AuthResult authResult) {
-                                        Toast.makeText(home.this, "Verified...", Toast.LENGTH_SHORT).show();
-                                        Intent backup = new Intent(home.this, Firestore_Backup.class);
-                                        backup.putExtra("user", email);
-                                        startActivity(backup);
-                                        finish();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                Toast.makeText(home.this, "Verified...", Toast.LENGTH_SHORT).show();
+                                Intent backup = new Intent(home.this, Firestore_Backup.class);
+                                backup.putExtra("user", email);
+                                startActivity(backup);
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(home.this, "Auto sign in Failed", Toast.LENGTH_SHORT).show();
@@ -339,7 +464,7 @@ public class home extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 lodingPB.setVisibility(View.GONE);
-                Log.d("ENimesh","ERROE = "+e);
+                Log.d("ENimesh", "ERROE = " + e);
                 Toast.makeText(home.this, "Failed to send OTP, Try Again after SOme time | " + e, Toast.LENGTH_SHORT).show();
             }
 
@@ -360,7 +485,7 @@ public class home extends AppCompatActivity {
         };
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber("+91 "+CN)
+                        .setPhoneNumber("+91 " + CN)
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
                         .setCallbacks(mCAllbacks)
@@ -371,7 +496,7 @@ public class home extends AppCompatActivity {
     }
 
 
-//  Alert dialog box for Exiting Application -------------------------------------------------------
+    //  Alert dialog box for Exiting Application -------------------------------------------------------
     @Override
     public void onBackPressed() {
         if (String.valueOf(navagationDrawer.getVisibility()).equals("0")) {

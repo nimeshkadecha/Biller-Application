@@ -17,6 +17,9 @@
     <string name="item_name">Item Name</string>
     <string name="item_name1">Item Name :</string>
     <string name="price">Price</string>
+    <string name="bprice">Porches Price</string>
+    <string name="sprice">Selling Price</string>
+    <string name="catagory">Category</string>
     <string name="quantity">Quantity</string>
     <string name="Biller">Biller_OTP</string>
     <string name="description">OTP for Biller application</string>
@@ -60,4 +63,6 @@
     <string name="about">About</string>
     <string name="edit_information">Edit Information</string>
     <string name="backup">Backup Data</string>
+    <string name="stock">Manage Stock</string>
+    <string name="viewS">View Stock</string>
 </resources>

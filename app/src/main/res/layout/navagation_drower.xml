@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation"
     style="@style/Navagation"
+
     android:layout_width="290dp"
     android:layout_height="match_parent">
 
@@ -29,9 +30,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:backgroundTint="#363636"
         android:id="@+id/customerinfo"
-
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="101dp"
         android:minHeight="48dp"
@@ -59,18 +60,18 @@
 
     <Button
         android:id="@+id/editInfo"
-
-        android:layout_width="wrap_content"
+        android:paddingEnd="70dp"
+        android:backgroundTint="#363636"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:minHeight="48dp"
         android:onClick="editInfo"
         android:text="@string/edit_information"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customerinfo"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/customerinfo"
+        app:layout_constraintStart_toStartOf="@+id/customerinfo"
+        app:layout_constraintTop_toBottomOf="@+id/customerinfo" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/editInfo"-->
@@ -87,28 +88,43 @@
 
     <Button
         android:id="@+id/report"
-        android:layout_width="wrap_content"
+        android:backgroundTint="#363636"
+        android:paddingEnd="75dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Business Report"
         android:textSize="15sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editInfo"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/editInfo"
+        app:layout_constraintStart_toStartOf="@+id/editInfo"
+        app:layout_constraintTop_toBottomOf="@+id/editInfo" />
 
     <Button
+        android:paddingEnd="99dp"
+        android:id="@+id/stock"
+        android:backgroundTint="#363636"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/stock"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/report"
+        app:layout_constraintStart_toStartOf="@+id/report"
+        app:layout_constraintTop_toBottomOf="@+id/report" />
+
+    <Button
+        android:paddingEnd="110dp"
         android:id="@+id/backup"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
+        android:backgroundTint="#363636"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/backup"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/report"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/stock"
+        app:layout_constraintStart_toStartOf="@+id/stock"
+        app:layout_constraintTop_toBottomOf="@+id/stock" />
+
 
 <!--    <TextView-->
 <!--        android:id="@+id/backup"-->
@@ -122,14 +138,15 @@
 <!--        app:layout_constraintTop_toBottomOf="@+id/editInfo" />-->
 
     <Button
+        android:paddingEnd="150dp"
         android:id="@+id/logOutButton"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Log Out"
+        android:backgroundTint="#363636"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backup"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/backup"
+        app:layout_constraintStart_toStartOf="@+id/backup"
+        app:layout_constraintTop_toBottomOf="@+id/backup" />
 </androidx.constraintlayout.widget.ConstraintLayout>

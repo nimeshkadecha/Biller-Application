@@ -30,7 +30,7 @@ public class Additems extends AppCompatActivity {
     EditText productName, price, quantity;
     DBManager DB = new DBManager(this);
 
-    String cNametxt, cNumbertxt, datetext, sellertxt;
+    String cNametxt, cNumbertxt, datetext, sellertxt,origintxt;
     int billIdtxt;
 
     @SuppressLint("MissingInflatedId")
@@ -124,15 +124,21 @@ public class Additems extends AppCompatActivity {
         Bundle seller = getIntent().getExtras();
         sellertxt = seller.getString("seller");
 
+        Bundle origin = getIntent().getExtras();
+        origintxt = origin.getString("origin");
+
         final int[] validator = {0};
 
 //  Add Item Button --------------------------------------------------------------------------------
+        quantity = findViewById(R.id.quantity);
+        if(quantity.getText().toString().equals("")){
+            quantity.setText("1");
+        }
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 productName = findViewById(R.id.productname);
                 price = findViewById(R.id.price);
-                quantity = findViewById(R.id.quantity);
 
                 String productName_ST, price_ST, quantity_ST;
                 productName_ST = productName.getText().toString();
@@ -178,6 +184,10 @@ public class Additems extends AppCompatActivity {
 
         if(validator[0] == 0){
             show.setVisibility(View.GONE);
+        }
+
+        if( !origintxt.equalsIgnoreCase("home")){
+            show.setVisibility(View.VISIBLE);
         }
 
 // Show List Button --------------------------------------------------------------------------------

@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:startIconDrawable="@drawable/ic_baseline_lock_24"
-        tools:ignore="HardcodedText">
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/OTP"
@@ -57,7 +57,9 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:maxLength="6"
-            tools:ignore="TextContrastCheck" />
+            android:autofillHints="smsOTPCode"
+            android:importantForAutofill="yes"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

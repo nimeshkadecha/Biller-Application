@@ -43,6 +43,15 @@ public class DBManager extends SQLiteOpenHelper {
                 "total TEXT," +
                 "seller TEXT," +
                 "backup Integer)");
+//        Customer table
+        DB.execSQL("Create TABLE stock(productName TEXT primary key," +
+                "catagory TEXT," +
+                "purchesPrice TEXT," +
+                "sellingPrice TEXT," +
+                "date Date," +
+                "quentity TEXT," +
+                "seller TEXT," +
+                "backup Integer)");
     }
 
     @Override
@@ -50,6 +59,7 @@ public class DBManager extends SQLiteOpenHelper {
         DB.execSQL("drop table if exists users");
         DB.execSQL("drop table if exists display");
         DB.execSQL("drop table if exists customer");
+        DB.execSQL("drop table if exists stock");
 
     }
 
@@ -293,6 +303,14 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase DB = this.getReadableDatabase();
 
         Cursor cursor = DB.rawQuery("select * from customer where seller =?", new String[]{email});
+
+        return cursor;
+    }
+
+    public Cursor  individualCustomerInfo(String email,String name) {
+        SQLiteDatabase DB = this.getReadableDatabase();
+
+        Cursor cursor = DB.rawQuery("select * from customer where seller =? and customerName = ? ", new String[]{email , name});
 
         return cursor;
     }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/homeLayout"
     android:theme="@style/Theme.MyApplication"
     tools:context=".home">
 
@@ -66,7 +67,7 @@
         app:startIconTint="@color/white"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/name"
             android:textColor="@color/white"
             android:textColorHint="#FA0202"

@@ -62,7 +62,7 @@
         app:prefixTextColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutitemname"
-        app:startIconDrawable="@drawable/ic_money">
+        app:startIconDrawable="@drawable/baseline_currency_rupee_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/price"
@@ -89,7 +89,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
-        app:startIconDrawable="@drawable/menu">
+        app:startIconDrawable="@drawable/baseline_warehouse_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/quantity"

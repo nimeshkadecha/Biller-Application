@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+import java.util.jar.Attributes;
 
 public class customer_Info extends AppCompatActivity {
 
@@ -124,20 +125,40 @@ public class customer_Info extends AppCompatActivity {
         nameedt = findViewById(R.id.name);
 //        Adding Autocomplete TExt view LIST
         String [] NameSuggestion;
+        String [] Names;
         Cursor Name_Sugg = DB.cusInfo(sellertxt);
         Name_Sugg.moveToFirst();
         if(Name_Sugg.getCount()>0){
             int i=0;
+            boolean insert = true;
+            Log.d("ENimesh","Count = " + Name_Sugg.getCount());
             NameSuggestion = new String[Name_Sugg.getCount()];
             do{
-                NameSuggestion[i] = Name_Sugg.getString(1);
-                i++;
-            }while (Name_Sugg.moveToNext());
+                if(i != 0){
+                    for(int j=0;j<i;j++){
+                        if(NameSuggestion[j].equals(Name_Sugg.getString(1))){
+                            insert = false;
+                            break;
+                        }
+                    }
+                }
 
+                if(insert){
+                    NameSuggestion[i] = Name_Sugg.getString(1);
+                    Log.d("ENimesh","dataa = " + NameSuggestion[i]);
+                    i++;
+                }
+            }while (Name_Sugg.moveToNext());
+            Log.d("ENimesh","i = " + i);
+
+            Names = new String[i];
+            for(int j=0;j<i;j++){
+                Names[j] = NameSuggestion[j];
+            }
         }else{
-            NameSuggestion = new String[]{"No Data for Suggestion"};
+            Names = new String[]{"No DAta"};
         }
-        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this,android.R.layout.simple_list_item_1,NameSuggestion));
+        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this,android.R.layout.simple_list_item_1,Names));
 
         dateedt = findViewById(R.id.date);
         billidedt = findViewById(R.id.billID);
@@ -145,22 +166,43 @@ public class customer_Info extends AppCompatActivity {
         contactedt = findViewById(R.id.contact);
         //        Adding Autocomplete TExt view LIST
         String [] numberSugg;
+        String [] NUmber;
         Cursor Num_Sugg = DB.cusInfo(sellertxt);
         Num_Sugg.moveToFirst();
         if(Num_Sugg.getCount()>0){
             int i=0;
+            boolean insert = true;
+            Log.d("ENimesh","Count = " + Num_Sugg.getCount());
             numberSugg = new String[Num_Sugg.getCount()];
             do{
-                numberSugg[i] = Num_Sugg.getString(2);
-                i++;
-            }while (Num_Sugg.moveToNext());
+                if(i != 0){
+                    for(int j=0;j<i;j++){
+                        if(numberSugg[j].equals(Num_Sugg.getString(2))){
+                            insert = false;
+                            break;
+                        }
+                    }
+                }
 
+                if(insert){
+                    numberSugg[i] = Num_Sugg.getString(2);
+                    Log.d("ENimesh","dataa = " + numberSugg[i]);
+                    i++;
+                }
+            }while (Num_Sugg.moveToNext());
+            Log.d("ENimesh","i = " + i);
+
+            NUmber = new String[i];
+            for(int j=0;j<i;j++){
+                NUmber[j] = numberSugg[j];
+            }
         }else{
+            NUmber = new String[]{"No DAta"};
             numberSugg = new String[]{"No Data for Suggestion"};
         }
 //        Log.d("ENimesh","test"+numberSugg.length);
 
-        contactedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1,numberSugg));
+        contactedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1,NUmber));
 
         todateedt = findViewById(R.id.rangeDatetEDT);
 //--------------------------------------------------------------------------------------------------

@@ -27,6 +27,7 @@
     </style>
 
     <style name="Navagation">
+        <item name="android:backgroundTint">#363636</item>
         <item name="android:background">#363636</item>
         <item name="android:text">@color/ic_launcher_background</item>
     </style>
