@@ -8,9 +8,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,7 +45,9 @@ import java.util.Random;
 
 public class customer_Info extends AppCompatActivity {
 
-    private EditText nameedt, dateedt, billidedt, contactedt, todateedt;
+    private EditText  dateedt, billidedt , todateedt;
+
+    private AutoCompleteTextView nameedt, contactedt;
 
     private Button searchbtn, showbtn, pdf;
 
@@ -118,9 +122,46 @@ public class customer_Info extends AppCompatActivity {
 
 //        Finding Edittext -------------------------------------------------------------------------
         nameedt = findViewById(R.id.name);
+//        Adding Autocomplete TExt view LIST
+        String [] NameSuggestion;
+        Cursor Name_Sugg = DB.cusInfo(sellertxt);
+        Name_Sugg.moveToFirst();
+        if(Name_Sugg.getCount()>0){
+            int i=0;
+            NameSuggestion = new String[Name_Sugg.getCount()];
+            do{
+                NameSuggestion[i] = Name_Sugg.getString(1);
+                i++;
+            }while (Name_Sugg.moveToNext());
+
+        }else{
+            NameSuggestion = new String[]{"No Data for Suggestion"};
+        }
+        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this,android.R.layout.simple_list_item_1,NameSuggestion));
+
         dateedt = findViewById(R.id.date);
         billidedt = findViewById(R.id.billID);
+
         contactedt = findViewById(R.id.contact);
+        //        Adding Autocomplete TExt view LIST
+        String [] numberSugg;
+        Cursor Num_Sugg = DB.cusInfo(sellertxt);
+        Num_Sugg.moveToFirst();
+        if(Num_Sugg.getCount()>0){
+            int i=0;
+            numberSugg = new String[Num_Sugg.getCount()];
+            do{
+                numberSugg[i] = Num_Sugg.getString(2);
+                i++;
+            }while (Num_Sugg.moveToNext());
+
+        }else{
+            numberSugg = new String[]{"No Data for Suggestion"};
+        }
+//        Log.d("ENimesh","test"+numberSugg.length);
+
+        contactedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1,numberSugg));
+
         todateedt = findViewById(R.id.rangeDatetEDT);
 //--------------------------------------------------------------------------------------------------
 
