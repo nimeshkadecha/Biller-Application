@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +34,20 @@ public class Additems extends AppCompatActivity {
 
     String cNametxt, cNumbertxt, datetext, sellertxt,origintxt;
     int billIdtxt;
+
+    private String blockCharacterSet = "(){}[]:;'//.,-<>?+₹`@~#^|$%&*! ";
+
+    private final InputFilter filter = new InputFilter() {
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+            if (source != null && blockCharacterSet.contains(("" + source))) {
+                return "";
+            }
+            return null;
+        }
+    };
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -134,12 +150,15 @@ public class Additems extends AppCompatActivity {
         if(quantity.getText().toString().equals("")){
             quantity.setText("1");
         }
+
+        productName = findViewById(R.id.productname);
+        productName.setFilters(new InputFilter[] { filter }); // Adding Filter
+
+        price = findViewById(R.id.price);
+
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                productName = findViewById(R.id.productname);
-                price = findViewById(R.id.price);
-
                 String productName_ST, price_ST, quantity_ST;
                 productName_ST = productName.getText().toString();
                 price_ST = price.getText().toString();

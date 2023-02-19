@@ -43,7 +43,7 @@ public class DBManager extends SQLiteOpenHelper {
                 "total TEXT," +
                 "seller TEXT," +
                 "backup Integer)");
-//        Customer table
+        //        stock table
         DB.execSQL("Create TABLE stock(productName TEXT primary key," +
                 "catagory TEXT," +
                 "purchesPrice TEXT," +
@@ -56,10 +56,15 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase DB, int oldVersion, int newVersion) {
+        if(newVersion > oldVersion){
+
+        }
+        createTable();
+        DB.execSQL("drop table if exists stock");
         DB.execSQL("drop table if exists users");
         DB.execSQL("drop table if exists display");
         DB.execSQL("drop table if exists customer");
-        DB.execSQL("drop table if exists stock");
+
 
     }
 
@@ -530,5 +535,54 @@ public class DBManager extends SQLiteOpenHelper {
         } else {
             return false;
         }
+    }
+
+//    ----------------------------------- Managing Stock -------------------------------------------
+
+    public void createTable(){
+        SQLiteDatabase DB = this.getWritableDatabase();
+
+        DB.execSQL("Create TABLE IF NOT EXISTS stock(productName TEXT primary key," +
+                "catagory TEXT," +
+                "purchesPrice TEXT," +
+                "sellingPrice TEXT," +
+                "date Date," +
+                "quentity TEXT," +
+                "seller TEXT," +
+                "backup Integer)");
+    }
+
+    public boolean AddStock(String  name,String catagory,String pPrice,String sPrice,String date,String quentity,String seller){
+        createTable();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("productName",name);
+        cv.put("catagory",catagory);
+        cv.put("purchesPrice",pPrice);
+        cv.put("sellingPrice",sPrice);
+        cv.put("date",date);
+        cv.put("quentity",quentity);
+        cv.put("seller",seller);
+        cv.put("backup",0);
+
+        long check;
+
+        check = db.insert("stock" , null,cv);
+
+        if(check == -1 ){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public Cursor viewStock(String seller){
+        createTable();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller =?",new String[]{seller});
+
+        return c;
     }
 }

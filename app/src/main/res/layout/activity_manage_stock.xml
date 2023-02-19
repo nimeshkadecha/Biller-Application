@@ -40,7 +40,7 @@
         app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/productname"
+            android:id="@+id/itemNameedt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -65,10 +65,10 @@
         app:startIconDrawable="@drawable/baseline_category_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/catagoryedt"
+            android:id="@+id/categoryedt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="text"
             android:textColor="@color/white"
             android:textColorHint="#FA0202" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -90,7 +90,7 @@
         app:startIconDrawable="@drawable/baseline_currency_rupee_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/price"
+            android:id="@+id/porchesPriceEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -142,7 +142,7 @@
         app:startIconTint="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/date"
+            android:id="@+id/PurchesDate"
             android:textColor="@color/white"
             android:textColorHint="#FA0202"
             android:layout_width="match_parent"
@@ -181,13 +181,21 @@
 
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/VStock"
         android:layout_marginTop="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/viewS"
-        app:layout_constraintEnd_toEndOf="@+id/layoutQuantity"
         app:layout_constraintStart_toStartOf="@+id/layoutQuantity"
+        app:layout_constraintTop_toBottomOf="@+id/layoutQuantity" />
+
+    <Button
+        android:id="@+id/AItem"
+        android:layout_marginTop="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addS"
+        app:layout_constraintEnd_toEndOf="@+id/layoutQuantity"
         app:layout_constraintTop_toBottomOf="@+id/layoutQuantity" />
 
     <!--    <Button-->

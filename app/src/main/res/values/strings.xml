@@ -65,4 +65,5 @@
     <string name="backup">Backup Data</string>
     <string name="stock">Manage Stock</string>
     <string name="viewS">View Stock</string>
+    <string name="addS">Add Stock</string>
 </resources>
