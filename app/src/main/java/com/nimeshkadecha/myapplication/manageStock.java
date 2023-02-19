@@ -130,11 +130,12 @@ public class manageStock extends AppCompatActivity {
                     StringBuffer buffer = new StringBuffer();
                     while (data.moveToNext()) {
 //                    DATE | name | number | Total |
-                        buffer.append("product name = " + data.getString(0) + "\n");
-                        buffer.append("Category = " + data.getString(1) + "\n");
-                        buffer.append("Porches Price = " + data.getString(2) + "\n");
-                        buffer.append("Selling Price = " + data.getString(3) + "\n");
-                        buffer.append("Date = " + data.getString(4) + "\n\n");
+                        buffer.append("product name = " + data.getString(1) + "\n");
+                        buffer.append("Category = " + data.getString(2) + "\n");
+                        buffer.append("Porches Price = " + data.getString(3) + "\n");
+                        buffer.append("Selling Price = " + data.getString(4) + "\n");
+                        buffer.append("Date = " + data.getString(5) + "\n");
+                        buffer.append("Quantity = " + data.getString(6) + "\n\n");
                     }
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(manageStock.this);

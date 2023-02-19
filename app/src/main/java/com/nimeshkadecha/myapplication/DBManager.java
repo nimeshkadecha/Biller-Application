@@ -542,7 +542,8 @@ public class DBManager extends SQLiteOpenHelper {
     public void createTable(){
         SQLiteDatabase DB = this.getWritableDatabase();
 
-        DB.execSQL("Create TABLE IF NOT EXISTS stock(productName TEXT primary key," +
+        DB.execSQL("Create TABLE IF NOT EXISTS stock(productID Integer primary key autoincrement ," +
+                "productName TEXT ," +
                 "catagory TEXT," +
                 "purchesPrice TEXT," +
                 "sellingPrice TEXT," +
@@ -552,29 +553,74 @@ public class DBManager extends SQLiteOpenHelper {
                 "backup Integer)");
     }
 
+    public Cursor getProductInfo(String name,String seller){
+
+        SQLiteDatabase db  = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller = ? and productName = ?",new String[] {seller,name});
+
+        return c;
+    }
+
+    public Cursor getInventory(String seller){
+
+        SQLiteDatabase db  = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller = ?",new String[] {seller});
+
+        return c;
+    }
+
     public boolean AddStock(String  name,String catagory,String pPrice,String sPrice,String date,String quentity,String seller){
         createTable();
         SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues cv = new ContentValues();
-        cv.put("productName",name);
-        cv.put("catagory",catagory);
-        cv.put("purchesPrice",pPrice);
-        cv.put("sellingPrice",sPrice);
-        cv.put("date",date);
-        cv.put("quentity",quentity);
-        cv.put("seller",seller);
-        cv.put("backup",0);
+//        Cursor testt = getStock(name,seller);
 
-        long check;
+//        if(testt.getCount()>0){
+//            int qty = Integer.parseInt(testt.getString(5));
+//            int newQty = Integer.parseInt(quentity) + qty;
+//
+//            ContentValues cv = new ContentValues();
+//            cv.put("productName",name);
+//            cv.put("catagory",catagory);
+//            cv.put("purchesPrice",pPrice);
+//            cv.put("sellingPrice",sPrice);
+//            cv.put("date",date);
+//            cv.put("quentity",newQty);
+//            cv.put("seller",seller);
+//            cv.put("backup",0);
+//
+//            long check;
+//
+//            check = db.update("stock",cv,"seller = ? and productName = ?",new String[] {seller});
+//            if(check == -1){
+//                return false;
+//            }else{
+//                return true;
+//            }
+//
+//        }else{
+            ContentValues cv = new ContentValues();
+            cv.put("productName",name);
+            cv.put("catagory",catagory);
+            cv.put("purchesPrice",pPrice);
+            cv.put("sellingPrice",sPrice);
+            cv.put("date",date);
+            cv.put("quentity",quentity);
+            cv.put("seller",seller);
+            cv.put("backup",0);
 
-        check = db.insert("stock" , null,cv);
+            long check;
 
-        if(check == -1 ){
-            return false;
-        }else{
-            return true;
-        }
+            check = db.insert("stock" , null,cv);
+
+            if(check == -1 ){
+                return false;
+            }else{
+                return true;
+            }
+//        }
     }
 
     public Cursor viewStock(String seller){

@@ -4,10 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,7 +33,9 @@ public class Additems extends AppCompatActivity {
 
     //    for insert operation and outher stuf
     Button show;
-    EditText productName, price, quantity;
+    private EditText price, quantity;
+
+    private AutoCompleteTextView productName;
     DBManager DB = new DBManager(this);
 
     String cNametxt, cNumbertxt, datetext, sellertxt,origintxt;
@@ -151,10 +157,68 @@ public class Additems extends AppCompatActivity {
             quantity.setText("1");
         }
 
+
         productName = findViewById(R.id.productname);
         productName.setFilters(new InputFilter[] { filter }); // Adding Filter
+//        ADding Suggestion [Autocompleet textview]
+        String [] products;
+        String [] p;
+
+        Cursor productsC = DB.getInventory(sellertxt);
+
+        productsC.moveToFirst();
+        if (productsC.getCount()>0){
+            p = new String[productsC.getCount()];
+            int i=0;
+            boolean check = true;
+            do{
+                if(i!=0){
+                    for(int j=0;j<i;j++){
+                        if(p[j].equals(productsC.getString(1))){
+                            check = false;
+                            break;
+                        }
+                    }
+                    if(check){
+                        p[i] = productsC.getString(1);
+                        i++;
+                    }
+                }else{
+                    p[i] = productsC.getString(1);
+                    i++;
+                }
+            }while (productsC.moveToNext());
+
+            products = new String[i];
+
+            System.arraycopy(p, 0, products, 0, i); // this is just a for loop running and copying data
+
+        }else{
+            products = new String[]{"NO Suggestion Available"};
+        }
+
+        productName.setAdapter(new ArrayAdapter<>(Additems.this, android.R.layout.simple_list_item_1, products));
 
         price = findViewById(R.id.price);
+
+        price.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Additems.this, "clicked", Toast.LENGTH_SHORT).show();
+                if(price.getText().toString().equals("") && !productName.getText().toString().equals("")){
+                    Cursor getPrice = DB.getProductInfo(productName.getText().toString(),sellertxt);
+                    getPrice.moveToFirst();
+                    if(getPrice.getCount()>0){
+                        Log.d("ENimesh","VAlUE is = " +String.valueOf(getPrice.getInt(4)) );
+                        price.setText(String.valueOf(getPrice.getInt(4)));
+                        Toast.makeText(Additems.this, "Added", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(Additems.this, "Cantfind", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+        });
 
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
