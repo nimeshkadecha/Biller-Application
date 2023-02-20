@@ -56,11 +56,9 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase DB, int oldVersion, int newVersion) {
-        if(newVersion > oldVersion){
-
-        }
         createTable();
         DB.execSQL("drop table if exists stock");
+        DB.execSQL("drop table if exists stockQuentity");
         DB.execSQL("drop table if exists users");
         DB.execSQL("drop table if exists display");
         DB.execSQL("drop table if exists customer");
@@ -551,6 +549,11 @@ public class DBManager extends SQLiteOpenHelper {
                 "quentity TEXT," +
                 "seller TEXT," +
                 "backup Integer)");
+
+        DB.execSQL("Create TABLE IF NOT EXISTS stockQuentity(productName TEXT primary key ," +
+                "quentity TEXT," +
+                "seller TEXT," +
+                "backup Integer)");
     }
 
     public Cursor getProductInfo(String name,String seller){
@@ -558,6 +561,15 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db  = this.getReadableDatabase();
 
         Cursor c = db.rawQuery("Select * from stock where seller = ? and productName = ?",new String[] {seller,name});
+
+        return c;
+    }
+
+    public Cursor getProductQuentity(String name,String seller){
+
+        SQLiteDatabase db  = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? and productName = ?",new String[] {seller,name});
 
         return c;
     }
@@ -618,7 +630,45 @@ public class DBManager extends SQLiteOpenHelper {
             if(check == -1 ){
                 return false;
             }else{
-                return true;
+                Cursor cursor = getProductQuentity(name,seller);
+                cursor.moveToFirst();
+                if(cursor.getCount()>0){
+
+                    int qty = Integer.parseInt(cursor.getString(1));
+                    int newQty = Integer.parseInt(quentity) + qty;
+
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("productName",name);
+                    contentValues.put("quentity",newQty);
+                    contentValues.put("seller",seller);
+                    contentValues.put("backup",0);
+
+                    long result;
+                    result = db.update("stockQuentity",contentValues,"seller = ? and productName = ? ",new String[]{seller,name});
+
+                    if(result == -1){
+                        return false;
+                    }else{
+                        return true;
+                    }
+
+
+                }else{
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("productName",name);
+                    contentValues.put("quentity",quentity);
+                    contentValues.put("seller",seller);
+                    contentValues.put("backup",0);
+                    long result;
+
+                    result = db.insert("stockQuentity",null,contentValues);
+
+                    if(result == -1 ){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                }
             }
 //        }
     }
