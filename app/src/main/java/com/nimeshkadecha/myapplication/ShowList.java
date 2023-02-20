@@ -91,6 +91,7 @@ public class ShowList extends AppCompatActivity {
 
         Bundle bID = getIntent().getExtras();
         billId = bID.getInt("billId");
+
 //--------------------------------------------------------------------------------------------------
 
         // add more button
@@ -111,12 +112,25 @@ public class ShowList extends AppCompatActivity {
                 check = DB.InsertCustomer(id, cName, cNumber, date, sellertxt, 0);
 
                 if (check) {
-                    save.setVisibility(View.INVISIBLE);
-                    pdf.setVisibility(View.VISIBLE);
-                    back.setVisibility(View.VISIBLE);
-                    display.setVisibility(View.VISIBLE);
-                    addmore.setVisibility(View.INVISIBLE);
-                    Toast.makeText(ShowList.this, "Saved ", Toast.LENGTH_SHORT).show();
+
+                    Boolean update;
+
+                    update = DB.removeSell(id,sellertxt);
+
+                    if(update){
+                        save.setVisibility(View.INVISIBLE);
+                        pdf.setVisibility(View.VISIBLE);
+                        back.setVisibility(View.VISIBLE);
+                        display.setVisibility(View.VISIBLE);
+                        addmore.setVisibility(View.INVISIBLE);
+                        Toast.makeText(ShowList.this, "Saved ", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(ShowList.this, "Error While managing Stock", Toast.LENGTH_SHORT).show();
+                    }
+
+
+
                 } else {
                     Toast.makeText(ShowList.this, "Error ", Toast.LENGTH_SHORT).show();
                 }

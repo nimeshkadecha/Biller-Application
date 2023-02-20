@@ -207,7 +207,7 @@ public class DBManager extends SQLiteOpenHelper {
                 return false;
             } else {
 //                Resetting Auto increment to 0
-                 DB.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = ?", new String[]{"display"});
+                DB.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = ?", new String[]{"display"});
                 return true;
             }
         } else {
@@ -216,9 +216,9 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-//    Getting Seller COntact NUmber for OTP
+    //    Getting Seller COntact NUmber for OTP
 //    getting from EMail
-    public Cursor Seller_Contact (String email){
+    public Cursor Seller_Contact(String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
         Cursor cursor = DB.rawQuery("select contact from users where email =? ", new String[]{email});
@@ -288,21 +288,21 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase DB = this.getReadableDatabase();
 
         int id = 0;
-        try{
+        try {
             Cursor cursor = DB.rawQuery("select * from customer", null);
             if (cursor.getCount() > 0) {
                 cursor.moveToLast();
                 id = cursor.getInt(0);
             }
             id++;
-        }catch (Exception e){
-            Log.d("ENimesh","Error is = "+e);
+        } catch (Exception e) {
+            Log.d("ENimesh", "Error is = " + e);
         }
         return id;
     }
 
     //    Fetching all customer --- [select * from customer where seller =?]---------------
-    public Cursor  cusInfo(String email) {
+    public Cursor cusInfo(String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
         Cursor cursor = DB.rawQuery("select * from customer where seller =?", new String[]{email});
@@ -310,10 +310,10 @@ public class DBManager extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor  individualCustomerInfo(String email,String name) {
+    public Cursor individualCustomerInfo(String email, String name) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from customer where seller =? and customerName = ? ", new String[]{email , name});
+        Cursor cursor = DB.rawQuery("select * from customer where seller =? and customerName = ? ", new String[]{email, name});
 
         return cursor;
     }
@@ -423,7 +423,7 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public boolean InsertCustomerCloud(String billId, String name, String number, String date, String email, int state,String total) {
+    public boolean InsertCustomerCloud(String billId, String name, String number, String date, String email, int state, String total) {
 
         int ID = Integer.parseInt(billId);
 
@@ -469,6 +469,7 @@ public class DBManager extends SQLiteOpenHelper {
             return false;
         }
     }
+
     //  Updating State of BACKUP ------------------------------------------------------------------------------
     public boolean UpdateBackupcus(String billID, int state) {
         SQLiteDatabase DB = this.getWritableDatabase();
@@ -537,7 +538,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 //    ----------------------------------- Managing Stock -------------------------------------------
 
-    public void createTable(){
+    public void createTable() {
         SQLiteDatabase DB = this.getWritableDatabase();
 
         DB.execSQL("Create TABLE IF NOT EXISTS stock(productID Integer primary key autoincrement ," +
@@ -556,128 +557,156 @@ public class DBManager extends SQLiteOpenHelper {
                 "backup Integer)");
     }
 
-    public Cursor getProductInfo(String name,String seller){
+    public Cursor getProductInfo(String name, String seller) {
 
-        SQLiteDatabase db  = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller = ? and productName = ?",new String[] {seller,name});
-
-        return c;
-    }
-
-    public Cursor getProductQuentity(String name,String seller){
-
-        SQLiteDatabase db  = this.getReadableDatabase();
-
-        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? and productName = ?",new String[] {seller,name});
+        Cursor c = db.rawQuery("Select * from stock where seller = ? and productName = ?", new String[]{seller, name});
 
         return c;
     }
 
-    public Cursor getInventory(String seller){
+    public Cursor getProductQuentity(String name, String seller) {
 
-        SQLiteDatabase db  = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller = ?",new String[] {seller});
+        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? and productName = ?", new String[]{seller, name});
 
         return c;
     }
 
-    public boolean AddStock(String  name,String catagory,String pPrice,String sPrice,String date,String quentity,String seller){
+    public Cursor getInventory(String seller) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller = ?", new String[]{seller});
+
+        return c;
+    }
+
+    public Boolean removeSell(String id, String seller) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String name;
+        String quentity;
+
+        Cursor c = displayList(Integer.parseInt(id));
+
+        c.moveToFirst();
+
+        long result;
+
+        do {
+            name = c.getString(1);
+            quentity = c.getString(3);
+
+            Cursor cursor = getProductQuentity(name, seller);
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+
+                int qty = Integer.parseInt(cursor.getString(1));
+
+                int newQty = qty - Integer.parseInt(quentity);
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("productName", name);
+                Log.d("ENimesh", "Name = " + name);
+                Log.d("ENimesh", "newQty = " + newQty);
+                Log.d("ENimesh", "seller = " + seller);
+                contentValues.put("quentity", newQty);
+                contentValues.put("seller", seller);
+                contentValues.put("backup", 0);
+
+
+                result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
+
+//                if (result == -1) {
+//                    return false;
+//                } else {
+//                    return true;
+//                }
+            }
+            else {
+                return false;
+            }
+
+        } while (c.moveToNext());
+
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean AddStock(String name, String catagory, String pPrice, String sPrice, String date, String quentity, String seller) {
         createTable();
         SQLiteDatabase db = this.getWritableDatabase();
 
-//        Cursor testt = getStock(name,seller);
+        ContentValues cv = new ContentValues();
+        cv.put("productName", name);
+        cv.put("catagory", catagory);
+        cv.put("purchesPrice", pPrice);
+        cv.put("sellingPrice", sPrice);
+        cv.put("date", date);
+        cv.put("quentity", quentity);
+        cv.put("seller", seller);
+        cv.put("backup", 0);
 
-//        if(testt.getCount()>0){
-//            int qty = Integer.parseInt(testt.getString(5));
-//            int newQty = Integer.parseInt(quentity) + qty;
-//
-//            ContentValues cv = new ContentValues();
-//            cv.put("productName",name);
-//            cv.put("catagory",catagory);
-//            cv.put("purchesPrice",pPrice);
-//            cv.put("sellingPrice",sPrice);
-//            cv.put("date",date);
-//            cv.put("quentity",newQty);
-//            cv.put("seller",seller);
-//            cv.put("backup",0);
-//
-//            long check;
-//
-//            check = db.update("stock",cv,"seller = ? and productName = ?",new String[] {seller});
-//            if(check == -1){
-//                return false;
-//            }else{
-//                return true;
-//            }
-//
-//        }else{
-            ContentValues cv = new ContentValues();
-            cv.put("productName",name);
-            cv.put("catagory",catagory);
-            cv.put("purchesPrice",pPrice);
-            cv.put("sellingPrice",sPrice);
-            cv.put("date",date);
-            cv.put("quentity",quentity);
-            cv.put("seller",seller);
-            cv.put("backup",0);
+        long check;
 
-            long check;
+        check = db.insert("stock", null, cv);
 
-            check = db.insert("stock" , null,cv);
+        if (check == -1) {
+            return false;
+        } else {
+            Cursor cursor = getProductQuentity(name, seller);
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
 
-            if(check == -1 ){
-                return false;
-            }else{
-                Cursor cursor = getProductQuentity(name,seller);
-                cursor.moveToFirst();
-                if(cursor.getCount()>0){
+                int qty = Integer.parseInt(cursor.getString(1));
+                int newQty = Integer.parseInt(quentity) + qty;
 
-                    int qty = Integer.parseInt(cursor.getString(1));
-                    int newQty = Integer.parseInt(quentity) + qty;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("productName", name);
+                contentValues.put("quentity", newQty);
+                contentValues.put("seller", seller);
+                contentValues.put("backup", 0);
 
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put("productName",name);
-                    contentValues.put("quentity",newQty);
-                    contentValues.put("seller",seller);
-                    contentValues.put("backup",0);
+                long result;
+                result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
 
-                    long result;
-                    result = db.update("stockQuentity",contentValues,"seller = ? and productName = ? ",new String[]{seller,name});
-
-                    if(result == -1){
-                        return false;
-                    }else{
-                        return true;
-                    }
+                if (result == -1) {
+                    return false;
+                } else {
+                    return true;
+                }
 
 
-                }else{
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put("productName",name);
-                    contentValues.put("quentity",quentity);
-                    contentValues.put("seller",seller);
-                    contentValues.put("backup",0);
-                    long result;
+            } else {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("productName", name);
+                contentValues.put("quentity", quentity);
+                contentValues.put("seller", seller);
+                contentValues.put("backup", 0);
+                long result;
 
-                    result = db.insert("stockQuentity",null,contentValues);
+                result = db.insert("stockQuentity", null, contentValues);
 
-                    if(result == -1 ){
-                        return false;
-                    }else{
-                        return true;
-                    }
+                if (result == -1) {
+                    return false;
+                } else {
+                    return true;
                 }
             }
-//        }
+        }
     }
 
-    public Cursor viewStock(String seller){
+    public Cursor viewStock(String seller) {
         createTable();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller =?",new String[]{seller});
+        Cursor c = db.rawQuery("Select * from stockQuentity where seller =?", new String[]{seller});
 
         return c;
     }

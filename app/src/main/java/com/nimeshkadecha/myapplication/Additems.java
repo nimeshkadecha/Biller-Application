@@ -177,6 +177,8 @@ public class Additems extends AppCompatActivity {
                         if(p[j].equals(productsC.getString(1))){
                             check = false;
                             break;
+                        }else{
+                            check = true;
                         }
                     }
                     if(check){
@@ -191,6 +193,8 @@ public class Additems extends AppCompatActivity {
 
             products = new String[i];
 
+            Log.d("ENimesh","ONdex is = "+ i);
+
             System.arraycopy(p, 0, products, 0, i); // this is just a for loop running and copying data
 
         }else{
@@ -204,7 +208,6 @@ public class Additems extends AppCompatActivity {
         price.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Additems.this, "clicked", Toast.LENGTH_SHORT).show();
                 if(price.getText().toString().equals("") && !productName.getText().toString().equals("")){
                     Cursor getPrice = DB.getProductInfo(productName.getText().toString(),sellertxt);
                     getPrice.moveToFirst();
@@ -219,6 +222,8 @@ public class Additems extends AppCompatActivity {
                 }
             }
         });
+
+        final int[] quentity = {0};
 
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,6 +258,7 @@ public class Additems extends AppCompatActivity {
 
                         boolean check = DB.Insert_List(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0);
                         if (check) {
+                            quentity[0] = quentity[0] + Integer.parseInt(quantity_ST);
                             validator[0]++;
                             show.setVisibility(View.VISIBLE);
                             Toast.makeText(Additems.this, "Inserted", Toast.LENGTH_SHORT).show();

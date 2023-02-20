@@ -58,6 +58,7 @@
         android:layout_marginRight="10dp"
         android:hint="@string/price"
         app:helperTextTextColor="#FF002E"
+        app:endIconMode="clear_text"
         android:textColorHint="@color/white"
         app:prefixTextColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
