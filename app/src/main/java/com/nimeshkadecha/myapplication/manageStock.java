@@ -131,6 +131,7 @@ public class manageStock extends AppCompatActivity {
                     while (data.moveToNext()) {
 //                    DATE | name | number | Total |
                         buffer.append("product name = " + data.getString(0) + "\n");
+                        buffer.append("Price = " + data.getString(2) + "\n");
                         buffer.append("Quantity = " + data.getString(1) + "\n\n");
                     }
 

@@ -122,7 +122,7 @@ public class home extends AppCompatActivity {
 //                Log.d("ENimesh", "Names = " + Names[j]);
             }
         } else {
-            Names = new String[]{"No DAta"};
+            Names = new String[]{"No Data"};
         }
         name.setAdapter(new ArrayAdapter<>(home.this, android.R.layout.simple_list_item_1, Names));
 
@@ -377,6 +377,7 @@ public class home extends AppCompatActivity {
         product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DB.createTable();
 //                billIDd[0]++;
                 Intent intent = new Intent(home.this, Additems.class);
 
