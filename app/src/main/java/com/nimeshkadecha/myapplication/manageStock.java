@@ -28,7 +28,7 @@ public class manageStock extends AppCompatActivity {
 
     DBManager DB = new DBManager(this);
 
-    private String blockCharacterSet = "(){}[]:;'//.,-<>?+₹`@~#^|$%&*! ";
+    private String blockCharacterSet = " (){}[]:;'//.,-<>?+₹`@~#^|$%&*!=";
 
     private final InputFilter filter = new InputFilter() {
 

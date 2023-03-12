@@ -41,7 +41,7 @@ public class Additems extends AppCompatActivity {
     String cNametxt, cNumbertxt, datetext, sellertxt,origintxt;
     int billIdtxt;
 
-    private String blockCharacterSet = "(){}[]:;'//.,-<>?+₹`@~#^|$%&*! ";
+    private String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
 
     private final InputFilter filter = new InputFilter() {
 
@@ -174,7 +174,7 @@ public class Additems extends AppCompatActivity {
             do{
                 if(i!=0){
                     for(int j=0;j<i;j++){
-                        if(p[j].equals(productsC.getString(1))){
+                        if(p[j].equals(productsC.getString(0))){
                             check = false;
                             break;
                         }else{
@@ -182,11 +182,11 @@ public class Additems extends AppCompatActivity {
                         }
                     }
                     if(check){
-                        p[i] = productsC.getString(1);
+                        p[i] = productsC.getString(0);
                         i++;
                     }
                 }else{
-                    p[i] = productsC.getString(1);
+                    p[i] = productsC.getString(0);
                     i++;
                 }
             }while (productsC.moveToNext());
@@ -195,7 +195,12 @@ public class Additems extends AppCompatActivity {
 
             Log.d("ENimesh","ONdex is = "+ i);
 
-            System.arraycopy(p, 0, products, 0, i); // this is just a for loop running and copying data
+//            System.arraycopy(p, 0, products, 0, i); // this is just a for loop running and copying data
+            for(int j=0;j<1;j++){
+                products[j] = p[j];
+                Log.d("ENimesh","dataa is = "+ products[j]);
+            }
+
 
         }else{
             products = new String[]{"NO Suggestion Available"};
@@ -212,8 +217,8 @@ public class Additems extends AppCompatActivity {
                     Cursor getPrice = DB.getProductInfo(productName.getText().toString(),sellertxt);
                     getPrice.moveToFirst();
                     if(getPrice.getCount()>0){
-                        Log.d("ENimesh","VAlUE is = " +String.valueOf(getPrice.getInt(4)) );
-                        price.setText(String.valueOf(getPrice.getInt(4)));
+                        Log.d("ENimesh","VAlUE is = " +String.valueOf(getPrice.getInt(3)) );
+                        price.setText(String.valueOf(getPrice.getInt(3)));
                         Toast.makeText(Additems.this, "Added", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(Additems.this, "Cantfind", Toast.LENGTH_SHORT).show();
