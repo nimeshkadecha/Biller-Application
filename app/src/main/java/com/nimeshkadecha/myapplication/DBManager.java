@@ -194,14 +194,17 @@ public class DBManager extends SQLiteOpenHelper {
         Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{email});
 
         if (cursor.getCount() > 0) {
-            long check1, check2;
+            long check1, check2,check3,check4;
             check1 = DB.delete("display", "seller = ?", new String[]{email});
             check2 = DB.delete("customer", "seller = ?", new String[]{email});
-            if (check1 == -1 || check2 == -1) {
+            check3 = DB.delete("stock", "seller = ?", new String[]{email});
+            check4 = DB.delete("stockQuentity", "seller = ?", new String[]{email});
+            if (check1 == -1 || check2 == -1 || check3 == -1 || check4 == -1 ) {
                 return false;
             } else {
 //                Resetting Auto increment to 0
                 DB.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = ?", new String[]{"display"});
+                DB.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = ?", new String[]{"stock"});
                 return true;
             }
         } else {
@@ -773,4 +776,53 @@ public class DBManager extends SQLiteOpenHelper {
 
         return c;
     }
+
+    public boolean addStockQty(String name,String quentity,String sPrice,String seller){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("productName", name);
+        contentValues.put("quentity", quentity);
+        contentValues.put("price", sPrice);
+        contentValues.put("seller", seller);
+        contentValues.put("backup", 1);
+        long result;
+
+        result = db.insert("stockQuentity", null, contentValues);
+
+        if (result == -1) {
+            Log.d("ENimesh", "Failed to insert in stock table");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean downloadStock(String name, String catagory, String pPrice, String sPrice, String date, String quentity, String seller) {
+        createTable();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("productName", name);
+        cv.put("catagory", catagory);
+        cv.put("purchesPrice", pPrice);
+        cv.put("sellingPrice", sPrice);
+        cv.put("date", date);
+        cv.put("quentity", quentity);
+        cv.put("seller", seller);
+        cv.put("backup", 1);
+
+        long check;
+
+        check = db.insert("stock", null, cv);
+
+        if(check == -1){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
 }

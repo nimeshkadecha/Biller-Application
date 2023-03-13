@@ -451,6 +451,72 @@ public class Firestore_Backup extends AppCompatActivity {
                                                 }
                                             }
                                         });
+
+//                                Getting stockQQuentity
+                                db.collection(seller_cursor.getString(4))
+                                        .document("Business")
+                                        .collection("stockQuentity")
+                                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                if (error != null) {
+                                                    Log.d("ENimesh", "ERROR issss = " + error);
+                                                    lodingPB.setVisibility(View.GONE);
+                                                } else {
+                                                    for (DocumentSnapshot dc : value) {
+                                                        Map<String, Object> data = new HashMap<>(Objects.requireNonNull(dc.getData()));
+
+                                                        String name = String.valueOf(data.get("productName"));
+                                                        String quentity = String.valueOf(data.get("quentity"));
+                                                        String price = String.valueOf(data.get("price"));
+                                                        String seller = String.valueOf(data.get("seller"));
+
+                                                        boolean insertt = local_db.addStockQty(name,quentity,price,seller);
+                                                        if(insertt){
+                                                            Toast.makeText(Firestore_Backup.this, "StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                        }else{
+                                                            Toast.makeText(Firestore_Backup.this, "ERROR while StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                                //                                Getting Stocks
+                                db.collection(seller_cursor.getString(4))
+                                        .document("Business")
+                                        .collection("Stock")
+                                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                if (error != null) {
+                                                    Log.d("ENimesh", "ERROR issss = " + error);
+                                                    lodingPB.setVisibility(View.GONE);
+                                                } else {
+                                                    for (DocumentSnapshot dc : value) {
+                                                        Map<String, Object> data = new HashMap<>(Objects.requireNonNull(dc.getData()));
+
+                                                        String productID = String.valueOf(data.get("productID"));
+                                                        String productName = String.valueOf(data.get("productName"));
+                                                        String catagory = String.valueOf(data.get("catagory"));
+                                                        String purchesPrice = String.valueOf(data.get("purchesPrice"));
+                                                        String sellingPrice = String.valueOf(data.get("sellingPrice"));
+                                                        String date = String.valueOf(data.get("date"));
+                                                        String quentity = String.valueOf(data.get("quentity"));
+                                                        String seller = String.valueOf(data.get("seller"));
+
+                                                        boolean ins = local_db.downloadStock(productName,catagory,purchesPrice,sellingPrice,date,quentity,seller);
+
+                                                        if(ins){
+                                                            Toast.makeText(Firestore_Backup.this, "Stock added", Toast.LENGTH_SHORT).show();
+                                                        }else{
+                                                            Toast.makeText(Firestore_Backup.this, "Error while adding Stock", Toast.LENGTH_SHORT).show();
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        });
                             }
                         } else {
                             lodingPB.setVisibility(View.GONE);

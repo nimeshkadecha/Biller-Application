@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -30,11 +31,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -217,6 +222,63 @@ public class OTP_Generator extends AppCompatActivity {
                                                         }
                                                     }
                                                 });
+                                                DB_local.createTable();
+                                                db.collection(num)
+                                                        .document("Business")
+                                                        .collection("Stock").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    for (QueryDocumentSnapshot qd : task.getResult()) {
+                                                                        Map<String, Object> data = new HashMap<>(Objects.requireNonNull(qd.getData()));
+
+                                                                        String productID = String.valueOf(data.get("productID"));
+                                                                        String productName = String.valueOf(data.get("productName"));
+                                                                        String catagory = String.valueOf(data.get("catagory"));
+                                                                        String purchesPrice = String.valueOf(data.get("purchesPrice"));
+                                                                        String sellingPrice = String.valueOf(data.get("sellingPrice"));
+                                                                        String date = String.valueOf(data.get("date"));
+                                                                        String quentity = String.valueOf(data.get("quentity"));
+                                                                        String seller = String.valueOf(data.get("seller"));
+
+                                                                        boolean ins = DB_local.downloadStock(productName,catagory,purchesPrice,sellingPrice,date,quentity,seller);
+
+                                                                        if(ins){
+                                                                            Toast.makeText(OTP_Generator.this, "Stock added", Toast.LENGTH_SHORT).show();
+                                                                        }else{
+                                                                            Toast.makeText(OTP_Generator.this, "Error while adding Stock", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+                                                db.collection(num)
+                                                        .document("Business")
+                                                        .collection("stockQuentity")
+                                                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                                if (error != null) {
+                                                                    Log.d("ENimesh", "ERROR issss = " + error);
+                                                                } else {
+                                                                    for (DocumentSnapshot dc : value) {
+                                                                        Map<String, Object> data = new HashMap<>(Objects.requireNonNull(dc.getData()));
+
+                                                                        String name = String.valueOf(data.get("productName"));
+                                                                        String quentity = String.valueOf(data.get("quentity"));
+                                                                        String price = String.valueOf(data.get("price"));
+                                                                        String seller = String.valueOf(data.get("seller"));
+
+                                                                        boolean insertt = DB_local.addStockQty(name,quentity,price,seller);
+                                                                        if(insertt){
+                                                                            Toast.makeText(OTP_Generator.this, "StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                                        }else{
+                                                                            Toast.makeText(OTP_Generator.this, "ERROR while StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
                                             }
                                         }
                                     }
