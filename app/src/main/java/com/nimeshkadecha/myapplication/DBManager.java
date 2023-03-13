@@ -552,13 +552,64 @@ public class DBManager extends SQLiteOpenHelper {
                 "backup Integer)");
     }
 
-    public Cursor getProductInfo(String name, String seller) {
+    public boolean updatestatus(String name, String seller) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor getdata = getProductQuentity(name, seller);
 
-        Cursor c = db.rawQuery("Select * from stock where seller = ? and productName = ?", new String[]{seller, name});
+        getdata.moveToFirst();
+        if (getdata.getCount() > 0) {
+            do {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("productName", getdata.getString(0));
+                contentValues.put("quentity", getdata.getString(1));
+                contentValues.put("price", getdata.getString(2));
+                contentValues.put("seller", getdata.getString(3));
+                contentValues.put("backup", 1);
 
-        return c;
+                long result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
+                if (result == -1) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } while (getdata.moveToNext());
+        } else {
+            return false;
+        }
+    }
+
+    public boolean updateStockStatus(int id,String seller){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor data = viewStockhistory(seller);
+
+        data.moveToFirst();
+
+        if(data.getCount()>0){
+             do{
+                 ContentValues contentValues = new ContentValues();
+//                 contentValues.put("productID", data.getString(0));
+                 contentValues.put("productName", data.getString(1));
+                 contentValues.put("catagory", data.getString(2));
+                 contentValues.put("purchesPrice", data.getString(3));
+                 contentValues.put("sellingPrice", data.getString(4));
+                 contentValues.put("date", data.getString(5));
+                 contentValues.put("quentity", data.getString(6));
+                 contentValues.put("seller", data.getString(7));
+                 contentValues.put("backup", 1);
+
+                 long result = db.update("stock", contentValues, "seller = ? and productID = ? ", new String[]{seller, String.valueOf(id)});
+                 if (result == -1) {
+                     return false;
+                 } else {
+                     return true;
+                 }
+             }while (data.moveToNext());
+        }else{
+            return false;
+        }
+
     }
 
     public Cursor getProductQuentity(String name, String seller) {
@@ -574,7 +625,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller = ?", new String[]{seller});
+        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ?", new String[]{seller});
 
         return c;
     }
@@ -602,7 +653,7 @@ public class DBManager extends SQLiteOpenHelper {
                 int qty = Integer.parseInt(cursor.getString(1));
 
                 int newQty = qty - Integer.parseInt(quentity);
-                Log.d("ENimesh" ,"new Qty = " +newQty);
+                Log.d("ENimesh", "new Qty = " + newQty);
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("productName", name);
@@ -611,25 +662,19 @@ public class DBManager extends SQLiteOpenHelper {
                 contentValues.put("seller", seller);
                 contentValues.put("backup", 0);
 
-
                 result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
-            }
-            else {
+            } else {
                 int Sell_qty = -1 * (Integer.parseInt(quentity));
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("productName", name);
                 contentValues.put("quentity", Sell_qty);
-                contentValues.put("price", Integer.parseInt(c.getString(2)) );
+                contentValues.put("price", Integer.parseInt(c.getString(2)));
                 contentValues.put("seller", seller);
                 contentValues.put("backup", 0);
 
                 result = db.insert("stockQuentity", null, contentValues);
-
                 if (result == -1) {
-
                     return false;
-                } else {
-                    return true;
                 }
             }
 
@@ -661,7 +706,7 @@ public class DBManager extends SQLiteOpenHelper {
         check = db.insert("stock", null, cv);
 
         if (check == -1) {
-            Log.d("ENimesh","Failed to insert in stock table");
+            Log.d("ENimesh", "Failed to insert in stock table");
             return false;
         } else {
             Cursor cursor = getProductQuentity(name, seller);
@@ -682,7 +727,7 @@ public class DBManager extends SQLiteOpenHelper {
                 result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
 
                 if (result == -1) {
-                    Log.d("ENimesh","Failed to Update in stockQuentity table");
+                    Log.d("ENimesh", "Failed to Update in stockQuentity table");
                     return false;
 
                 } else {
@@ -702,7 +747,7 @@ public class DBManager extends SQLiteOpenHelper {
                 result = db.insert("stockQuentity", null, contentValues);
 
                 if (result == -1) {
-                    Log.d("ENimesh","Failed to insert in stock table");
+                    Log.d("ENimesh", "Failed to insert in stock table");
                     return false;
                 } else {
                     return true;
@@ -716,6 +761,15 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery("Select * from stockQuentity where seller =?", new String[]{seller});
+
+        return c;
+    }
+
+    public Cursor viewStockhistory(String seller) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller =?", new String[]{seller});
 
         return c;
     }

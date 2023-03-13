@@ -1,6 +1,5 @@
 package com.nimeshkadecha.myapplication;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -22,24 +20,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -249,6 +241,101 @@ public class Firestore_Backup extends AppCompatActivity {
                                             Toast.makeText(Firestore_Backup.this, "No Bille Available to Upload", Toast.LENGTH_SHORT).show();
                                         }
                                     } while (bill.moveToNext());
+
+                                    // adding stockQuentity details
+                                    Map<String, Object> stockQuentitymap = new HashMap<>();
+                                    HashMap<Integer, String> backupUpdate = new HashMap<>();
+
+                                    Cursor sQuentity = local_db.getInventory(Seller_Email);
+                                    sQuentity.moveToFirst();
+                                    int i=0;
+                                    if(sQuentity.getCount()>0){
+                                        do{
+                                            if (sQuentity.getInt(4) == 0) {
+                                                backupUpdate.put(i,sQuentity.getString(0));
+                                                i++;
+                                                stockQuentitymap.put("productName",sQuentity.getString(0));
+                                                stockQuentitymap.put("quentity",sQuentity.getString(1));
+                                                stockQuentitymap.put("price",sQuentity.getString(2));
+                                                stockQuentitymap.put("seller",sQuentity.getString(3));
+
+                                                db.collection(seller_cursor.getString(4))
+                                                        .document("Business")
+                                                        .collection("stockQuentity")
+                                                        .document(sQuentity.getString(0))
+                                                        .set(stockQuentitymap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+
+                                                                Log.d("ENimesh","total= " +stockQuentitymap.size());
+                                                                Log.d("ENimesh","totalbackup = " +backupUpdate.size());
+                                                                for(int i=0;i<=stockQuentitymap.size();i++){
+                                                                    local_db.updatestatus(backupUpdate.get(i),Seller_Email);
+                                                                }
+                                                                lodingPB.setVisibility(View.GONE);
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(Firestore_Backup.this, "Stock is not uploaded", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            }
+                                        }while (sQuentity.moveToNext());
+                                    }
+
+                                    // adding Stock history details
+                                    Map<String, Object> stocks = new HashMap<>();
+                                    HashMap<Integer, String> backupUpdatestocks = new HashMap<>();
+
+                                    Cursor stocksC = local_db.viewStockhistory(Seller_Email);
+                                    stocksC.moveToFirst();
+
+//                                    DB.execSQL("Create TABLE IF NOT EXISTS stock(productID Integer primary key autoincrement ," +
+//                                            "productName TEXT ," +
+//                                            "catagory TEXT," +
+//                                            "purchesPrice TEXT," +
+//                                            "sellingPrice TEXT," +
+//                                            "date Date," +
+//                                            "quentity TEXT," +
+//                                            "seller TEXT," +
+//                                            "backup Integer)");
+
+                                    if(stocksC.getCount()>0){
+                                        do{
+                                            if(stocksC.getInt(8) == 0){
+                                                stocks.put("productID",stocksC.getString(0));
+                                                stocks.put("productName",stocksC.getString(1));
+                                                stocks.put("catagory",stocksC.getString(2));
+                                                stocks.put("purchesPrice",stocksC.getString(3));
+                                                stocks.put("sellingPrice",stocksC.getString(4));
+                                                stocks.put("date",stocksC.getString(5));
+                                                stocks.put("quentity",stocksC.getString(6));
+                                                stocks.put("seller",stocksC.getString(7));
+
+                                                db.collection(seller_cursor.getString(4))
+                                                        .document("Business")
+                                                        .collection("Stock")
+                                                        .document(stocksC.getString(0))
+                                                        .set(stocks).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                int id = Integer.parseInt(String.valueOf(stocks.get("productID")));
+                                                                for(int i=0;i<=id;i++){
+                                                                    local_db.updateStockStatus(i,Seller_Email);
+                                                                }
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(Firestore_Backup.this, "Error while uploading Stock history", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            }
+                                        }while(stocksC.moveToNext());
+                                    }
+
+
                                     lodingPB.setVisibility(View.GONE);
                                     Toast.makeText(Firestore_Backup.this, "Uploading Data...", Toast.LENGTH_SHORT).show();
                                 }

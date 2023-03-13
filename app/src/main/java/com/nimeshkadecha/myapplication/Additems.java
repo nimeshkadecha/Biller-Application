@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 public class Additems extends AppCompatActivity {
@@ -38,7 +39,7 @@ public class Additems extends AppCompatActivity {
     private AutoCompleteTextView productName;
     DBManager DB = new DBManager(this);
 
-    String cNametxt, cNumbertxt, datetext, sellertxt,origintxt;
+    String cNametxt, cNumbertxt, datetext, sellertxt, origintxt;
     int billIdtxt;
 
     private String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
@@ -67,14 +68,14 @@ public class Additems extends AppCompatActivity {
 
 //        Working with TOOLBAR STARTS --------------------------------------------------------------
 
-    //        Removing Suport bar / top line containing name
+        //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-    //        Hiding navigationgrawer
+        //        Hiding navigationgrawer
         navagationDrawer = findViewById(R.id.navigation);
         navagationDrawer.setVisibility(View.INVISIBLE);
 
-    //        FINDING menu
+        //        FINDING menu
         menu = findViewById(R.id.Menu);
         menu.setVisibility(View.INVISIBLE);
         menu.setOnClickListener(new View.OnClickListener() {
@@ -87,10 +88,10 @@ public class Additems extends AppCompatActivity {
             }
         });
 
-    //        FINDING Backbtn
+        //        FINDING Backbtn
         backBtn = findViewById(R.id.btnBack);
 
-    //        hiding navagation on back btn click
+        //        hiding navagation on back btn click
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +101,7 @@ public class Additems extends AppCompatActivity {
             }
         });
 
-    //   customer info btn
+        //   customer info btn
         customerInfo = findViewById(R.id.customerinfo);
 
 
@@ -111,7 +112,7 @@ public class Additems extends AppCompatActivity {
             }
         });
 
-    //  Edit Info Button
+        //  Edit Info Button
         editInfo = findViewById(R.id.editInfo);
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +131,7 @@ public class Additems extends AppCompatActivity {
 
 //  INSERT OPERATION IN DISPLAY TABLE --------------------------------------------------------------
 
-    //        Getting INTENT
+        //        Getting INTENT
         Bundle name = getIntent().getExtras();
         cNametxt = name.getString("cName");
 
@@ -153,56 +154,28 @@ public class Additems extends AppCompatActivity {
 
 //  Add Item Button --------------------------------------------------------------------------------
         quantity = findViewById(R.id.quantity);
-        if(quantity.getText().toString().equals("")){
+        if (quantity.getText().toString().equals("")) {
             quantity.setText("1");
         }
 
-
         productName = findViewById(R.id.productname);
-        productName.setFilters(new InputFilter[] { filter }); // Adding Filter
+        productName.setFilters(new InputFilter[]{filter}); // Adding Filter
+
 //        ADding Suggestion [Autocompleet textview]
-        String [] products;
-        String [] p;
+        String[] products;
 
         Cursor productsC = DB.getInventory(sellertxt);
 
         productsC.moveToFirst();
-        if (productsC.getCount()>0){
-            p = new String[productsC.getCount()];
-            int i=0;
-            boolean check = true;
-            do{
-                if(i!=0){
-                    for(int j=0;j<i;j++){
-                        if(p[j].equals(productsC.getString(1))){
-                            check = false;
-                            break;
-                        }else{
-                            check = true;
-                        }
-                    }
-                    if(check){
-                        p[i] = productsC.getString(1);
-                        i++;
-                    }
-                }else{
-                    p[i] = productsC.getString(1);
-                    i++;
-                }
-            }while (productsC.moveToNext());
+        if (productsC.getCount() > 0) {
+            products = new String[productsC.getCount()];
+            int i = 0;
+            do {
+                products[i] = productsC.getString(0);
+                i++;
 
-            products = new String[i];
-
-            Log.d("ENimesh","ONdex is = "+ i);
-
-//            System.arraycopy(p, 0, products, 0, i); // this is just a for loop running and copying data
-            for(int j=0;j<i;j++){
-                products[j] = p[j];
-                Log.d("ENimesh","dataa is = "+ products[j]);
-            }
-
-
-        }else{
+            } while (productsC.moveToNext());
+        } else {
             products = new String[]{"NO Suggestion Available"};
         }
 
@@ -213,14 +186,14 @@ public class Additems extends AppCompatActivity {
         price.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(price.getText().toString().equals("") && !productName.getText().toString().equals("")){
-                    Cursor getPrice = DB.getProductQuentity(productName.getText().toString(),sellertxt);
+                if (price.getText().toString().equals("") && !productName.getText().toString().equals("")) {
+                    Cursor getPrice = DB.getProductQuentity(productName.getText().toString(), sellertxt);
                     getPrice.moveToFirst();
-                    if(getPrice.getCount()>0){
-                        Log.d("ENimesh","VAlUE is = " +String.valueOf(getPrice.getInt(2)) );
+                    if (getPrice.getCount() > 0) {
+                        Log.d("ENimesh", "VAlUE is = " + String.valueOf(getPrice.getInt(2)));
                         price.setText(String.valueOf(getPrice.getInt(2)));
                         Toast.makeText(Additems.this, "Added", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         Toast.makeText(Additems.this, "Cantfind", Toast.LENGTH_SHORT).show();
                     }
 
@@ -276,11 +249,11 @@ public class Additems extends AppCompatActivity {
         });
 //--------------------------------------------------------------------------------------------------
 
-        if(validator[0] == 0){
+        if (validator[0] == 0) {
             show.setVisibility(View.GONE);
         }
 
-        if( !origintxt.equalsIgnoreCase("home")){
+        if (!origintxt.equalsIgnoreCase("home")) {
             show.setVisibility(View.VISIBLE);
         }
 
@@ -307,7 +280,7 @@ public class Additems extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------
     }
 
-//    Going TO Home With User DATA ON BAck Button Press --------------------------------------------
+    //    Going TO Home With User DATA ON BAck Button Press --------------------------------------------
     @Override
     public void onBackPressed() {
         Intent intent2 = new Intent(Additems.this, home.class);
