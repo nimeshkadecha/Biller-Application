@@ -602,12 +602,10 @@ public class DBManager extends SQLiteOpenHelper {
                 int qty = Integer.parseInt(cursor.getString(1));
 
                 int newQty = qty - Integer.parseInt(quentity);
+                Log.d("ENimesh" ,"new Qty = " +newQty);
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("productName", name);
-//                Log.d("ENimesh", "Name = " + name);
-//                Log.d("ENimesh", "newQty = " + newQty);
-//                Log.d("ENimesh", "seller = " + seller);
                 contentValues.put("quentity", newQty);
                 contentValues.put("price", cursor.getString(2));
                 contentValues.put("seller", seller);
@@ -615,15 +613,24 @@ public class DBManager extends SQLiteOpenHelper {
 
 
                 result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
-
-//                if (result == -1) {
-//                    return false;
-//                } else {
-//                    return true;
-//                }
             }
             else {
-                return false;
+                int Sell_qty = -1 * (Integer.parseInt(quentity));
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("productName", name);
+                contentValues.put("quentity", Sell_qty);
+                contentValues.put("price", Integer.parseInt(c.getString(2)) );
+                contentValues.put("seller", seller);
+                contentValues.put("backup", 0);
+
+                result = db.insert("stockQuentity", null, contentValues);
+
+                if (result == -1) {
+
+                    return false;
+                } else {
+                    return true;
+                }
             }
 
         } while (c.moveToNext());
