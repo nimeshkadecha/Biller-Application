@@ -8,7 +8,9 @@
     android:theme="@style/Theme.MyApplication"
     tools:context=".MainActivity">
 
-    <include layout="@layout/toolbar">
+    <include
+        android:id="@+id/include3"
+        layout="@layout/toolbar">
 
     </include>
 
@@ -17,10 +19,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login"
+        android:layout_marginTop="70dp"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="122dp" />
+        app:layout_constraintTop_toBottomOf="@+id/include3" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
