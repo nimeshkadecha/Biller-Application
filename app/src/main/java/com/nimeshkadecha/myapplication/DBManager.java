@@ -32,11 +32,11 @@ public class DBManager extends SQLiteOpenHelper {
                 "customerName TEXT," +//5
                 "customerNumber TEXT," +//6
                 "date Date," +//7
-                "billId TEXT ," +//8
+                "billId Integer ," +//8
                 "seller TEXT," +//9
                 "backup Integer)");//10
 //        Customer table
-        DB.execSQL("Create TABLE customer(billId TEXT primary key," +
+        DB.execSQL("Create TABLE customer(billId Integer primary key," +
                 "customerName TEXT," +
                 "customerNumber TEXT," +
                 "date Date," +
@@ -286,10 +286,10 @@ public class DBManager extends SQLiteOpenHelper {
 
         int id = 0;
         try {
-            Cursor cursor = DB.rawQuery("select * from customer", null);
+            Cursor cursor = DB.rawQuery("select * from customer ORDER BY billId ASC", null);
             if (cursor.getCount() > 0) {
                 cursor.moveToLast();
-                id = cursor.getInt(0);
+                id = Integer.parseInt(cursor.getString(0));
             }
             id++;
         } catch (Exception e) {
@@ -386,13 +386,13 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     //    Inser customer info in customer Table ------------------------------------------
-    public boolean InsertCustomer(String billId, String name, String number, String date, String email, int state) {
+    public boolean InsertCustomer(int billId, String name, String number, String date, String email, int state) {
 
         int total = 0;
 
-        int ID = Integer.parseInt(billId);
+//        int ID = Integer.parseInt(billId);
 
-        Cursor cursor = getSubTotal(ID);
+        Cursor cursor = getSubTotal(billId);
 
         cursor.moveToFirst();
         do {
@@ -420,9 +420,9 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public boolean InsertCustomerCloud(String billId, String name, String number, String date, String email, int state, String total) {
+    public boolean InsertCustomerCloud(int billId, String name, String number, String date, String email, int state, String total) {
 
-        int ID = Integer.parseInt(billId);
+//        int ID = Integer.parseInt(billId);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("billId", billId);
@@ -445,18 +445,20 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     //  Updating State of BACKUP ------------------------------------------------------------------------------
-    public boolean UpdateBackup(String billID, int state) {
+    public boolean UpdateBackup(int billID, int state) {
         SQLiteDatabase DB = this.getWritableDatabase();
 
         //        Getting all values in
         ContentValues contentValues = new ContentValues();
         contentValues.put("backup", state);
 
-        Cursor cursor = DB.rawQuery("SELECT * From display where billid =?", new String[]{billID});
+        String id = String.valueOf(billID);
+
+        Cursor cursor = DB.rawQuery("SELECT * From display where billid =?", new String[]{id});
 
         if (cursor.getCount() > 0) {
             long check;
-            check = DB.update("display", contentValues, "billid =?", new String[]{billID});
+            check = DB.update("display", contentValues, "billid =?", new String[]{id});
             if (check == -1) {
                 return false;
             } else {
@@ -468,18 +470,20 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     //  Updating State of BACKUP ------------------------------------------------------------------------------
-    public boolean UpdateBackupcus(String billID, int state) {
+    public boolean UpdateBackupcus(int billID, int state) {
         SQLiteDatabase DB = this.getWritableDatabase();
 
         //        Getting all values in
         ContentValues contentValues = new ContentValues();
         contentValues.put("backup", state);
 
-        Cursor cursor = DB.rawQuery("SELECT * From customer where billid =?", new String[]{billID});
+        String id = String.valueOf(billID);
+
+        Cursor cursor = DB.rawQuery("SELECT * From customer where billid =?", new String[]{id});
 
         if (cursor.getCount() > 0) {
             long check;
-            check = DB.update("customer", contentValues, "billid =?", new String[]{billID});
+            check = DB.update("customer", contentValues, "billid =?", new String[]{id});
             if (check == -1) {
                 return false;
             } else {
@@ -517,7 +521,7 @@ public class DBManager extends SQLiteOpenHelper {
                 seler = cursor1.getString(9);
                 total += cursor1.getInt(4);
 
-                boolean Insert = InsertCustomer(customerBID, customerName, customerNumber, BillDATE, seler, 1);
+                boolean Insert = InsertCustomer(Integer.parseInt(customerBID), customerName, customerNumber, BillDATE, seler, 1);
                 if (Insert) {
                     check = true;
                 } else {
@@ -619,7 +623,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? and productName = ?", new String[]{seller, name});
+        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? AND productName = ?", new String[]{seller, name});
 
         return c;
     }
@@ -633,13 +637,13 @@ public class DBManager extends SQLiteOpenHelper {
         return c;
     }
 
-    public Boolean removeSell(String id, String seller) {
+    public Boolean removeSell(int id, String seller) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         String name;
         String quentity;
 
-        Cursor c = displayList(Integer.parseInt(id));
+        Cursor c = displayList(id);
 
         c.moveToFirst();
 

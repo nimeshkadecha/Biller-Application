@@ -409,12 +409,12 @@ public class home extends AppCompatActivity {
                         Toast.makeText(home.this, "Invalid Number", Toast.LENGTH_SHORT).show();
                     } else {
                         datetxt = date.getText().toString();
-//                        Log.d("ENimesh","finalBillIdtxt = " + finalBillIdtxt[0]);
+                        Log.d("ENimesh","finalBillIdtxt = " + finalBillIdtxt[0]);
                         if (finalBillIdtxt[0] == 0) {
                             finalBillIdtxt[0] = DB.getbillid();
                         }
-//                        int billIDd = DB.getbillid();
-//                        Log.d("ENimesh","billIDd = " + billIDd);
+                        int billIDd = DB.getbillid();
+                        Log.d("ENimesh","billIDd = " + finalBillIdtxt[0]);
 
                         intent.putExtra("cName", nametxt);
                         intent.putExtra("cNumber", numbertxt);

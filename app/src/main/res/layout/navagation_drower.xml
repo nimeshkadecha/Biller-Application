@@ -95,7 +95,6 @@
         android:layout_marginTop="10dp"
         android:text="Business Report"
         android:textSize="15sp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/editInfo"
         app:layout_constraintStart_toStartOf="@+id/editInfo"
         app:layout_constraintTop_toBottomOf="@+id/editInfo" />

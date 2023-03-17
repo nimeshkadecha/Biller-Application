@@ -169,8 +169,8 @@ public class Firestore_Backup extends AppCompatActivity {
                                                             public void onSuccess(Void unused) {
                                                                 int id = Integer.parseInt(String.valueOf(Customer_Info.get("Bill_ID")));
                                                                 for (int i = 1; i <= id; i++) {
-                                                                    String idd = String.valueOf(i);
-                                                                    local_db.UpdateBackupcus(idd, 1);
+//                                                                    String idd = String.valueOf(i);
+                                                                    local_db.UpdateBackupcus(i, 1);
                                                                 }
                                                                 lodingPB.setVisibility(View.GONE);
                                                             }
@@ -223,8 +223,8 @@ public class Firestore_Backup extends AppCompatActivity {
                                                                 uploadDate.setText(formattedDate);
                                                                 int id = Integer.parseInt(String.valueOf(Billes.get("BillId")));
                                                                 for (int i = 1; i <= id; i++) {
-                                                                    String idd = String.valueOf(i);
-                                                                    local_db.UpdateBackup(idd, 1);
+//                                                                    String idd = String.valueOf(i);
+                                                                    local_db.UpdateBackup(i, 1);
                                                                 }
                                                                 lodingPB.setVisibility(View.GONE);
                                                             }
@@ -253,7 +253,7 @@ public class Firestore_Backup extends AppCompatActivity {
                                         do{
                                             if (sQuentity.getInt(4) == 0) {
                                                 backupUpdate.put(i,sQuentity.getString(0));
-                                                i++;
+
                                                 stockQuentitymap.put("productName",sQuentity.getString(0));
                                                 stockQuentitymap.put("quentity",sQuentity.getString(1));
                                                 stockQuentitymap.put("price",sQuentity.getString(2));
@@ -269,7 +269,7 @@ public class Firestore_Backup extends AppCompatActivity {
 
                                                                 Log.d("ENimesh","total= " +stockQuentitymap.size());
                                                                 Log.d("ENimesh","totalbackup = " +backupUpdate.size());
-                                                                for(int i=0;i<=stockQuentitymap.size();i++){
+                                                                for(int i=0;i<stockQuentitymap.size();i++){
                                                                     local_db.updatestatus(backupUpdate.get(i),Seller_Email);
                                                                 }
                                                                 lodingPB.setVisibility(View.GONE);
@@ -280,6 +280,7 @@ public class Firestore_Backup extends AppCompatActivity {
                                                                 Toast.makeText(Firestore_Backup.this, "Stock is not uploaded", Toast.LENGTH_SHORT).show();
                                                             }
                                                         });
+                                                i++;
                                             }
                                         }while (sQuentity.moveToNext());
                                     }
@@ -434,7 +435,7 @@ public class Firestore_Backup extends AppCompatActivity {
                                                         String Seller = String.valueOf(data.get("Seller"));
                                                         String Total = String.valueOf(data.get("Total"));
 
-                                                        boolean ins = local_db.InsertCustomerCloud(bID, cNmae, cNum, date, Seller, 1,Total);
+                                                        boolean ins = local_db.InsertCustomerCloud(Integer.parseInt(bID), cNmae, cNum, date, Seller, 1,Total);
                                                         if (ins) {
                                                             SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                                                             SharedPreferences.Editor editor = sp.edit();

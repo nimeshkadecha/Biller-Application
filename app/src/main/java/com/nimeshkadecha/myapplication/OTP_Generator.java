@@ -189,7 +189,7 @@ public class OTP_Generator extends AppCompatActivity {
                                                 String Seller = String.valueOf(dq.get("Seller"));
                                                 String Total = String.valueOf(dq.get("Total"));
 
-                                                boolean ins = DB_local.InsertCustomerCloud(bID, cNmae, cNum, date, Seller, 1, Total);
+                                                boolean ins = DB_local.InsertCustomerCloud(Integer.parseInt(bID), cNmae, cNum, date, Seller, 1, Total);
                                                 if (ins) {
                                                     Toast.makeText(OTP_Generator.this, "Customer information Added", Toast.LENGTH_SHORT).show();
                                                 }

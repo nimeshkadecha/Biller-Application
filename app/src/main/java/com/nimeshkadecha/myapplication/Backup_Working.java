@@ -271,7 +271,7 @@ public class Backup_Working extends AppCompatActivity {
                                 reference.child("Biller").child(num).child(sname).child(index).child("Product Price").setValue(pPrice);
                                 reference.child("Biller").child(num).child(sname).child(index).child("Product Quantity").setValue(pQTY);
                                 reference.child("Biller").child(num).child(sname).child(index).child("SubTotal").setValue(subtotal);
-                                DB.UpdateBackup(id, 1);
+                                DB.UpdateBackup(Integer.parseInt(id), 1);
                             }
                         } while (c2.moveToNext());
                     } while (c1.moveToNext());
@@ -393,7 +393,7 @@ public class Backup_Working extends AppCompatActivity {
 
                                         Boolean displayInser = DB.Insert_List(pname, pnumber, pqty, cname, number, date, billId, user, 1);
 //                                        Boolean customerInsert = DB.InsertCustomer(id, cname, number, date, user, 1);
-                                        DB.UpdateBackup(id, 1);
+                                        DB.UpdateBackup(Integer.parseInt(id), 1);
                                         if (displayInser) {
                                             entry = true;
                                         } else {

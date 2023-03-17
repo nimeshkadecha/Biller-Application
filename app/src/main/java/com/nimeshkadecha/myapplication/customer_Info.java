@@ -147,11 +147,11 @@ public class customer_Info extends AppCompatActivity {
 
                 if (insert) {
                     NameSuggestion[i] = Name_Sugg.getString(1);
-                    Log.d("ENimesh", "dataa = " + NameSuggestion[i]);
+//                    Log.d("ENimesh", "dataa = " + NameSuggestion[i]);
                     i++;
                 }
             } while (Name_Sugg.moveToNext());
-            Log.d("ENimesh", "i = " + i);
+//            Log.d("ENimesh", "i = " + i);
 
             Names = new String[i];
             for (int j = 0; j < i; j++) {
@@ -174,7 +174,7 @@ public class customer_Info extends AppCompatActivity {
         if (Num_Sugg.getCount() > 0) {
             int i = 0;
             boolean insert = true;
-            Log.d("ENimesh", "Count = " + Num_Sugg.getCount());
+//            Log.d("ENimesh", "Count = " + Num_Sugg.getCount());
             numberSugg = new String[Num_Sugg.getCount()];
             do {
                 if (i != 0) {
@@ -188,11 +188,11 @@ public class customer_Info extends AppCompatActivity {
 
                 if (insert) {
                     numberSugg[i] = Num_Sugg.getString(2);
-                    Log.d("ENimesh", "dataa = " + numberSugg[i]);
+//                    Log.d("ENimesh", "dataa = " + numberSugg[i]);
                     i++;
                 }
             } while (Num_Sugg.moveToNext());
-            Log.d("ENimesh", "i = " + i);
+//            Log.d("ENimesh", "i = " + i);
 
             NUmber = new String[i];
             for (int j = 0; j < i; j++) {

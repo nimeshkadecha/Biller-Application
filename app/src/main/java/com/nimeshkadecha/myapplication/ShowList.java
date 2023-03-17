@@ -107,15 +107,15 @@ public class ShowList extends AppCompatActivity {
             //                INSERTING data in customer table
                 boolean check;
 
-                String id = String.valueOf(billId);
+//                String id = String.valueOf(billId);
 
-                check = DB.InsertCustomer(id, cName, cNumber, date, sellertxt, 0);
+                check = DB.InsertCustomer(billId, cName, cNumber, date, sellertxt, 0);
 
                 if (check) {
 
                     Boolean update;
 
-                    update = DB.removeSell(id,sellertxt);
+                    update = DB.removeSell(billId,sellertxt);
 
                     if(update){
                         save.setVisibility(View.INVISIBLE);
