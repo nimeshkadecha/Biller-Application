@@ -23,7 +23,6 @@ public class stock_List_adapter extends RecyclerView.Adapter<stock_List_adapter.
         this.g = g;
         this.b = b;
         this.name = name;
-
     }
 
     @NonNull

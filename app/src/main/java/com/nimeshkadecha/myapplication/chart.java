@@ -24,7 +24,6 @@ import java.util.Random;
 public class chart extends AppCompatActivity {
 
     private ArrayList<String> ainput, aquantity,Ar,Ag,Ab,ANAME;
-
     private stock_qty_adapter S_Q_adapter;
     private stock_List_adapter S_L_adapter;
 
@@ -48,9 +47,6 @@ public class chart extends AppCompatActivity {
 
         switch (intentt){
             case "qty_chart":
-                String s;
-                s = "#FFA726";
-
                 ainput = new ArrayList<>();
                 aquantity = new ArrayList<>();
 
@@ -69,7 +65,6 @@ public class chart extends AppCompatActivity {
                 S_L_adapter = new stock_List_adapter(chart.this,Ar,Ag,Ab,ANAME);
                 Stock_list.setAdapter(S_L_adapter);
                 Stock_list.setLayoutManager(new LinearLayoutManager(chart.this));
-
 
                 Cursor get_Qty = local_db.getInventory(Seller_email);
 
