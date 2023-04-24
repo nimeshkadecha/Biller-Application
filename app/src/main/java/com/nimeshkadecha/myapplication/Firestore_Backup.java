@@ -475,8 +475,10 @@ public class Firestore_Backup extends AppCompatActivity {
                                                         boolean insertt = local_db.addStockQty(name,quentity,price,seller);
                                                         if(insertt){
                                                             Toast.makeText(Firestore_Backup.this, "StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                            lodingPB.setVisibility(View.GONE);
                                                         }else{
                                                             Toast.makeText(Firestore_Backup.this, "ERROR while StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                            lodingPB.setVisibility(View.GONE);
                                                         }
                                                     }
                                                 }
@@ -510,8 +512,10 @@ public class Firestore_Backup extends AppCompatActivity {
 
                                                         if(ins){
                                                             Toast.makeText(Firestore_Backup.this, "Stock added", Toast.LENGTH_SHORT).show();
+                                                            lodingPB.setVisibility(View.GONE);
                                                         }else{
                                                             Toast.makeText(Firestore_Backup.this, "Error while adding Stock", Toast.LENGTH_SHORT).show();
+                                                            lodingPB.setVisibility(View.GONE);
                                                         }
 
                                                     }

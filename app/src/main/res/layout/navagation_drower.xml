@@ -46,25 +46,12 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#363636"
         android:minHeight="48dp"
+        android:paddingEnd="70dp"
         android:text="@string/customer_information"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-
-<!--    <TextView-->
-<!--        android:id="@+id/customerinfo"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="101dp"-->
-<!--        android:minHeight="48dp"-->
-<!--        android:onClick="customerInfo"-->
-<!--        android:text="@string/customer_information"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/textView3" />-->
 
     <Button
         android:id="@+id/editInfo"

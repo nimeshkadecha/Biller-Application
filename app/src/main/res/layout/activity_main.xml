@@ -130,8 +130,6 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
-        app:layout_constraintHorizontal_bias="0.636"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
         tools:ignore="TouchTargetSizeCheck,UsingOnClickInXml" />
 
