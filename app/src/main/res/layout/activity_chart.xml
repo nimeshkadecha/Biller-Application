@@ -6,16 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
+    android:background="#1f1f1f"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
         android:layout_marginTop="30dp"
+        android:background="#1f1f1f"
         android:text="Chart"
+        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,9 +27,10 @@
         android:id="@+id/cardViewGraph"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:elevation="10dp"
         android:layout_marginTop="32dp"
+        android:elevation="10dp"
         app:cardCornerRadius="10dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8">
@@ -40,6 +42,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#1f1f1f"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -76,6 +79,7 @@
         android:layout_height="400dp"
         android:layout_below="@+id/cardViewGraph"
         android:layout_marginTop="32dp"
+        android:background="#1f1f1f"
         android:elevation="10dp"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,6 +92,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#1f1f1f"
             android:orientation="vertical">
 
             <!--Text view to use of -->
@@ -101,15 +106,13 @@
                 android:textSize="23sp"
                 android:textStyle="bold" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/QTY_REC"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
 
+                android:background="#1f1f1f" />
         </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/QTY_REC"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="60dp" />
-
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

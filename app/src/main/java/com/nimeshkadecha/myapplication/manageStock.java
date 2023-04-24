@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +28,9 @@ public class manageStock extends AppCompatActivity {
     private ImageView menu ;
 
     private Button VStock;
+
+    //    Shared preference to Get User name
+    public static final String SHARED_PREFS = "sharedPrefs";
 
     DBManager DB = new DBManager(this);
 
@@ -47,6 +53,10 @@ public class manageStock extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_stock);
 
+//        Getting seller email from shared preference
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        String sellertxt = sharedPreferences.getString("UserName", "");
+
         //        FINDING menu
         menu = findViewById(R.id.Menu);
         menu.setVisibility(View.INVISIBLE);
@@ -58,9 +68,29 @@ public class manageStock extends AppCompatActivity {
         Bundle name = getIntent().getExtras();
         seller = name.getString("Email");
 
-//        Finding edittext
-        EditText itemName = findViewById(R.id.itemNameedt);
+//        Finding edittext product name
+        AutoCompleteTextView itemName = findViewById(R.id.itemNameedt);
+
         itemName.setFilters(new InputFilter[] { filter }); // Adding Filter
+//        Adding Suggestion [Autocomplete textview]
+        String[] products;
+
+        Cursor productsC = DB.getInventory(sellertxt);
+
+        productsC.moveToFirst();
+        if (productsC.getCount() > 0) {
+            products = new String[productsC.getCount()];
+            int i = 0;
+            do {
+                products[i] = productsC.getString(0);
+                i++;
+
+            } while (productsC.moveToNext());
+        } else {
+            products = new String[]{"NO Suggestion Available"};
+        }
+
+        itemName.setAdapter(new ArrayAdapter<>(manageStock.this, android.R.layout.simple_list_item_1, products));
 
         EditText catagory = findViewById(R.id.categoryedt);
         EditText porchesPriceEdt = findViewById(R.id.porchesPriceEdt);

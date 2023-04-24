@@ -4,9 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    app:cardBackgroundColor="#A3FFFFFF"
+
     app:cardCornerRadius="16dp"
     app:cardElevation="12dp"
-    android:backgroundTint="#7E7E7E"
     android:backgroundTintMode="add"
     >
 
@@ -22,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:id="@+id/stock_qty_name"
+                android:textColor="@color/black"
                 android:text="R"
                 android:textSize="18sp" />
 

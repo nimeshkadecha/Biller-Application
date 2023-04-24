@@ -6,7 +6,8 @@
     android:layout_margin="10dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="12dp"
-    android:backgroundTint="#7E7E7E"
+    app:cardBackgroundColor="#A3FFFFFF"
+
     android:backgroundTintMode="add"
     >
 
@@ -22,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/stock_Name"
+                android:textColor="@color/black"
                 android:paddingLeft="10dp"
                 android:text="" />
         </LinearLayout>

@@ -42,6 +42,7 @@ public class Additems extends AppCompatActivity {
     String cNametxt, cNumbertxt, datetext, sellertxt, origintxt;
     int billIdtxt;
 
+//    In input Filter
     private String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
 
     private final InputFilter filter = new InputFilter() {
@@ -77,7 +78,7 @@ public class Additems extends AppCompatActivity {
 
         //        FINDING menu
         menu = findViewById(R.id.Menu);
-        menu.setVisibility(View.INVISIBLE);
+        menu.setVisibility(View.INVISIBLE); // remove visibility
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +151,7 @@ public class Additems extends AppCompatActivity {
         Bundle origin = getIntent().getExtras();
         origintxt = origin.getString("origin");
 
-        final int[] validator = {0};
+        final int[] validator = {0}; //  to change visibility of show button and add button
 
 //  Add Item Button --------------------------------------------------------------------------------
         quantity = findViewById(R.id.quantity);
@@ -161,7 +162,7 @@ public class Additems extends AppCompatActivity {
         productName = findViewById(R.id.productname);
         productName.setFilters(new InputFilter[]{filter}); // Adding Filter
 
-//        ADding Suggestion [Autocompleet textview]
+//        Adding Suggestion [Autocomplete textview]
         String[] products;
 
         Cursor productsC = DB.getInventory(sellertxt);
@@ -190,11 +191,11 @@ public class Additems extends AppCompatActivity {
                     Cursor getPrice = DB.getProductQuentity(productName.getText().toString(), sellertxt);
                     getPrice.moveToFirst();
                     if (getPrice.getCount() > 0) {
-                        Log.d("ENimesh", "VAlUE is = " + String.valueOf(getPrice.getInt(2)));
+                        Log.d("ENimesh", "Price is = " + String.valueOf(getPrice.getInt(2)));
                         price.setText(String.valueOf(getPrice.getInt(2)));
                         Toast.makeText(Additems.this, "Added", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(Additems.this, "Cantfind", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Additems.this, "Can't find", Toast.LENGTH_SHORT).show();
                     }
 
                 }

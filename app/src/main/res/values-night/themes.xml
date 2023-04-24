@@ -32,4 +32,5 @@
         <item name="android:text">@color/ic_launcher_background</item>
     </style>
 
+
 </resources>

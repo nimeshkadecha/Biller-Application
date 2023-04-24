@@ -39,7 +39,7 @@
         app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/itemNameedt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
