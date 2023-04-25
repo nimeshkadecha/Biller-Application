@@ -2,6 +2,7 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -191,7 +193,8 @@ public class home extends AppCompatActivity {
             public void onClick(View v) {
                 navagationDrawer.setVisibility(View.VISIBLE);
                 product.setVisibility(View.INVISIBLE);
-
+                InputMethodManager inm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
             }
         });
 // -------------------------------------------------------------------------------------------------
