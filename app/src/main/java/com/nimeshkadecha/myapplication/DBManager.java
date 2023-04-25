@@ -637,6 +637,15 @@ public class DBManager extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor getCategory(String seller) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller = ?", new String[]{seller});
+
+        return c;
+    }
+
     public Boolean removeSell(int id, String seller) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -777,6 +786,24 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery("Select * from stock where seller =?", new String[]{seller});
+
+        return c;
+    }
+
+    public Cursor viewProductHistory(String seller,String product) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller =? AND productName=? ", new String[]{seller,product});
+
+        return c;
+    }
+
+    public Cursor viewCategoryHistory(String seller,String catagory) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select * from stock where seller =? AND catagory=? ", new String[]{seller,catagory});
 
         return c;
     }

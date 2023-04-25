@@ -246,7 +246,7 @@ public class ShowList extends AppCompatActivity {
                     PdfDocument pdfDocument = new PdfDocument(writer);
                     Document document = new Document(pdfDocument);
 
-                    float cWidth[] = {120, 220, 120, 100};
+                    float cWidth[] = {560};
                     Table table1 = new Table(cWidth);
 
 //        Table 1 do this
@@ -260,16 +260,32 @@ public class ShowList extends AppCompatActivity {
                     } else {
                         selerDATA.moveToFirst();
                         do {
-                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(32)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("Address: "+selerDATA.getString(5)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("E-mail: "+selerDATA.getString(1)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("Mo: "+selerDATA.getString(4)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("GST: "+selerDATA.getString(3)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+                            table1.addCell(new Cell());
                         } while (selerDATA.moveToNext());
                     }
 

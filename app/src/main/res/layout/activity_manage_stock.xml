@@ -62,9 +62,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutitemname"
         app:prefixTextColor="@color/white"
+        app:endIconMode="clear_text"
         app:startIconDrawable="@drawable/baseline_category_24">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/categoryedt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class manageStock extends AppCompatActivity {
 
-    private ImageView menu ;
+    private ImageView menu;
 
     private Button VStock;
 
@@ -54,7 +54,7 @@ public class manageStock extends AppCompatActivity {
         setContentView(R.layout.activity_manage_stock);
 
 //        Getting seller email from shared preference
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String sellertxt = sharedPreferences.getString("UserName", "");
 
         //        FINDING menu
@@ -71,7 +71,7 @@ public class manageStock extends AppCompatActivity {
 //        Finding edittext product name
         AutoCompleteTextView itemName = findViewById(R.id.itemNameedt);
 
-        itemName.setFilters(new InputFilter[] { filter }); // Adding Filter
+        itemName.setFilters(new InputFilter[]{filter}); // Adding Filter
 //        Adding Suggestion [Autocomplete textview]
         String[] products;
 
@@ -92,7 +92,52 @@ public class manageStock extends AppCompatActivity {
 
         itemName.setAdapter(new ArrayAdapter<>(manageStock.this, android.R.layout.simple_list_item_1, products));
 
-        EditText catagory = findViewById(R.id.categoryedt);
+        AutoCompleteTextView catagory = findViewById(R.id.categoryedt);
+
+        //        Adding Suggestion [Autocomplete textview]
+        String[] NameSuggestion;
+        String[] Names;
+
+        Cursor Name_Sugg = DB.getCategory(sellertxt);
+        Name_Sugg.moveToFirst();
+        if (Name_Sugg.getCount() > 0) {
+            int i = 0;
+            boolean insert = true;
+//            Log.d("ENimesh", "Count = " + Name_Sugg.getCount());
+            NameSuggestion = new String[Name_Sugg.getCount()];
+            do {
+                if (i != 0) {
+                    for (int j = 0; j < i; j++) {
+//                        Log.d("ENimesh", "cursor data equality = " + Name_Sugg.getString(1));
+                        if (NameSuggestion[j].equals(Name_Sugg.getString(2))) {
+                            insert = false;
+                            break;
+                        }else{
+                            insert = true;
+                        }
+                    }
+                }
+//                Log.d("ENimesh", "loop i = " + i);
+                if (insert) {
+                    NameSuggestion[i] = Name_Sugg.getString(2);
+//                    Log.d("ENimesh", "NameSuggestion = " + NameSuggestion[i]);
+                    i++;
+                }
+            } while (Name_Sugg.moveToNext());
+//            Log.d("ENimesh", "i = " + i);
+
+            Names = new String[i];
+            for (int j = 0; j < i; j++) {
+                Names[j] = NameSuggestion[j];
+//                Log.d("ENimesh", "Names = " + Names[j]);
+            }
+        } else {
+            Names = new String[]{"No Data"};
+        }
+
+        catagory.setAdapter(new ArrayAdapter<>(manageStock.this, android.R.layout.simple_list_item_1, Names));
+
+
         EditText porchesPriceEdt = findViewById(R.id.porchesPriceEdt);
         EditText sellPrice = findViewById(R.id.sellPrice);
 
@@ -111,25 +156,23 @@ public class manageStock extends AppCompatActivity {
         AItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nametxt,catagorytxt,pPricetxt,sPricetxt,qtytxt,datetxt;
-                if(itemName.getText().toString().trim().equals("") && catagory.getText().toString().trim().equals("") &&
-                        porchesPriceEdt.getText().toString().trim().equals("") && sellPrice.getText().toString().trim().equals("") && PurchesDate.getText().toString().trim().equals("") && quantity.getText().toString().trim().equals("")){
+                String nametxt, catagorytxt, pPricetxt, sPricetxt, qtytxt, datetxt;
+                if (itemName.getText().toString().trim().equals("") && catagory.getText().toString().trim().equals("") &&
+                        porchesPriceEdt.getText().toString().trim().equals("") && sellPrice.getText().toString().trim().equals("") && PurchesDate.getText().toString().trim().equals("") && quantity.getText().toString().trim().equals("")) {
                     Toast.makeText(manageStock.this, "Fill Above Detail add Inventory", Toast.LENGTH_SHORT).show();
-                }
-                else if(itemName.getText().toString().trim().equals("")){
+                } else if (itemName.getText().toString().trim().equals("")) {
                     itemName.setError("Enter Name of your Product");
-                }else if(catagory.getText().toString().trim().equals("")){
+                } else if (catagory.getText().toString().trim().equals("")) {
                     catagory.setError("Enter Name of your Product Category");
-                }else if(porchesPriceEdt.getText().toString().trim().equals("")){
+                } else if (porchesPriceEdt.getText().toString().trim().equals("")) {
                     porchesPriceEdt.setError("Enter Buying Price [Price you pay to get this product]");
-                }else if(sellPrice.getText().toString().trim().equals("")){
+                } else if (sellPrice.getText().toString().trim().equals("")) {
                     sellPrice.setError("Enter Price you want to sell this product on ");
-                }else if(PurchesDate.getText().toString().trim().equals("")){
+                } else if (PurchesDate.getText().toString().trim().equals("")) {
                     PurchesDate.setError("Enter date of your porches");
-                }else if(quantity.getText().toString().trim().equals("")){
+                } else if (quantity.getText().toString().trim().equals("")) {
                     quantity.setError("Enter number of your Product you have");
-                }
-                else {
+                } else {
 
                     nametxt = itemName.getText().toString();
                     catagorytxt = catagory.getText().toString();
@@ -137,10 +180,10 @@ public class manageStock extends AppCompatActivity {
                     sPricetxt = sellPrice.getText().toString();
                     qtytxt = quantity.getText().toString();
                     datetxt = PurchesDate.getText().toString();
-                    boolean insert = DB.AddStock(nametxt,catagorytxt,pPricetxt,sPricetxt,datetxt,qtytxt,seller);
-                    if(insert){
+                    boolean insert = DB.AddStock(nametxt, catagorytxt, pPricetxt, sPricetxt, datetxt, qtytxt, seller);
+                    if (insert) {
                         Toast.makeText(manageStock.this, "Product Added", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         Toast.makeText(manageStock.this, "Error while adding Product", Toast.LENGTH_SHORT).show();
                     }
 
@@ -156,7 +199,7 @@ public class manageStock extends AppCompatActivity {
             public void onClick(View v) {
                 Cursor data = DB.viewStock(seller);
 
-                if(data.getCount()>0){
+                if (data.getCount() > 0) {
                     StringBuffer buffer = new StringBuffer();
                     while (data.moveToNext()) {
 //                    DATE | name | number | Total |
@@ -170,7 +213,7 @@ public class manageStock extends AppCompatActivity {
                     builder.setTitle("Stock");
                     builder.setMessage(buffer.toString());
                     builder.show();
-                }else{
+                } else {
                     Toast.makeText(manageStock.this, "No data available", Toast.LENGTH_SHORT).show();
                 }
             }

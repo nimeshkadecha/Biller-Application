@@ -6,13 +6,109 @@
     android:layout_height="match_parent"
     tools:context=".Report">
 
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="30sp"
+        android:layout_margin="21dp"
+        android:text="Stock Record"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/namelayout"
+        style="@style/TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="10dp"
+        android:hint="Enter product name"
+        android:textColorHint="@color/white"
+        app:endIconMode="clear_text"
+        app:helperTextTextColor="#FF002E"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:prefixTextColor="@color/white"
+        app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/report_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
+            tools:ignore="TextContrastCheck">
+
+        </com.google.android.material.textfield.MaterialAutoCompleteTextView>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+        android:textSize="30sp"
+        android:layout_margin="32dp"
+        app:layout_constraintEnd_toEndOf="@+id/namelayout"
+        app:layout_constraintStart_toStartOf="@+id/namelayout"
+        app:layout_constraintTop_toBottomOf="@+id/namelayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/catagoryTextInputLayout"
+        style="@style/TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="Enter Category name"
+        android:textColorHint="@color/white"
+        app:endIconMode="clear_text"
+        android:layout_marginTop="32dp"
+        app:helperTextTextColor="#FF002E"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11"
+        app:prefixTextColor="@color/white"
+        app:startIconDrawable="@drawable/baseline_category_24">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/report_Catagory_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="#FA0202"
+            tools:ignore="TextContrastCheck">
+
+        </com.google.android.material.textfield.MaterialAutoCompleteTextView>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:id="@+id/QTY_Chart_BTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quentity chart"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Quantity chart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/namelayout"
+        app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout" />
+
+    <Button
+        android:id="@+id/showRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Record"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/namelayout"
+        app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout" />
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

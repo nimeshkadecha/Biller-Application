@@ -1,6 +1,5 @@
 package com.nimeshkadecha.myapplication;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,7 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.common.base.MoreObjects;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -42,7 +42,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
-import java.util.jar.Attributes;
 
 public class customer_Info extends AppCompatActivity {
 
@@ -139,7 +138,7 @@ public class customer_Info extends AppCompatActivity {
                         if (NameSuggestion[j].equals(Name_Sugg.getString(1))) {
                             insert = false;
                             break;
-                        }else{
+                        } else {
                             insert = true;
                         }
                     }
@@ -391,11 +390,13 @@ public class customer_Info extends AppCompatActivity {
                     builder.show();
                 }
             }
+
             private String getrandom() {
                 Random rnd = new Random();
                 int otp = rnd.nextInt(999999999);
                 return String.format("%09d", otp);
             }
+
             private void createPDF() throws FileNotFoundException {
                 String nametxt, datetxt, billIDtxt, contactTXT, ToDate;
 
@@ -422,7 +423,7 @@ public class customer_Info extends AppCompatActivity {
                     PdfDocument pdfDocument = new PdfDocument(writer);
                     Document document = new Document(pdfDocument);
 
-                    float cWidth[] = {120, 220, 120, 100};
+                    float cWidth[] = {560};
                     Table table1 = new Table(cWidth);
 
 //        Table 1 do this
@@ -436,30 +437,33 @@ public class customer_Info extends AppCompatActivity {
                     } else {
                         selerDATA.moveToFirst();
                         do {
-                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(14)));
-
-                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1)+"").setFontSize(14)));
-
-                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4)+"").setFontSize(14)));
-
-                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3)+"").setFontSize(14)));
-
-                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(32)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5)+"").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("Address: "+selerDATA.getString(5)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("E-mail: "+selerDATA.getString(1)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("Mo: "+selerDATA.getString(4)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
+                            table1.addCell(new Cell().add(new Paragraph("GST: "+selerDATA.getString(3)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// --------------------------------------------------------------------------------------------------
+                            table1.addCell(new Cell());
+
                         } while (selerDATA.moveToNext());
                     }
 
@@ -694,7 +698,7 @@ public class customer_Info extends AppCompatActivity {
 //                        ---------------------------Working------------------------------------------
 //                Displaying data
                         document.add(table1);
-                        document.add(new Paragraph("\n"));
+//                        document.add(new Paragraph("\n"));
                         if (checker <= 4) {
                             document.add(table5);
                         } else {
