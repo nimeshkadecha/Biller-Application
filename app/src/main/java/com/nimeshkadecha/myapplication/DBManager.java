@@ -262,12 +262,18 @@ public class DBManager extends SQLiteOpenHelper {
     //    Bill id is unique every time so no need of email -- [select * from display where billId =? ]---
     public Cursor displayList(int billId) {
         SQLiteDatabase DB = this.getReadableDatabase();
-
         String bID = String.valueOf(billId);
-
         Cursor cursor = DB.rawQuery("select * from display where billId =? ", new String[]{bID});
-
         return cursor;
+    }
+
+//    Remove from list
+    public Cursor removeItem(String id){
+        SQLiteDatabase DB = this.getWritableDatabase();
+
+        Cursor c=DB.rawQuery("delete from display where indexs = ?",new String[]{id});
+
+        return  c;
 
     }
 
@@ -418,6 +424,17 @@ public class DBManager extends SQLiteOpenHelper {
         } else {
             return true;
         }
+    }
+
+    public boolean ConfirmSale(int billId){
+        Cursor cursor = getSubTotal(billId);
+
+        if(cursor.getCount()>0){
+            return true;
+        }else {
+            return false;
+        }
+
     }
 
     public boolean InsertCustomerCloud(int billId, String name, String number, String date, String email, int state, String total) {

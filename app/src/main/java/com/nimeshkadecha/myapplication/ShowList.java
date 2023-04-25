@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Random;
 
 public class ShowList extends AppCompatActivity {
-    private ArrayList<String> ainput, aprice, aquantity, asubtotal;
+    private ArrayList<String> ainput, aprice, aquantity, asubtotal, aindex;
     private RecyclerView recyclerView;
     private MyAdapter adapter;
     private DBManager DB = new DBManager(this);
@@ -79,7 +79,7 @@ public class ShowList extends AppCompatActivity {
         String cName, cNumber, date;
         int billId;
 
-    //        GETTING INTENT DATA
+        //        GETTING INTENT DATA
         Bundle name = getIntent().getExtras();
         cName = name.getString("cName");
 
@@ -104,35 +104,41 @@ public class ShowList extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 save_CLicked[0]++;
-            //                INSERTING data in customer table
-                boolean check;
+
+//                COnfirm sale Check it there is products in there or not
+                Boolean confirm_sale = DB.ConfirmSale(billId);
+
+                if (confirm_sale) {
+                    //                INSERTING data in customer table
+                    boolean check;
 
 //                String id = String.valueOf(billId);
 
-                check = DB.InsertCustomer(billId, cName, cNumber, date, sellertxt, 0);
+                    check = DB.InsertCustomer(billId, cName, cNumber, date, sellertxt, 0);
 
-                if (check) {
+                    if (check) {
 
-                    Boolean update;
+                        Boolean update;
 
-                    update = DB.removeSell(billId,sellertxt);
+                        update = DB.removeSell(billId, sellertxt);
 
-                    if(update){
-                        save.setVisibility(View.INVISIBLE);
-                        pdf.setVisibility(View.VISIBLE);
-                        back.setVisibility(View.VISIBLE);
-                        display.setVisibility(View.VISIBLE);
-                        addmore.setVisibility(View.INVISIBLE);
-                        Toast.makeText(ShowList.this, "Saved ", Toast.LENGTH_SHORT).show();
+                        if (update) {
+                            save.setVisibility(View.INVISIBLE);
+                            pdf.setVisibility(View.VISIBLE);
+                            back.setVisibility(View.VISIBLE);
+                            display.setVisibility(View.VISIBLE);
+                            addmore.setVisibility(View.INVISIBLE);
+                            Toast.makeText(ShowList.this, "Saved ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ShowList.this, "Error While managing Stock", Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    } else {
+                        Toast.makeText(ShowList.this, "Error ", Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        Toast.makeText(ShowList.this, "Error While managing Stock", Toast.LENGTH_SHORT).show();
-                    }
-
-
-
                 } else {
-                    Toast.makeText(ShowList.this, "Error ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShowList.this,"Please Add some item to proceed",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -180,7 +186,7 @@ public class ShowList extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
-                //                    DATE | name | number | Total |
+                    //                    DATE | name | number | Total |
                     buffer.append("Bill ID = " + res.getString(0) + "\n");
                     buffer.append("Customer Name = " + res.getString(1) + "\n");
                     buffer.append("Customer Number = " + res.getString(2) + "\n");
@@ -263,27 +269,27 @@ public class ShowList extends AppCompatActivity {
                             //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(32)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("Address: "+selerDATA.getString(5)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("E-mail: "+selerDATA.getString(1)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("E-mail: " + selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("Mo: "+selerDATA.getString(4)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("GST: "+selerDATA.getString(3)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell());
                         } while (selerDATA.moveToNext());
@@ -381,33 +387,34 @@ public class ShowList extends AppCompatActivity {
 
 //  Recycler View ----------------------------------------------------------------------------------
 
-//        aindex = new ArrayList<>();
+        aindex = new ArrayList<>();
         ainput = new ArrayList<>();
         aprice = new ArrayList<>();
         aquantity = new ArrayList<>();
         asubtotal = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview);
-        adapter = new MyAdapter(ShowList.this, ainput, aprice, aquantity, asubtotal);
+        adapter = new MyAdapter(ShowList.this, ainput, aprice, aquantity, asubtotal, aindex);
         recyclerView.setAdapter(adapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(ShowList.this));
 
         Cursor cursor = DB.displayList(billId);
+        cursor.moveToFirst();
         if (cursor.getCount() == 0) {
             Toast.makeText(ShowList.this, "No Entry Exists", Toast.LENGTH_SHORT).show();
         } else {
-            while (cursor.moveToNext()) {
-//                aindex.add(cursor.getString(0));
+            do {
+                aindex.add(cursor.getString(0));
                 ainput.add(cursor.getString(1));
                 aprice.add(cursor.getString(2));
                 aquantity.add(cursor.getString(3));
                 asubtotal.add(cursor.getString(4));
-            }
+            } while (cursor.moveToNext());
         }
     }
 //--------------------------------------------------------------------------------------------------
 
-//     Making Sure User Saved Data Before Going Back -----------------------------------------------
+    //     Making Sure User Saved Data Before Going Back -----------------------------------------------
     @Override
     public void onBackPressed() {
         if (save_CLicked[0] == 0) {

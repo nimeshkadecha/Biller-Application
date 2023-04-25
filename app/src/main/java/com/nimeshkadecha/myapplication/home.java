@@ -193,8 +193,11 @@ public class home extends AppCompatActivity {
             public void onClick(View v) {
                 navagationDrawer.setVisibility(View.VISIBLE);
                 product.setVisibility(View.INVISIBLE);
-                InputMethodManager inm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                if(getCurrentFocus() != null){
+                    InputMethodManager inm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                }
+
             }
         });
 // -------------------------------------------------------------------------------------------------
