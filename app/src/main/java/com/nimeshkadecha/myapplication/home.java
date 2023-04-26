@@ -104,7 +104,7 @@ public class home extends AppCompatActivity {
                         if (NameSuggestion[j].equals(Name_Sugg.getString(1))) {
                             insert = false;
                             break;
-                        }else{
+                        } else {
                             insert = true;
                         }
                     }
@@ -193,9 +193,9 @@ public class home extends AppCompatActivity {
             public void onClick(View v) {
                 navagationDrawer.setVisibility(View.VISIBLE);
                 product.setVisibility(View.INVISIBLE);
-                if(getCurrentFocus() != null){
-                    InputMethodManager inm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                if (getCurrentFocus() != null) {
+                    InputMethodManager inm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 }
 
             }
@@ -415,12 +415,12 @@ public class home extends AppCompatActivity {
                         Toast.makeText(home.this, "Invalid Number", Toast.LENGTH_SHORT).show();
                     } else {
                         datetxt = date.getText().toString();
-                        Log.d("ENimesh","finalBillIdtxt = " + finalBillIdtxt[0]);
+                        Log.d("ENimesh", "finalBillIdtxt = " + finalBillIdtxt[0]);
                         if (finalBillIdtxt[0] == 0) {
                             finalBillIdtxt[0] = DB.getbillid();
                         }
                         int billIDd = DB.getbillid();
-                        Log.d("ENimesh","billIDd = " + finalBillIdtxt[0]);
+                        Log.d("ENimesh", "billIDd = " + finalBillIdtxt[0]);
 
                         intent.putExtra("cName", nametxt);
                         intent.putExtra("cNumber", numbertxt);

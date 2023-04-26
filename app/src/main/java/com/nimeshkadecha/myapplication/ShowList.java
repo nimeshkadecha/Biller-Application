@@ -328,6 +328,8 @@ public class ShowList extends AppCompatActivity {
 
                     float cWidth2[] = {270, 100, 100, 100};
                     Table table2 = new Table(cWidth2);
+                    float cWidth6[] = {560};
+                    Table END = new Table(cWidth6);
 
                     table2.addCell(new Cell().add(new Paragraph("Product Name")));
                     table2.addCell(new Cell().add(new Paragraph("Product Price")));
@@ -351,12 +353,17 @@ public class ShowList extends AppCompatActivity {
                     table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
                     table2.addCell(new Cell().add(new Paragraph(total + "")));
 
+//                    Adding signature
+                    END.addCell(new Cell().add(new Paragraph("Signature: ")).setBorder(Border.NO_BORDER));
+
 //                Displaying data
                     document.add(table1);
                     document.add(new Paragraph("\n"));
                     document.add(table3);
                     document.add(new Paragraph("\n"));
                     document.add(table2);
+                    document.add(new Paragraph("\n"));
+                    document.add(END);
                     document.close();
                     Toast.makeText(ShowList.this, "PDF Created", Toast.LENGTH_SHORT).show();
 

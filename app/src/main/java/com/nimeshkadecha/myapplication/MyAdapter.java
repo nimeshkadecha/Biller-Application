@@ -1,5 +1,6 @@
 package com.nimeshkadecha.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -38,12 +39,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 //        holder.index.setText(String.valueOf(index.get(position)));
         holder.item.setText(String.valueOf(item.get(position)));
         holder.price.setText(String.valueOf(price.get(position)));
         holder.quantity.setText(String.valueOf(quantity.get(position)));
         holder.subtotal.setText(String.valueOf(subtotal.get(position)));
+
+        holder.Delete.setOnClickListener(v-> {
+            Toast.makeText(context, "Long press on delete button to remove", Toast.LENGTH_SHORT).show();
+        });
+
         holder.Delete.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

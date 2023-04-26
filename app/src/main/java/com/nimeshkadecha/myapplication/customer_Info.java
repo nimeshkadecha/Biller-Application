@@ -480,6 +480,9 @@ public class customer_Info extends AppCompatActivity {
                     float cWidth2[] = {270, 100, 100, 100};
                     Table table2 = new Table(cWidth2);
 
+                    float cWidth6[] = {560};
+                    Table END = new Table(cWidth6);
+
 
                     Cursor customerDetail;
                     Cursor list;
@@ -695,6 +698,8 @@ public class customer_Info extends AppCompatActivity {
                             table2.addCell(new Cell().add(new Paragraph(total + "")));
 
                         }
+//                        Adding SIgnature ---------------------------------------------
+                        END.addCell(new Cell().add(new Paragraph("Signature: ")).setBorder(Border.NO_BORDER));
 //                        ---------------------------Working------------------------------------------
 //                Displaying data
                         document.add(table1);
@@ -706,6 +711,8 @@ public class customer_Info extends AppCompatActivity {
                             document.add(new Paragraph("\n"));
                             document.add(table2);
                         }
+                        document.add(new Paragraph("\n"));
+                        document.add(END);
                         document.close();
                         Toast.makeText(customer_Info.this, "PDF Created", Toast.LENGTH_SHORT).show();
 

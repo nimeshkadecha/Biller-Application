@@ -21,6 +21,7 @@ public class register extends AppCompatActivity {
     private DBManager DBM;
     private Button show;
     private ImageView menuclick;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +29,13 @@ public class register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
 //        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
-    //        Removing Suport bar / top line containing name
+        //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-    //        FINDING menu
+        //        FINDING menu
         menuclick = findViewById(R.id.Menu);
 
-    //        Keeping MENUE Invisible
+        //        Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
 //--------------------------------------------------------------------------------------------------
 
@@ -84,7 +85,7 @@ public class register extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------
     }
 
-//    Register button ------------------------------------------------------------------------------
+    //    Register button ------------------------------------------------------------------------------
     public void register(View view) {
         Intent login = new Intent(this, MainActivity.class);
 
@@ -117,23 +118,27 @@ public class register extends AppCompatActivity {
             boolean validEmail = MA.EmailValidation(emailTXT);
             boolean validPassword = MA.passwordValidation(passwordTXT);
 
-            boolean CheckOperation;
-
-            if (validEmail && validPassword) {
-                CheckOperation = DBM.registerUser(nameTXT, emailTXT, passwordTXT, gstTXT, contactTXT, addressTXT);
-                if (CheckOperation) {
-                    Toast.makeText(this, "User Register Successfully", Toast.LENGTH_SHORT).show();
-                    startActivity(login);
-                    finish();
-                } else {
-                    Toast.makeText(this, "Fail to Register User", Toast.LENGTH_SHORT).show();
-                }
-            } else if (!validEmail) {
-                Toast.makeText(this, "Invalid E-Mail", Toast.LENGTH_SHORT).show();
-            } else if (!validPassword) {
-                Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show();
+            if (contactTXT.length() != 10) {
+                Toast.makeText(register.this, "Enter Valid Number", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                boolean CheckOperation;
+
+                if (validEmail && validPassword) {
+                    CheckOperation = DBM.registerUser(nameTXT, emailTXT, passwordTXT, gstTXT, contactTXT, addressTXT);
+                    if (CheckOperation) {
+                        Toast.makeText(this, "User Register Successfully", Toast.LENGTH_SHORT).show();
+                        startActivity(login);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Fail to Register User", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (!validEmail) {
+                    Toast.makeText(this, "Invalid E-Mail", Toast.LENGTH_SHORT).show();
+                } else if (!validPassword) {
+                    Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
