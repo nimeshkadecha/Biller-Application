@@ -47,6 +47,7 @@
                 android:textColor="@color/white"
                 android:textColorHint="#FA0202"
                 android:layout_width="380dp"
+                android:maxLength="70"
                 android:layout_height="wrap_content"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
