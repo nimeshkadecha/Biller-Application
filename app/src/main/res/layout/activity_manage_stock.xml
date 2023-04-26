@@ -113,6 +113,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
         app:prefixTextColor="@color/white"
+        app:counterMaxLength="5"
         app:startIconDrawable="@drawable/baseline_sell_24">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -169,6 +170,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
         app:prefixTextColor="@color/white"
+        app:counterMaxLength="5"
         app:startIconDrawable="@drawable/baseline_warehouse_24">
 
         <com.google.android.material.textfield.TextInputEditText

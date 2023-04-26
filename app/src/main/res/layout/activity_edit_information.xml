@@ -37,6 +37,7 @@
             app:helperTextTextColor="#FF002E"
             android:textColorHint="@color/white"
             app:prefixTextColor="@color/white"
+            app:counterMaxLength="70"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +49,7 @@
                 android:textColorHint="#FA0202"
                 android:layout_width="380dp"
                 android:maxLength="70"
+
                 android:layout_height="wrap_content"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>

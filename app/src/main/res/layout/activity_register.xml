@@ -50,6 +50,7 @@
             app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:counterMaxLength="70"
             app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/ic_baseline_drive_file_rename_outline_24">
 
