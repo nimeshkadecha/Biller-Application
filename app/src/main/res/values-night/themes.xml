@@ -17,7 +17,6 @@
 
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item> <!--// forces to use my colors-->
     </style>
-
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxStrokeColor">@color/white</item> <!-- // click karya pachi je color ave ee -->
         <item name="boxBackgroundColor">#474747</item> <!-- // box no background color -->
@@ -25,12 +24,39 @@
         <item name="startIconTint">@color/white</item>
         <item name="endIconTint">@color/white</item>
         <item name="hintTextColor">@color/white</item>
+        <item name="prefixTextColor">@color/white</item>
+        <item name="counterTextColor">@color/white</item>
     </style>
 
     <style name="Navagation">
+        <item name="android:backgroundTint">#363636</item>
         <item name="android:background">#363636</item>
         <item name="android:text">@color/ic_launcher_background</item>
     </style>
 
+    <style name="TextInputEditText">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="ToolBar">
+        <item name="background">@color/night_back</item>
+    </style>
+
+    <style name="textView">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Image_view">
+        <item name="srcCompat">@drawable/menu</item>
+    </style>
+
+    <style name="Image_view_back">
+        <item name="srcCompat">@drawable/back</item>
+    </style>
+
+    <style name="logoColor">
+        <item name="android:fillColor">#3c85f2</item>
+        <item name="android:strokeColor">#3c85f2</item>
+    </style>
 
 </resources>

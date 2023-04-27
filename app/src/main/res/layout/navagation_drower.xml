@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     style="@style/Navagation"
-
     android:layout_width="290dp"
     android:layout_height="match_parent">
 
     <ImageView
+        style="@style/Image_view_back"
         android:id="@+id/btnBack"
         android:layout_width="39dp"
         android:layout_height="36dp"
@@ -17,13 +17,14 @@
         android:contentDescription="@string/todo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
+         />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        style="@style/textView"
         android:text="@string/about"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +45,7 @@
         android:id="@+id/customerinfo"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="#363636"
+        
         android:minHeight="48dp"
         android:paddingEnd="70dp"
         android:text="@string/customer_information"
@@ -56,7 +57,7 @@
     <Button
         android:id="@+id/editInfo"
         android:paddingEnd="70dp"
-        android:backgroundTint="#363636"
+        
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -82,7 +83,7 @@
 
     <Button
         android:id="@+id/report"
-        android:backgroundTint="#363636"
+        
         android:paddingEnd="75dp"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -96,7 +97,7 @@
     <Button
         android:paddingEnd="99dp"
         android:id="@+id/stock"
-        android:backgroundTint="#363636"
+        
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -110,7 +111,7 @@
         android:paddingEnd="110dp"
         android:id="@+id/backup"
         android:layout_width="250dp"
-        android:backgroundTint="#363636"
+        
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/backup"
@@ -138,7 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Log Out"
-        android:backgroundTint="#363636"
+        
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="@+id/backup"
         app:layout_constraintStart_toStartOf="@+id/backup"

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -53,6 +54,8 @@ public class Report extends AppCompatActivity {
             Toast.makeText(this, "You don't have any stock available", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "GoTo manage stock to enter Stock", Toast.LENGTH_LONG).show();
             Intent i = new Intent(Report.this, home.class);
+            i.putExtra("Email",Seller_email);
+            i.putExtra("Origin","test");
             startActivity(i);
         }
 

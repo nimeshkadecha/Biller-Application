@@ -4,18 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="120dp"
     android:layout_margin="16dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="12dp"
     android:backgroundTint="@color/white"
     android:backgroundTintMode="add"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="12dp"
 
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        >
+        android:layout_margin="16dp">
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -28,20 +27,20 @@
 
             <TextView
                 style="bold"
-                android:textSize="15sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/item_name1"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="15sp">
 
             </TextView>
 
             <TextView
                 android:id="@+id/textitem"
-                android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="16sp">
 
 
             </TextView>
@@ -51,28 +50,28 @@
             android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <TextView
                 style="bold"
-                android:textSize="15sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/item_price"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="15sp">
 
             </TextView>
 
             <TextView
                 android:id="@+id/textprice"
-                android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="16sp">
 
             </TextView>
         </LinearLayout>
@@ -81,27 +80,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal"
             android:layout_marginTop="12dp"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             <TextView
                 style="bold"
-                android:textSize="15sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/item_quantity"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="15sp">
 
             </TextView>
 
             <TextView
                 android:id="@+id/textquantity"
-                android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="16sp">
 
             </TextView>
         </LinearLayout>
@@ -142,8 +141,8 @@
             app:layout_constraintStart_toEndOf="@+id/linearLayout">
 
             <TextView
-                style="bold"
                 android:id="@+id/Delete"
+                style="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Delete"

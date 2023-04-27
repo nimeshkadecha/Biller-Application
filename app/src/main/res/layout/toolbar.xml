@@ -5,9 +5,12 @@
     android:id="@+id/customToolBar"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="#272727">
+    style="@style/ToolBar"
+
+    >
 
     <ImageView
+        style="@style/Image_view"
         android:id="@+id/Menu"
         android:layout_width="36dp"
         android:layout_height="35dp"
@@ -17,16 +20,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/menu"
         tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
-        android:textColor="@color/white"
         android:id="@+id/textView"
+        style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/lato"
         android:text="@string/biller"
         android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -35,8 +35,6 @@
             android:hint="@string/name"
             app:endIconMode="clear_text"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:counterMaxLength="70"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,11 +43,10 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/rName"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="380dp"
                 android:maxLength="70"
-
                 android:layout_height="wrap_content"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -63,8 +60,6 @@
             android:hint="@string/password"
             app:endIconMode="password_toggle"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
@@ -72,7 +67,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,9 +87,6 @@
             app:counterMaxLength="200"
             app:endIconMode="clear_text"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
-            app:counterTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
@@ -102,7 +94,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/address"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
@@ -119,15 +111,13 @@
             android:hint="@string/gst_number"
             app:endIconMode="clear_text"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/gst"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,8 +133,6 @@
             android:hint="@string/e_mail"
             app:endIconMode="clear_text"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
@@ -152,7 +140,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/contactNumber"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -32,7 +32,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginRight="10dp"
         android:hint="@string/item_name"
-        android:textColorHint="@color/white"
+
         app:endIconMode="clear_text"
         app:helperTextTextColor="#FF002E"
         app:layout_constraintTop_toBottomOf="@+id/title"
@@ -43,7 +43,7 @@
             android:id="@+id/itemNameedt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            style="@style/TextInputEditText"
             android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -57,7 +57,7 @@
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/catagory"
-        android:textColorHint="@color/white"
+
         app:helperTextTextColor="#FF002E"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutitemname"
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textColor="@color/white"
+            style="@style/TextInputEditText"
             android:textColorHint="#FA0202" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,8 +83,9 @@
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/bprice"
-        android:textColorHint="@color/white"
+
         app:helperTextTextColor="#FF002E"
+        android:maxLength="5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/catagoryLay"
         app:prefixTextColor="@color/white"
@@ -95,7 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:textColor="@color/white"
+            android:maxLength="5"
+            style="@style/TextInputEditText"
             android:textColorHint="#FA0202" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,11 +110,11 @@
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/sprice"
-        android:textColorHint="@color/white"
+
         app:helperTextTextColor="#FF002E"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
-        app:prefixTextColor="@color/white"
+
         app:counterMaxLength="5"
         app:startIconDrawable="@drawable/baseline_sell_24">
 
@@ -121,7 +123,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:textColor="@color/white"
+            android:maxLength="5"
+            style="@style/TextInputEditText"
             android:textColorHint="#FA0202" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,18 +137,17 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:hint="@string/date"
-        app:hintTextColor="@color/white"
-        android:textColorHint="@color/white"
+
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sP"
         app:startIconDrawable="@drawable/date"
-        app:startIconTint="@color/white">
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/PurchesDate"
-            android:textColor="@color/white"
+            style="@style/TextInputEditText"
             android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -164,7 +166,7 @@
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/quantity"
-        android:textColorHint="@color/white"
+
         app:helperTextTextColor="#FF002E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +180,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:textColor="@color/white"
+            style="@style/TextInputEditText"
             android:textColorHint="#FA0202" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -200,16 +202,5 @@
         android:text="@string/addS"
         app:layout_constraintEnd_toEndOf="@+id/layoutQuantity"
         app:layout_constraintTop_toBottomOf="@+id/layoutQuantity" />
-
-    <!--    <Button-->
-    <!--        android:id="@+id/show"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="16dp"-->
-    <!--        android:text="@string/show_list"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/layoutQuantity"-->
-    <!--        tools:ignore="TextContrastCheck" />-->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

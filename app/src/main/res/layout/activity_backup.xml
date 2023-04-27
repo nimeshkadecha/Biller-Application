@@ -51,6 +51,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:maxLength="6"
+            style="@style/TextInputEditText"
             android:autofillHints="smsOTPCode"
             android:importantForAutofill="yes"
              />

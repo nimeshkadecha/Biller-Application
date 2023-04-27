@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#3c85f2</item> <!--  // button color -->
+        <item name="colorPrimary">#63637a</item> <!--  // button color -->
         <item name="colorPrimaryVariant">#E6FF00</item>
-        <item name="colorOnPrimary">@color/white</item><!--  // button text color -->
+        <item name="colorOnPrimary">#FFFFFF</item><!--  // button text color -->
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#257DFF</item><!--  // sellection color (highlited) -->
         <item name="colorSecondaryVariant">#FF0000</item>
@@ -12,24 +12,51 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">#333333</item> <!-- // status bar color -->
         <!-- Customize your theme here. -->
-        <item name="android:colorBackground">#1f1f1f</item><!-- >// background color -->
-        <item name="android:textColor" >#888888</item> <!--  // text color -->
+        <item name="android:colorBackground">@color/day_back</item><!-- >// background color -->
+        <item name="android:textColor" >#000000</item> <!--  // text color -->
 
     </style>
 
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeColor">@color/white</item> <!-- // click karya pachi je color ave ee -->
-        <item name="boxBackgroundColor">#474747</item> <!-- // box no background color -->
-        <item name="android:textColorHint">@color/white</item><!-- // Hint text colore (Placeholder color) -->
-        <item name="startIconTint">@color/white</item>
-        <item name="endIconTint">@color/white</item>
-        <item name="hintTextColor">@color/white</item>
+        <item name="boxStrokeColor">#3c85f2</item> <!-- // click karya pachi je color ave ee -->
+        <item name="boxBackgroundColor">@color/day_back</item> <!-- // box no background color -->
+        <item name="android:textColorHint">@color/day2</item><!-- // Hint text colore (Placeholder color) -->
+        <item name="startIconTint">@color/day2</item>
+        <item name="endIconTint">@color/day2</item>
+        <item name="prefixTextColor">@color/day2</item>
+        <item name="hintTextColor">@color/day2</item>
+        <item name="counterTextColor">@color/black</item>
+    </style>
+
+    <style name="logoColor">
+        <item name="android:fillColor">#644AB5</item>
+        <item name="android:strokeColor">#644AB5</item>
     </style>
 
     <style name="Navagation">
-        <item name="android:backgroundTint">#363636</item>
-        <item name="android:background">#363636</item>
+        <item name="android:backgroundTint">#d7d8d8</item>
+        <item name="android:background">#d7d8d8</item>
         <item name="android:text">@color/ic_launcher_background</item>
+    </style>
+
+    <style name="TextInputEditText">
+        <item name="android:textColor">@color/day2</item>
+    </style>
+
+    <style name="ToolBar">
+        <item name="android:background">@color/toolbar</item>
+    </style>
+    
+    <style name="textView">
+        <item name="android:textColor">@color/black</item>
+    </style>
+    
+    <style name="Image_view">
+        <item name="srcCompat">@drawable/menu_black</item>
+    </style>
+
+    <style name="Image_view_back">
+        <item name="srcCompat">@drawable/baseline_arrow_back_24</item>
     </style>
 
 </resources>

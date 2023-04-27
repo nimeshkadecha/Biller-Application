@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/homeLayout"
     android:theme="@style/Theme.MyApplication"
     tools:context=".home">
 
@@ -26,24 +26,21 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:hint="@string/number"
-
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout9"
         app:prefixText="+91"
-        android:textColorHint="@color/white"
-        app:prefixTextColor="@color/white"
         app:startIconDrawable="@drawable/ic_phone">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/contact"
-            android:textColor="@color/white"
-            android:textColorHint="#FA0202"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:maxLength="10"
+            android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,28 +53,24 @@
         android:layout_marginTop="35dp"
         android:layout_marginRight="10dp"
         android:hint="@string/customer_name"
-        app:hintTextColor="@color/white"
-        android:textColorHint="@color/white"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:endIconTint="@color/white"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:startIconDrawable="@drawable/ic_baseline_person_24"
-        app:startIconTint="@color/white"
-        >
+        app:startIconDrawable="@drawable/ic_baseline_person_24">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/name"
-            android:textColor="@color/white"
-            android:textColorHint="#FA0202"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/textView6"
+        style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -96,24 +89,21 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:hint="@string/date"
-        app:hintTextColor="@color/white"
-        android:textColorHint="@color/white"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutNumber"
-        app:startIconDrawable="@drawable/date"
-        app:startIconTint="@color/white">
+        app:startIconDrawable="@drawable/date">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/date"
-            android:textColor="@color/white"
-            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="date"
             android:maxLength="10"
             android:text=""
+            style="@style/textView"
+            android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 

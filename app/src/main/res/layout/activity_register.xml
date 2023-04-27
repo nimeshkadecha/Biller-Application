@@ -16,6 +16,7 @@
 
     <TextView
         android:id="@+id/head"
+        style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -46,8 +47,6 @@
             app:endIconMode="clear_text"
             app:helperText="Require*"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:counterMaxLength="70"
@@ -58,7 +57,7 @@
                 android:id="@+id/rName"
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:maxLength="70"
                 android:textColorHint="#FA0202"
                 tools:ignore="TextContrastCheck" />
@@ -73,8 +72,6 @@
             app:endIconMode="clear_text"
             app:helperText="Required*"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
@@ -85,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 tools:ignore="TextContrastCheck" />
 
@@ -100,8 +97,6 @@
             app:endIconMode="password_toggle"
             app:helperText="Required*"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail"
@@ -109,7 +104,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,15 +122,13 @@
             app:endIconMode="clear_text"
             app:helperText="Require*"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/gst"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,9 +146,6 @@
             app:endIconMode="clear_text"
             app:helperText="Require*"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
-            app:counterTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
@@ -164,7 +154,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/contactNumber"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,7 +166,6 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutAddress"
             style="@style/TextInputLayout"
-
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:hint="@string/address"
@@ -187,9 +176,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:helperTextTextColor="#FF002E"
-            android:textColorHint="@color/white"
-            app:prefixTextColor="@color/white"
-            app:counterTextColor="@color/white"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
             app:startIconDrawable="@drawable/ic_baseline_home_work_24">
 
@@ -198,7 +184,7 @@
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
                 android:maxLength="200"
-                android:textColor="@color/white"
+                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
