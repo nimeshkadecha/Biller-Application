@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#3c85f2</item> <!--  // button color -->
+        <item name="colorPrimary">#A33C85F2</item> <!--  // button color -->
         <item name="colorPrimaryVariant">#E6FF00</item>
         <item name="colorOnPrimary">@color/white</item><!--  // button text color -->
         <!-- Secondary brand color. -->

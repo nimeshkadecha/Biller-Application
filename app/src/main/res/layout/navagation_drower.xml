@@ -45,7 +45,6 @@
         android:id="@+id/customerinfo"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        
         android:minHeight="48dp"
         android:paddingEnd="70dp"
         android:text="@string/customer_information"
@@ -57,7 +56,6 @@
     <Button
         android:id="@+id/editInfo"
         android:paddingEnd="70dp"
-        
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -83,7 +81,7 @@
 
     <Button
         android:id="@+id/report"
-        
+
         android:paddingEnd="75dp"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -97,7 +95,7 @@
     <Button
         android:paddingEnd="99dp"
         android:id="@+id/stock"
-        
+
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -111,7 +109,7 @@
         android:paddingEnd="110dp"
         android:id="@+id/backup"
         android:layout_width="250dp"
-        
+
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/backup"
@@ -139,7 +137,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Log Out"
-        
+
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="@+id/backup"
         app:layout_constraintStart_toStartOf="@+id/backup"
