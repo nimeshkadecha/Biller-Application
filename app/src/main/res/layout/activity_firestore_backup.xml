@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="#272727"
+
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:layout_marginTop="100dp"
@@ -65,7 +65,7 @@
         android:fadingEdge="horizontal"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="#272727"
+
         android:layout_marginTop="200dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
