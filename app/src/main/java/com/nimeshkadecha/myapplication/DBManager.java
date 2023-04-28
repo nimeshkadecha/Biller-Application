@@ -647,6 +647,8 @@ public class DBManager extends SQLiteOpenHelper {
 
     public Cursor getInventory(String seller) {
 
+        createTable();
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery("Select * from stockQuentity where seller = ?", new String[]{seller});
