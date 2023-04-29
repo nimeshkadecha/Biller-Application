@@ -269,8 +269,10 @@ public class Firestore_Backup extends AppCompatActivity {
 
                                                                 Log.d("ENimesh","total= " +stockQuentitymap.size());
                                                                 Log.d("ENimesh","totalbackup = " +backupUpdate.size());
-                                                                for(int i=0;i<stockQuentitymap.size();i++){
-                                                                    local_db.updatestatus(backupUpdate.get(i),Seller_Email);
+                                                                for(int jk=0;jk<backupUpdate.size();jk++){
+                                                                    Log.d("ENimesh","form fire name =" +backupUpdate.get(jk) );
+                                                                    Log.d("ENimesh","form fire seller =" +backupUpdate.get(jk) );
+                                                                    local_db.updatestatus(backupUpdate.get(jk),Seller_Email);
                                                                 }
                                                                 lodingPB.setVisibility(View.GONE);
                                                             }
@@ -291,16 +293,6 @@ public class Firestore_Backup extends AppCompatActivity {
 
                                     Cursor stocksC = local_db.viewStockhistory(Seller_Email);
                                     stocksC.moveToFirst();
-
-//                                    DB.execSQL("Create TABLE IF NOT EXISTS stock(productID Integer primary key autoincrement ," +
-//                                            "productName TEXT ," +
-//                                            "catagory TEXT," +
-//                                            "purchesPrice TEXT," +
-//                                            "sellingPrice TEXT," +
-//                                            "date Date," +
-//                                            "quentity TEXT," +
-//                                            "seller TEXT," +
-//                                            "backup Integer)");
 
                                     if(stocksC.getCount()>0){
                                         do{
@@ -325,6 +317,13 @@ public class Firestore_Backup extends AppCompatActivity {
                                                                 for(int i=0;i<=id;i++){
                                                                     local_db.updateStockStatus(i,Seller_Email);
                                                                 }
+
+                                                                SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                                                SharedPreferences.Editor editor = sp.edit();
+                                                                editor.putString("Last Upload", formattedDate);
+                                                                editor.apply();
+
+                                                                uploadDate.setText(formattedDate);
                                                             }
                                                         }).addOnFailureListener(new OnFailureListener() {
                                                             @Override

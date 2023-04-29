@@ -17,7 +17,7 @@
     <string name="item_name">Item Name</string>
     <string name="item_name1">Item Name :</string>
     <string name="price">Price</string>
-    <string name="bprice">Porches Price</string>
+    <string name="bprice">Purchase Price</string>
     <string name="sprice">Selling Price</string>
     <string name="catagory">Category</string>
     <string name="quantity">Quantity</string>

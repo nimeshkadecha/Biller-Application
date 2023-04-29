@@ -640,6 +640,9 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
+        Log.d("ENimesh","getProductQuentity name = "+name);
+        Log.d("ENimesh","getProductQuentity seller = "+seller);
+
         Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? AND productName = ?", new String[]{seller, name});
 
         return c;
