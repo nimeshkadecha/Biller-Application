@@ -1,6 +1,7 @@
 package com.nimeshkadecha.myapplication;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -223,7 +225,32 @@ public class customer_Info extends AppCompatActivity {
                 String date = dateedt.getText().toString();
                 if (date.isEmpty()) {
                     dateedt.setText(formattedDate);
+                }else{
+                    Toast.makeText(customer_Info.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        dateedt.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                final Calendar c = Calendar.getInstance();
+
+                // on below line we are getting
+                // our day, month and year.
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(customer_Info.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        dateedt.setText(" ");
+                        dateedt.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                    }}, year, month, day);
+                datePickerDialog.show();
+                return true;
             }
         });
         todateedt.setOnClickListener(new View.OnClickListener() {
@@ -232,7 +259,32 @@ public class customer_Info extends AppCompatActivity {
                 String date = todateedt.getText().toString();
                 if (date.isEmpty()) {
                     todateedt.setText(formattedDate);
+                }else{
+                    Toast.makeText(customer_Info.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        todateedt.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                final Calendar c = Calendar.getInstance();
+
+                // on below line we are getting
+                // our day, month and year.
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(customer_Info.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        todateedt.setText(" ");
+                        todateedt.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                    }}, year, month, day);
+                datePickerDialog.show();
+                return true;
             }
         });
 //--------------------------------------------------------------------------------------------------
