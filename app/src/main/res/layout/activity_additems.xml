@@ -103,29 +103,31 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:text="@string/add_item"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="@+id/layoutQuantity"
         app:layout_constraintTop_toBottomOf="@+id/layoutQuantity"
         tools:ignore="TextContrastCheck" />
 
-    <include
-        android:id="@+id/navigation"
-        layout="@layout/navagation_drower"
-        android:layoutAnimation="@android:anim/linear_interpolator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+<!--    <include-->
+<!--        android:id="@+id/navigation"-->
+<!--        layout="@layout/navagation_drower"-->
+<!--        android:layoutAnimation="@android:anim/linear_interpolator"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
-    </include>
+<!--    </include>-->
 
     <Button
         android:id="@+id/show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:text="@string/show_list"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/layoutQuantity"
         app:layout_constraintTop_toBottomOf="@+id/layoutQuantity"
         tools:ignore="TextContrastCheck" />
 

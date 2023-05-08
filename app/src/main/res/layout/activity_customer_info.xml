@@ -48,6 +48,7 @@
         android:layout_marginRight="10dp"
         android:hint="@string/search_by_customer_name"
         app:endIconMode="clear_text"
+        app:helperText="Search By Name / Number / Bill ID"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner"
@@ -76,6 +77,7 @@
         android:layout_marginRight="10dp"
         android:hint="@string/search_by_contact_number"
         app:endIconMode="clear_text"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/namelayout"
@@ -89,6 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="number"
+            android:visibility="gone"
             android:maxLength="10"
             tools:ignore="TextContrastCheck">
 
@@ -161,6 +164,7 @@
         android:layout_marginRight="10dp"
         android:hint="@string/search_by_billid"
         app:endIconMode="clear_text"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rangedate"
@@ -168,6 +172,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/billID"
+            android:visibility="gone"
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -181,34 +186,33 @@
         android:id="@+id/searchbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:text="@string/search"
-        app:layout_constraintStart_toStartOf="@+id/billIDlayout"
-        app:layout_constraintTop_toBottomOf="@+id/billIDlayout"
+        app:layout_constraintStart_toStartOf="@+id/rangedate"
+        app:layout_constraintTop_toBottomOf="@+id/rangedate"
         tools:ignore="TextContrastCheck">
 
     </Button>
 
     <Button
         android:id="@+id/showallData"
+        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/show_all_customers"
-        android:layout_marginTop="25dp"
-        app:layout_constraintEnd_toEndOf="@+id/billIDlayout"
-        app:layout_constraintTop_toBottomOf="@+id/billIDlayout"
+        app:layout_constraintEnd_toEndOf="@+id/rangedate"
+        app:layout_constraintTop_toBottomOf="@+id/rangedate"
         tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/pdfC"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:text="@string/download_pdf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showallData"
-        tools:ignore="TextContrastCheck"
-        android:visibility="gone"/>
+        tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

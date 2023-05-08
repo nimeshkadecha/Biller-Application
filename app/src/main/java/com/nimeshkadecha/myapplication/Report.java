@@ -5,6 +5,7 @@ import static com.itextpdf.kernel.pdf.PdfName.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,10 +13,16 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
@@ -127,6 +134,88 @@ public class Report extends AppCompatActivity {
         }
 
         catagory.setAdapter(new ArrayAdapter<>(Report.this, android.R.layout.simple_list_item_1, Names));
+
+
+        //        working with switches
+        // search switch
+        Switch searchSwitch = findViewById(R.id.switchSearch);
+
+        if(searchSwitch.isChecked()){
+            itemName.setText("");
+            itemName.setVisibility(View.INVISIBLE);
+            catagory.setVisibility(View.VISIBLE);
+        }else {
+            catagory.setVisibility(View.INVISIBLE);
+            itemName.setVisibility(View.VISIBLE);
+        }
+
+        searchSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    itemName.setText("");
+                    itemName.setVisibility(View.INVISIBLE);
+                    catagory.setVisibility(View.VISIBLE);
+
+                    catagory.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+                }else {
+                    catagory.setVisibility(View.INVISIBLE);
+                    catagory.setText("");
+                    itemName.setVisibility(View.VISIBLE);
+
+                    itemName.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                }
+            }
+        });
+
+//        Switch recordsw
+        Switch switchRecords = findViewById(R.id.switchRecord);
+
+        TextView heading = findViewById(R.id.displayName);
+
+        if(switchRecords.isChecked()){
+            heading.setText("Sales Record");
+        }else{
+            heading.setText("Stock Record");
+        }
+
+        switchRecords.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(switchRecords.isChecked()){
+                    heading.setText("Sales Record");
+                }else{
+                    heading.setText("Stock Record");
+                }
+            }
+        });
+
+//        notifying user to change switchs
+
+        TextInputLayout namelayout = findViewById(R.id.namelayout);
+
+
+        namelayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(itemName.getVisibility() == View.INVISIBLE){
+                    Toast.makeText(Report.this,"Change switch to assess it",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        TextInputLayout catagoryTextInputLayout = findViewById(R.id.catagoryTextInputLayout);
+
+        catagoryTextInputLayout.setOnClickListener(v->{
+            if(catagory.getVisibility() == View.INVISIBLE){
+                Toast.makeText(Report.this,"Change switch to assess it",Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
 //        show report button

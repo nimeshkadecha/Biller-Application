@@ -7,7 +7,7 @@
     tools:context=".Report">
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/displayName"
         style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,15 +32,15 @@
         app:helperTextTextColor="#FF002E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/displayName"
         app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/report_product_name"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="text"
-            style="@style/TextInputEditText"
             android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck">
 
@@ -48,17 +48,47 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <TextView
-        android:id="@+id/textView11"
+    <LinearLayout
+        android:id="@+id/switchc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
-        android:text="OR"
-        style="@style/textView"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="@+id/namelayout"
-        app:layout_constraintStart_toStartOf="@+id/namelayout"
-        app:layout_constraintTop_toBottomOf="@+id/namelayout" />
+        android:background="#27676767"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/namelayout">
+
+        <TextView
+            android:id="@+id/textView12"
+            style="@style/textView"
+            android:layout_margin="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product"
+            android:textSize="20sp" />
+
+        <Switch
+            android:id="@+id/switchSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch Search"
+            android:textSize="15sp"
+            android:layout_marginStart="10dp"
+            tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_marginStart="10dp"
+            style="@style/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/catagoryTextInputLayout"
@@ -73,20 +103,61 @@
         app:helperTextTextColor="#FF002E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView11"
+        app:layout_constraintTop_toBottomOf="@+id/switchc"
         app:startIconDrawable="@drawable/baseline_category_24">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/report_Catagory_name"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="text"
-            style="@style/TextInputEditText"
             android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck">
 
         </com.google.android.material.textfield.MaterialAutoCompleteTextView>
     </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:background="#27676767"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout">
+
+        <TextView
+            android:id="@+id/textView9"
+            style="@style/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="Stock"
+            android:textSize="20sp" />
+
+        <Switch
+            android:id="@+id/switchRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="switch Record"
+            android:textSize="15sp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <TextView
+            android:id="@+id/textView10"
+            style="@style/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Sales"
+            android:textSize="20sp" />
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/QTY_Chart_BTN"
@@ -105,6 +176,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/namelayout"
         app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

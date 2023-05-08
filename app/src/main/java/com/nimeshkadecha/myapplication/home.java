@@ -174,7 +174,12 @@ public class home extends AppCompatActivity {
         date.setText(formattedDate);
 
         date.setOnClickListener(v->{
-            Toast.makeText(this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
+            if(date.getText().toString().equals("")){
+                date.setText(formattedDate);
+            }else{
+                Toast.makeText(this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         date.setOnLongClickListener(new View.OnLongClickListener() {

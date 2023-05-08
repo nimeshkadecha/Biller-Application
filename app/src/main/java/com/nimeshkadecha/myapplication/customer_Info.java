@@ -60,7 +60,7 @@ public class customer_Info extends AppCompatActivity {
     private Spinner spinner;
 
     private TextInputLayout cl, dl, edl, bl, CN;
-    String[] shorting = {"Name", "Number", "Date", "BillId"};
+    String[] shorting = {"Name", "Date"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,18 +92,6 @@ public class customer_Info extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(customer_Info.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
-            }
-        });
-        bl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(customer_Info.this, "Select BillId from dropdown menu", Toast.LENGTH_SHORT).show();
-            }
-        });
-        CN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(customer_Info.this, "Select Name from dropdown menu", Toast.LENGTH_SHORT).show();
             }
         });
 //--------------------------------------------------------------------------------------------------
@@ -161,7 +149,7 @@ public class customer_Info extends AppCompatActivity {
         } else {
             Names = new String[]{"No DAta"};
         }
-        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, Names));
+//        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, Names));
 
         dateedt = findViewById(R.id.date);
         billidedt = findViewById(R.id.billID);
@@ -205,7 +193,22 @@ public class customer_Info extends AppCompatActivity {
         }
 //        Log.d("ENimesh","test"+numberSugg.length);
 
-        contactedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, NUmber));
+//        contactedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, NUmber));
+
+        String[] mergedString = new String[Names.length + NUmber.length];
+
+        int len = 0;
+        for (int i = 0; i < Names.length; i++) {
+            mergedString[i] = Names[i];
+            len++;
+        }
+
+        for (int i = 0; i < NUmber.length; i++) {
+            mergedString[len] = NUmber[i];
+            len++;
+        }
+
+        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, mergedString));
 
         todateedt = findViewById(R.id.rangeDatetEDT);
 //--------------------------------------------------------------------------------------------------
@@ -225,7 +228,7 @@ public class customer_Info extends AppCompatActivity {
                 String date = dateedt.getText().toString();
                 if (date.isEmpty()) {
                     dateedt.setText(formattedDate);
-                }else{
+                } else {
                     Toast.makeText(customer_Info.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -248,7 +251,8 @@ public class customer_Info extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         dateedt.setText(" ");
                         dateedt.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                    }}, year, month, day);
+                    }
+                }, year, month, day);
                 datePickerDialog.show();
                 return true;
             }
@@ -259,7 +263,7 @@ public class customer_Info extends AppCompatActivity {
                 String date = todateedt.getText().toString();
                 if (date.isEmpty()) {
                     todateedt.setText(formattedDate);
-                }else{
+                } else {
                     Toast.makeText(customer_Info.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -282,7 +286,8 @@ public class customer_Info extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         todateedt.setText(" ");
                         todateedt.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                    }}, year, month, day);
+                    }
+                }, year, month, day);
                 datePickerDialog.show();
                 return true;
             }
@@ -313,18 +318,6 @@ public class customer_Info extends AppCompatActivity {
                     billidedt.setVisibility(View.GONE);
                     contactedt.setVisibility(View.GONE);
                     todateedt.setVisibility(View.GONE);
-                } else if (value.equals("Number")) {
-                    nameedt.setText("");
-                    dateedt.setText("");
-                    billidedt.setText("");
-                    todateedt.setText("");
-
-                    nameedt.setVisibility(View.GONE);
-                    dateedt.setVisibility(View.GONE);
-                    billidedt.setVisibility(View.GONE);
-                    contactedt.setVisibility(View.VISIBLE);
-                    todateedt.setVisibility(View.GONE);
-
                 } else if (value.equals("Date")) {
                     nameedt.setText("");
                     contactedt.setText("");
@@ -335,18 +328,6 @@ public class customer_Info extends AppCompatActivity {
                     billidedt.setVisibility(View.GONE);
                     contactedt.setVisibility(View.GONE);
                     todateedt.setVisibility(View.VISIBLE);
-                } else if (value.equals("BillId")) {
-                    nameedt.setText("");
-                    dateedt.setText("");
-                    contactedt.setText("");
-                    todateedt.setText("");
-
-                    nameedt.setVisibility(View.GONE);
-                    dateedt.setVisibility(View.GONE);
-                    billidedt.setVisibility(View.VISIBLE);
-                    contactedt.setVisibility(View.GONE);
-                    todateedt.setVisibility(View.GONE);
-
                 } else {
                     Toast.makeText(customer_Info.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
                 }
@@ -363,29 +344,43 @@ public class customer_Info extends AppCompatActivity {
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nametxt, datetxt, billIDtxt, contactTXT, ToDate;
+                String nametxt, datetxt, contactTXT, billIDtxt, ToDate;
 
                 nametxt = nameedt.getText().toString();
-                datetxt = dateedt.getText().toString();
                 billIDtxt = billidedt.getText().toString();
                 contactTXT = contactedt.getText().toString();
+                datetxt = dateedt.getText().toString();
                 ToDate = todateedt.getText().toString();
 
 
-                if (nametxt.isEmpty() && datetxt.isEmpty() && billIDtxt.isEmpty() && contactTXT.isEmpty() && ToDate.isEmpty()) {
+                if (nametxt.isEmpty() && datetxt.isEmpty() && ToDate.isEmpty()) {
                     Toast.makeText(customer_Info.this, "Fill at least one information to search", Toast.LENGTH_SHORT).show();
                 } else if (datetxt.isEmpty() && !ToDate.isEmpty()) {
                     Toast.makeText(customer_Info.this, "Enter Starting Date", Toast.LENGTH_SHORT).show();
                 } else {
                     Cursor res;
                     res = DB.cusInfo(sellertxt);
+
                     if (!nametxt.isEmpty()) {
 //                        Toast.makeText(customer_Info.this, "Search by name", Toast.LENGTH_SHORT).show();
-                        res = DB.CustomerNameBill(nametxt, sellertxt);
-                    } else if (!contactTXT.isEmpty()) {
-//                        Toast.makeText(customer_Info.this, "Search by contact number", Toast.LENGTH_SHORT).show();
-//                        CustomerNameBill
-                        res = DB.Customernumberbill(contactTXT, sellertxt);
+                        char c[] = nametxt.toCharArray();
+                        boolean contain_digit = false;
+                        int NumberOfDigits = 0;
+                        for (char check : c) {
+                            if (Character.isDigit(check)) {
+                                contain_digit = true;
+                                NumberOfDigits++;
+                            }
+                        }
+                        if (contain_digit) {
+                            if (NumberOfDigits == 10) {
+                                res = DB.Customernumberbill(nametxt, sellertxt);
+                            } else {
+                                res = DB.CustomerBillID(Integer.parseInt(nametxt), sellertxt);
+                            }
+                        } else {
+                            res = DB.CustomerNameBill(nametxt, sellertxt);
+                        }
                     } else if (!datetxt.isEmpty()) {
 //                        Toast.makeText(customer_Info.this, "Search by Date", Toast.LENGTH_SHORT).show();
                         if (!ToDate.isEmpty()) {
@@ -393,11 +388,6 @@ public class customer_Info extends AppCompatActivity {
                         } else {
                             res = DB.CustomerDateBill(datetxt, sellertxt);
                         }
-                    } else if (!billIDtxt.isEmpty()) {
-                        Integer billID;
-                        billID = Integer.parseInt(billIDtxt);
-//                        Toast.makeText(customer_Info.this, "Search by BILL ID", Toast.LENGTH_SHORT).show();
-                        res = DB.CustomerBillID(billID, sellertxt);
                     } else {
                         res = DB.cusInfo(sellertxt);
                         Toast.makeText(customer_Info.this, "Error", Toast.LENGTH_SHORT).show();
@@ -492,27 +482,27 @@ public class customer_Info extends AppCompatActivity {
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(32)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("Address: "+selerDATA.getString(5)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("E-mail: "+selerDATA.getString(1)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("E-mail: " + selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("Mo: "+selerDATA.getString(4)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("GST: "+selerDATA.getString(3)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell());
 

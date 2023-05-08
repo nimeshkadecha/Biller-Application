@@ -63,8 +63,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32sp"
         android:text="Verify"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayout5"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout5"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout5"
         tools:ignore="HardcodedText,TextContrastCheck" />
 

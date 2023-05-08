@@ -125,6 +125,7 @@
         android:text="@string/forgot_password"
         android:textColor="#D0AFFF"
         android:textStyle="bold"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"

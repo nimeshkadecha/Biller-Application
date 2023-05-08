@@ -31,7 +31,7 @@
     <string name="download_from_cloud">Download From Cloud</string>
     <string name="upload_to_cloud">Upload TO Cloud</string>
     <string name="backup_to_cloud">Backup to Cloud</string>
-    <string name="search_by_customer_name">Search By Customer Name</string>
+    <string name="search_by_customer_name">Search Customer</string>
     <string name="customers">Customers</string>
     <string name="search_by_contact_number">Search By Contact Number</string>
     <string name="search_date_or_start_range">Search Date or Start Range</string>
