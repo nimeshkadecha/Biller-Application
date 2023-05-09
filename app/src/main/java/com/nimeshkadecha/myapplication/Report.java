@@ -61,8 +61,8 @@ public class Report extends AppCompatActivity {
             Toast.makeText(this, "You don't have any stock available", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "GoTo manage stock to enter Stock", Toast.LENGTH_LONG).show();
             Intent i = new Intent(Report.this, home.class);
-            i.putExtra("Email",Seller_email);
-            i.putExtra("Origin","test");
+            i.putExtra("Email", Seller_email);
+            i.putExtra("Origin", "test");
             startActivity(i);
         }
 
@@ -110,7 +110,7 @@ public class Report extends AppCompatActivity {
                         if (NameSuggestion[j].equals(Name_Sugg.getString(2))) {
                             insert = false;
                             break;
-                        }else{
+                        } else {
                             insert = true;
                         }
                     }
@@ -140,11 +140,11 @@ public class Report extends AppCompatActivity {
         // search switch
         Switch searchSwitch = findViewById(R.id.switchSearch);
 
-        if(searchSwitch.isChecked()){
+        if (searchSwitch.isChecked()) {
             itemName.setText("");
             itemName.setVisibility(View.INVISIBLE);
             catagory.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             catagory.setVisibility(View.INVISIBLE);
             itemName.setVisibility(View.VISIBLE);
         }
@@ -152,7 +152,7 @@ public class Report extends AppCompatActivity {
         searchSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     itemName.setText("");
                     itemName.setVisibility(View.INVISIBLE);
                     catagory.setVisibility(View.VISIBLE);
@@ -161,7 +161,7 @@ public class Report extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-                }else {
+                } else {
                     catagory.setVisibility(View.INVISIBLE);
                     catagory.setText("");
                     itemName.setVisibility(View.VISIBLE);
@@ -178,18 +178,22 @@ public class Report extends AppCompatActivity {
 
         TextView heading = findViewById(R.id.displayName);
 
-        if(switchRecords.isChecked()){
+        if (switchRecords.isChecked()) {
+
             heading.setText("Sales Record");
-        }else{
+        } else {
+
             heading.setText("Stock Record");
         }
 
         switchRecords.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(switchRecords.isChecked()){
+                if (switchRecords.isChecked()) {
+                    Toast.makeText(Report.this, "Sales records search", Toast.LENGTH_SHORT).show();
                     heading.setText("Sales Record");
-                }else{
+                } else {
+                    Toast.makeText(Report.this, "Inventory records search", Toast.LENGTH_SHORT).show();
                     heading.setText("Stock Record");
                 }
             }
@@ -203,17 +207,17 @@ public class Report extends AppCompatActivity {
         namelayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(itemName.getVisibility() == View.INVISIBLE){
-                    Toast.makeText(Report.this,"Change switch to assess it",Toast.LENGTH_SHORT).show();
+                if (itemName.getVisibility() == View.INVISIBLE) {
+                    Toast.makeText(Report.this, "Change switch to assess Category", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         TextInputLayout catagoryTextInputLayout = findViewById(R.id.catagoryTextInputLayout);
 
-        catagoryTextInputLayout.setOnClickListener(v->{
-            if(catagory.getVisibility() == View.INVISIBLE){
-                Toast.makeText(Report.this,"Change switch to assess it",Toast.LENGTH_SHORT).show();
+        catagoryTextInputLayout.setOnClickListener(v -> {
+            if (catagory.getVisibility() == View.INVISIBLE) {
+                Toast.makeText(Report.this, "Change switch to assess Product", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -222,57 +226,123 @@ public class Report extends AppCompatActivity {
         Button showReport = findViewById(R.id.showRecord);
 
         showReport.setOnClickListener(v -> {
-            if (!itemName.getText().toString().trim().equals("")) {
-                StringBuffer buffer = new StringBuffer();
+            if (!itemName.getText().toString().trim().equals("") || !catagory.getText().toString().trim().equals("")) {
+                StringBuffer buffer;
 
-                Cursor ReportCursor = dbLocal.viewProductHistory(Seller_email, itemName.getText().toString());
+                if (heading.getText().toString().equals("Stock Record")) {
+                    buffer = new StringBuffer();
+                    if (!itemName.getText().toString().trim().equals("")) {
+                        Cursor ReportCursor = dbLocal.viewProductHistory(Seller_email, itemName.getText().toString());
 
-                if (ReportCursor.getCount() <= 0) {
-                    Toast.makeText(this, "History Doesn't Exists", Toast.LENGTH_SHORT).show();
-                } else {
-                    ReportCursor.moveToFirst();
+                        if (ReportCursor.getCount() <= 0) {
+                            Toast.makeText(this, "You haven't managed '" + itemName.getText().toString() + "' product's stocks.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            ReportCursor.moveToFirst();
 
-                    buffer.append("Product = " + itemName.getText().toString() + "\n\n");
-                    do {
-                        buffer.append("Date = " + ReportCursor.getString(5) + "\n");
-                        buffer.append("Buy Price = " + ReportCursor.getString(3) + "\n");
-                        buffer.append("Sell Price = " + ReportCursor.getString(4) + "\n");
-                        buffer.append("Quantity = " + ReportCursor.getString(6) + "\n");
-                        buffer.append("Category = " + ReportCursor.getString(2) + "\n\n");
-                    } while (ReportCursor.moveToNext());
+                            buffer.append("Product = " + itemName.getText().toString() + "\n\n");
+                            do {
+                                buffer.append("Date = " + ReportCursor.getString(5) + "\n");
+                                buffer.append("Buy Price = " + ReportCursor.getString(3) + "\n");
+                                buffer.append("Sell Price = " + ReportCursor.getString(4) + "\n");
+                                buffer.append("Quantity = " + ReportCursor.getString(6) + "\n");
+                                buffer.append("Category = " + ReportCursor.getString(2) + "\n\n");
+                            } while (ReportCursor.moveToNext());
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
-                    builder.setCancelable(true);
-                    builder.setTitle("Stock Report");
-                    builder.setMessage(buffer.toString());
-                    builder.show();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            builder.setCancelable(true);
+                            builder.setTitle("Stock Report");
+                            builder.setMessage(buffer.toString());
+                            builder.show();
+                        }
+                    } else if (!catagory.getText().toString().equals("")) {
+                        buffer = new StringBuffer();
+
+                        Cursor ReportCursor = dbLocal.viewCategoryHistory(Seller_email, catagory.getText().toString());
+
+                        if (ReportCursor.getCount() <= 0) {
+                            Toast.makeText(this, "You haven't managed " + catagory.getText().toString() + " categories stocks.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            ReportCursor.moveToFirst();
+
+                            buffer.append("Category = " + catagory.getText().toString() + "\n\n");
+                            do {
+                                buffer.append("Date = " + ReportCursor.getString(5) + "\n");
+                                buffer.append("Buy Price = " + ReportCursor.getString(3) + "\n");
+                                buffer.append("Sell Price = " + ReportCursor.getString(4) + "\n");
+                                buffer.append("Quantity = " + ReportCursor.getString(6) + "\n");
+                                buffer.append("Product = " + ReportCursor.getString(1) + "\n\n");
+                            } while (ReportCursor.moveToNext());
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            builder.setCancelable(true);
+                            builder.setTitle("Stock Report");
+                            builder.setMessage(buffer.toString());
+                            builder.show();
+                        }
+                    }
                 }
-            } else if(!catagory.getText().toString().equals("")) {
-                StringBuffer buffer = new StringBuffer();
+                else if (heading.getText().toString().equals("Sales Record")) {
+                    buffer = new StringBuffer();
+                    if (!itemName.getText().toString().trim().equals("")) {
+                        Cursor ReportCursor = dbLocal.viewSlaseProductHistory(Seller_email, itemName.getText().toString());
 
-                Cursor ReportCursor = dbLocal.viewCategoryHistory(Seller_email, catagory.getText().toString());
+                        if (ReportCursor.getCount() <= 0) {
+                            Toast.makeText(this, "You haven't managed '" + itemName.getText().toString() + "' product's stocks.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            ReportCursor.moveToFirst();
 
-                if (ReportCursor.getCount() <= 0) {
-                    Toast.makeText(this, "History Doesn't Exists", Toast.LENGTH_SHORT).show();
+                            buffer.append("Product = " + itemName.getText().toString() + "\n");
+                            do {
+                                buffer.append("Total number of products sold = " + ReportCursor.getString(0) + "\n");
+                                buffer.append("The average price per unit sold = " + ReportCursor.getString(2) + "\n");
+                                buffer.append("The total revenue generated = " + ReportCursor.getString(1) + "\n\n");
+                            } while (ReportCursor.moveToNext());
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            builder.setCancelable(true);
+                            builder.setTitle("Sales Report");
+                            builder.setMessage(buffer.toString());
+                            builder.show();
+                        }
+                    }
+                    else if (!catagory.getText().toString().equals("")) {
+                        buffer = new StringBuffer();
+
+                        Cursor ReportCursor = dbLocal.viewSlaseCategoryHistory(Seller_email, catagory.getText().toString());
+
+                        if (ReportCursor.getCount() <= 0) {
+                            Toast.makeText(this, "You haven't managed " + catagory.getText().toString() + " categories stocks.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            ReportCursor.moveToFirst();
+                            buffer.append("Category = " + catagory.getText().toString() + "\n\n");
+                            do{
+                                Cursor productCursor = dbLocal.viewSlaseProductHistory(Seller_email, ReportCursor.getString(0));
+
+                                if (productCursor.getCount() <= 0) {
+                                    Toast.makeText(this, "You haven't managed '" + ReportCursor.getString(0) + "' product's stocks.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    productCursor.moveToFirst();
+                                    buffer.append("Product = " + ReportCursor.getString(0) + "\n");
+                                    do {
+                                        buffer.append("Total number of products sold = " + productCursor.getString(0) + "\n");
+                                        buffer.append("The average price per unit sold = " + productCursor.getString(2) + "\n");
+                                        buffer.append("The total revenue generated = " + productCursor.getString(1) + "\n\n");
+                                    } while (productCursor.moveToNext());
+
+                                }
+                            }while (ReportCursor.moveToNext());
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            builder.setCancelable(true);
+                            builder.setTitle("Slase Report");
+                            builder.setMessage(buffer.toString());
+                            builder.show();
+                        }
+                    }
                 } else {
-                    ReportCursor.moveToFirst();
-
-                    buffer.append("Category = " + catagory.getText().toString() + "\n\n");
-                    do {
-                        buffer.append("Date = " + ReportCursor.getString(5) + "\n");
-                        buffer.append("Buy Price = " + ReportCursor.getString(3) + "\n");
-                        buffer.append("Sell Price = " + ReportCursor.getString(4) + "\n");
-                        buffer.append("Quantity = " + ReportCursor.getString(6) + "\n");
-                        buffer.append("Product = " + ReportCursor.getString(1) + "\n\n");
-                    } while (ReportCursor.moveToNext());
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
-                    builder.setCancelable(true);
-                    builder.setTitle("Stock Report");
-                    builder.setMessage(buffer.toString());
-                    builder.show();
+                    Toast.makeText(this, "Unknown Error", Toast.LENGTH_SHORT).show();
                 }
-            }else{
+            } else {
                 Toast.makeText(this, "Fill Any one of the above filed", Toast.LENGTH_SHORT).show();
             }
 

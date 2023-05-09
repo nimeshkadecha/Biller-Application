@@ -830,6 +830,22 @@ public class DBManager extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor viewSlaseProductHistory(String seller,String product){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND seller = ?",new String[]{product,seller});
+        return c;
+    }
+
+    public Cursor viewSlaseCategoryHistory(String seller,String catagory) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("Select DISTINCT productName from stock where seller =? AND catagory=? ", new String[]{seller,catagory});
+
+        return c;
+    }
+
     public boolean addStockQty(String name,String quentity,String sPrice,String seller){
 
         SQLiteDatabase db = this.getWritableDatabase();
