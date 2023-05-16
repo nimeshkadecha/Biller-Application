@@ -137,6 +137,7 @@ public class ForgotPassword extends AppCompatActivity {
                 GETOTP.putExtra("number", CN);
                 GETOTP.putExtra("OTP", s);
                 startActivity(GETOTP);
+                finish();
             }
         };
         PhoneAuthOptions options =

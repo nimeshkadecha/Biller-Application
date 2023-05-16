@@ -280,8 +280,7 @@ public class Report extends AppCompatActivity {
                             builder.show();
                         }
                     }
-                }
-                else if (heading.getText().toString().equals("Sales Record")) {
+                } else if (heading.getText().toString().equals("Sales Record")) {
                     buffer = new StringBuffer();
                     if (!itemName.getText().toString().trim().equals("")) {
                         Cursor ReportCursor = dbLocal.viewSlaseProductHistory(Seller_email, itemName.getText().toString());
@@ -292,11 +291,15 @@ public class Report extends AppCompatActivity {
                             ReportCursor.moveToFirst();
 
                             buffer.append("Product = " + itemName.getText().toString() + "\n");
-                            do {
-                                buffer.append("Total number of products sold = " + ReportCursor.getString(0) + "\n");
-                                buffer.append("The average price per unit sold = " + ReportCursor.getString(2) + "\n");
-                                buffer.append("The total revenue generated = " + ReportCursor.getString(1) + "\n\n");
-                            } while (ReportCursor.moveToNext());
+                            if (ReportCursor.getString(0) == null) {
+                                buffer.append("\nBased on the information available, it appears that no sales have been recorded as of yet." + "\n\n");
+                            } else {
+                                do {
+                                    buffer.append("Total number of products sold = " + ReportCursor.getString(0) + "\n");
+                                    buffer.append("The average price per unit sold = " + ReportCursor.getString(2) + "\n");
+                                    buffer.append("The total revenue generated = " + ReportCursor.getString(1) + "\n\n");
+                                } while (ReportCursor.moveToNext());
+                            }
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
                             builder.setCancelable(true);
@@ -304,8 +307,7 @@ public class Report extends AppCompatActivity {
                             builder.setMessage(buffer.toString());
                             builder.show();
                         }
-                    }
-                    else if (!catagory.getText().toString().equals("")) {
+                    } else if (!catagory.getText().toString().equals("")) {
                         buffer = new StringBuffer();
 
                         Cursor ReportCursor = dbLocal.viewSlaseCategoryHistory(Seller_email, catagory.getText().toString());
@@ -315,7 +317,7 @@ public class Report extends AppCompatActivity {
                         } else {
                             ReportCursor.moveToFirst();
                             buffer.append("Category = " + catagory.getText().toString() + "\n\n");
-                            do{
+                            do {
                                 Cursor productCursor = dbLocal.viewSlaseProductHistory(Seller_email, ReportCursor.getString(0));
 
                                 if (productCursor.getCount() <= 0) {
@@ -323,14 +325,17 @@ public class Report extends AppCompatActivity {
                                 } else {
                                     productCursor.moveToFirst();
                                     buffer.append("Product = " + ReportCursor.getString(0) + "\n");
-                                    do {
-                                        buffer.append("Total number of products sold = " + productCursor.getString(0) + "\n");
-                                        buffer.append("The average price per unit sold = " + productCursor.getString(2) + "\n");
-                                        buffer.append("The total revenue generated = " + productCursor.getString(1) + "\n\n");
-                                    } while (productCursor.moveToNext());
-
+                                    if (productCursor.getString(0) == null) {
+                                        buffer.append("Based on the information available, it appears that no sales have been recorded as of yet." + "\n\n");
+                                    } else {
+                                        do {
+                                            buffer.append("Total number of products sold = " + productCursor.getString(0) + "\n");
+                                            buffer.append("The average price per unit sold = " + productCursor.getString(2) + "\n");
+                                            buffer.append("The total revenue generated = " + productCursor.getString(1) + "\n\n");
+                                        } while (productCursor.moveToNext());
+                                    }
                                 }
-                            }while (ReportCursor.moveToNext());
+                            } while (ReportCursor.moveToNext());
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
                             builder.setCancelable(true);

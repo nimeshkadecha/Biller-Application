@@ -78,19 +78,19 @@ public class OTP_Generator extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------
 
 //        OLD CODE to Generate Notification --------------------------------------------------------
-            //        Caclling notification
-    //        BackgroungTask backgroungTask = new BackgroungTask();
-    //        backgroungTask.execute(OTP);
+        //        Caclling notification
+        //        BackgroungTask backgroungTask = new BackgroungTask();
+        //        backgroungTask.execute(OTP);
 //--------------------------------------------------------------------------------------------------
 
 //        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
-    //        Removing Suport bar / top line containing name
+        //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-    //        FINDING menu
+        //        FINDING menu
         menuclick = findViewById(R.id.Menu);
 
-    //        Keeping MENUE Invisible
+        //        Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
 //--------------------------------------------------------------------------------------------------
 
@@ -152,15 +152,15 @@ public class OTP_Generator extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------
 
 
-//    If Origin is cloud then Downloading Data From CLoud ------------------------------------------
-    private void downloadData(String num){
+    //    If Origin is cloud then Downloading Data From CLoud ------------------------------------------
+    private void downloadData(String num) {
         db.collection(num)
                 .document("Seller")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
 
                             String name = String.valueOf(document.get("Name"));
@@ -170,8 +170,8 @@ public class OTP_Generator extends AppCompatActivity {
                             String Password = String.valueOf(document.get("Password"));
                             String Address = String.valueOf(document.get("Address"));
 
-                            boolean reg = DB_local.registerUser(name,Enail,Password,GST,Contact,Address);
-                            if(reg){
+                            boolean reg = DB_local.registerUser(name, Enail, Password, GST, Contact, Address);
+                            if (reg) {
                                 Query q = db.collection(num)
                                         .document("Business")
                                         .collection("Customer_Info").orderBy("Bill_ID", Query.Direction.DESCENDING)
@@ -241,11 +241,11 @@ public class OTP_Generator extends AppCompatActivity {
                                                                         String quentity = String.valueOf(data.get("quentity"));
                                                                         String seller = String.valueOf(data.get("seller"));
 
-                                                                        boolean ins = DB_local.downloadStock(productName,catagory,purchesPrice,sellingPrice,date,quentity,seller);
+                                                                        boolean ins = DB_local.downloadStock(productName, catagory, purchesPrice, sellingPrice, date, quentity, seller);
 
-                                                                        if(ins){
+                                                                        if (ins) {
                                                                             Toast.makeText(OTP_Generator.this, "Stock added", Toast.LENGTH_SHORT).show();
-                                                                        }else{
+                                                                        } else {
                                                                             Toast.makeText(OTP_Generator.this, "Error while adding Stock", Toast.LENGTH_SHORT).show();
                                                                         }
                                                                     }
@@ -269,10 +269,10 @@ public class OTP_Generator extends AppCompatActivity {
                                                                         String price = String.valueOf(data.get("price"));
                                                                         String seller = String.valueOf(data.get("seller"));
 
-                                                                        boolean insertt = DB_local.addStockQty(name,quentity,price,seller);
-                                                                        if(insertt){
+                                                                        boolean insertt = DB_local.addStockQty(name, quentity, price, seller);
+                                                                        if (insertt) {
                                                                             Toast.makeText(OTP_Generator.this, "StockQuentity added", Toast.LENGTH_SHORT).show();
-                                                                        }else{
+                                                                        } else {
                                                                             Toast.makeText(OTP_Generator.this, "ERROR while StockQuentity added", Toast.LENGTH_SHORT).show();
                                                                         }
                                                                     }
@@ -285,10 +285,10 @@ public class OTP_Generator extends AppCompatActivity {
                                 });
 
                                 // Login in user after Successfully Download ---------
-                                SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                                SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("Login","true");
-                                editor.putString("UserName",Enail);
+                                editor.putString("Login", "true");
+                                editor.putString("UserName", Enail);
                                 editor.apply();
 
                                 Intent SucessfullyLogin = new Intent(OTP_Generator.this, home.class);
@@ -296,8 +296,7 @@ public class OTP_Generator extends AppCompatActivity {
                                 SucessfullyLogin.putExtra("Origin", "Login");
                                 startActivity(SucessfullyLogin);
                                 finish();
-                            }
-                            else {
+                            } else {
                                 // IF User is already in SQLite then it create error so ---
                                 Toast.makeText(OTP_Generator.this, "Already have data in", Toast.LENGTH_SHORT).show();
                             }
@@ -307,7 +306,7 @@ public class OTP_Generator extends AppCompatActivity {
     }
 //--------------------------------------------------------------------------------------------------
 
-//    OTP validation -------------------------------------------------------------------------------
+    //    OTP validation -------------------------------------------------------------------------------
     private boolean OTPValidate(String otpInput) {
         if (otpInput.length() < 6) {
             return false;

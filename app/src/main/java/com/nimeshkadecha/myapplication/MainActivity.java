@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent forgotpassword = new Intent(MainActivity.this, ForgotPassword.class);
                     forgotpassword.putExtra("Origin", "Cloud");
                     startActivity(forgotpassword);
+
                 } else {
                     Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
                 }
