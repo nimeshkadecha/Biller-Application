@@ -1,9 +1,11 @@
 package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -170,135 +172,149 @@ public class OTP_Generator extends AppCompatActivity {
                             String Password = String.valueOf(document.get("Password"));
                             String Address = String.valueOf(document.get("Address"));
 
-                            boolean reg = DB_local.registerUser(name, Enail, Password, GST, Contact, Address);
-                            if (reg) {
-                                Query q = db.collection(num)
-                                        .document("Business")
-                                        .collection("Customer_Info").orderBy("Bill_ID", Query.Direction.DESCENDING)
-                                        .limit(1);
-
-                                Task<QuerySnapshot> querySnapshotTask = q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            if (document.get("Contact") == null) {
+                                AlertDialog.Builder ad = new AlertDialog.Builder(OTP_Generator.this);
+                                ad.setMessage("Based on our search in our cloud system, we were unable to locate any records associated with this contact number.");
+                                ad.setTitle("Warning");
+                                ad.setCancelable(false);
+                                ad.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot dq : task.getResult()) {
-                                                String bID = String.valueOf(dq.get("Bill_ID"));
-                                                String cNmae = String.valueOf(dq.get("C_Name"));
-                                                String cNum = String.valueOf(dq.get("C_Number"));
-                                                String date = String.valueOf(dq.get("Date"));
-                                                String Seller = String.valueOf(dq.get("Seller"));
-                                                String Total = String.valueOf(dq.get("Total"));
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                                ad.show();
+                            } else {
+                                boolean reg = DB_local.registerUser(name, Enail, Password, GST, Contact, Address);
+                                if (reg) {
+                                    Query q = db.collection(num)
+                                            .document("Business")
+                                            .collection("Customer_Info").orderBy("Bill_ID", Query.Direction.DESCENDING)
+                                            .limit(1);
 
-                                                boolean ins = DB_local.InsertCustomerCloud(Integer.parseInt(bID), cNmae, cNum, date, Seller, 1, Total);
-                                                if (ins) {
-                                                    Toast.makeText(OTP_Generator.this, "Customer information Added", Toast.LENGTH_SHORT).show();
-                                                }
+                                    Task<QuerySnapshot> querySnapshotTask = q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot dq : task.getResult()) {
+                                                    String bID = String.valueOf(dq.get("Bill_ID"));
+                                                    String cNmae = String.valueOf(dq.get("C_Name"));
+                                                    String cNum = String.valueOf(dq.get("C_Number"));
+                                                    String date = String.valueOf(dq.get("Date"));
+                                                    String Seller = String.valueOf(dq.get("Seller"));
+                                                    String Total = String.valueOf(dq.get("Total"));
 
-                                                Query q2 = db.collection(num)
-                                                        .document("Business")
-                                                        .collection("Bill_Info").whereEqualTo("BillId", bID);
+                                                    boolean ins = DB_local.InsertCustomerCloud(Integer.parseInt(bID), cNmae, cNum, date, Seller, 1, Total);
+                                                    if (ins) {
+                                                        Toast.makeText(OTP_Generator.this, "Customer information Added", Toast.LENGTH_SHORT).show();
+                                                    }
 
-                                                q2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot qd : task.getResult()) {
-                                                                int bID = Integer.parseInt(String.valueOf(qd.get("BillId")));
-                                                                String cNmae = String.valueOf(qd.get("Customer_Name"));
-                                                                String cNum = String.valueOf(qd.get("Customer_Number"));
-                                                                String date = String.valueOf(qd.get("Date"));
+                                                    Query q2 = db.collection(num)
+                                                            .document("Business")
+                                                            .collection("Bill_Info").whereEqualTo("BillId", bID);
+
+                                                    q2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                for (QueryDocumentSnapshot qd : task.getResult()) {
+                                                                    int bID = Integer.parseInt(String.valueOf(qd.get("BillId")));
+                                                                    String cNmae = String.valueOf(qd.get("Customer_Name"));
+                                                                    String cNum = String.valueOf(qd.get("Customer_Number"));
+                                                                    String date = String.valueOf(qd.get("Date"));
 //                                                                String Index = String.valueOf(qd.get("Index"));
-                                                                String P_Name = String.valueOf(qd.get("P_Name"));
-                                                                String P_Price = String.valueOf(qd.get("P_Price"));
-                                                                String P_Qty = String.valueOf(qd.get("P_Qty"));
-                                                                String Seller = String.valueOf(qd.get("Seller"));
+                                                                    String P_Name = String.valueOf(qd.get("P_Name"));
+                                                                    String P_Price = String.valueOf(qd.get("P_Price"));
+                                                                    String P_Qty = String.valueOf(qd.get("P_Qty"));
+                                                                    String Seller = String.valueOf(qd.get("Seller"));
 //                                                                String Subtotal = String.valueOf(qd.get("Subtotal"));
 
-                                                                boolean ins_DIS = DB_local.Insert_List(P_Name, P_Price, P_Qty, cNmae, cNum, date, bID, Seller, 1);
-                                                                if (ins_DIS) {
-                                                                    Toast.makeText(OTP_Generator.this, "Adding Bills.", Toast.LENGTH_SHORT).show();
+                                                                    boolean ins_DIS = DB_local.Insert_List(P_Name, P_Price, P_Qty, cNmae, cNum, date, bID, Seller, 1);
+                                                                    if (ins_DIS) {
+                                                                        Toast.makeText(OTP_Generator.this, "Adding Bills.", Toast.LENGTH_SHORT).show();
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                });
-                                                DB_local.createTable();
-                                                db.collection(num)
-                                                        .document("Business")
-                                                        .collection("Stock").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    for (QueryDocumentSnapshot qd : task.getResult()) {
-                                                                        Map<String, Object> data = new HashMap<>(Objects.requireNonNull(qd.getData()));
+                                                    });
+                                                    DB_local.createTable();
+                                                    db.collection(num)
+                                                            .document("Business")
+                                                            .collection("Stock").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        for (QueryDocumentSnapshot qd : task.getResult()) {
+                                                                            Map<String, Object> data = new HashMap<>(Objects.requireNonNull(qd.getData()));
 
-                                                                        String productID = String.valueOf(data.get("productID"));
-                                                                        String productName = String.valueOf(data.get("productName"));
-                                                                        String catagory = String.valueOf(data.get("catagory"));
-                                                                        String purchesPrice = String.valueOf(data.get("purchesPrice"));
-                                                                        String sellingPrice = String.valueOf(data.get("sellingPrice"));
-                                                                        String date = String.valueOf(data.get("date"));
-                                                                        String quentity = String.valueOf(data.get("quentity"));
-                                                                        String seller = String.valueOf(data.get("seller"));
+                                                                            String productID = String.valueOf(data.get("productID"));
+                                                                            String productName = String.valueOf(data.get("productName"));
+                                                                            String catagory = String.valueOf(data.get("catagory"));
+                                                                            String purchesPrice = String.valueOf(data.get("purchesPrice"));
+                                                                            String sellingPrice = String.valueOf(data.get("sellingPrice"));
+                                                                            String date = String.valueOf(data.get("date"));
+                                                                            String quentity = String.valueOf(data.get("quentity"));
+                                                                            String seller = String.valueOf(data.get("seller"));
 
-                                                                        boolean ins = DB_local.downloadStock(productName, catagory, purchesPrice, sellingPrice, date, quentity, seller);
+                                                                            boolean ins = DB_local.downloadStock(productName, catagory, purchesPrice, sellingPrice, date, quentity, seller);
 
-                                                                        if (ins) {
-                                                                            Toast.makeText(OTP_Generator.this, "Stock added", Toast.LENGTH_SHORT).show();
-                                                                        } else {
-                                                                            Toast.makeText(OTP_Generator.this, "Error while adding Stock", Toast.LENGTH_SHORT).show();
+                                                                            if (ins) {
+                                                                                Toast.makeText(OTP_Generator.this, "Stock added", Toast.LENGTH_SHORT).show();
+                                                                            } else {
+                                                                                Toast.makeText(OTP_Generator.this, "Error while adding Stock", Toast.LENGTH_SHORT).show();
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
-                                                            }
-                                                        });
-                                                db.collection(num)
-                                                        .document("Business")
-                                                        .collection("stockQuentity")
-                                                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                                            @Override
-                                                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                                                if (error != null) {
-                                                                    Log.d("ENimesh", "ERROR issss = " + error);
-                                                                } else {
-                                                                    for (DocumentSnapshot dc : value) {
-                                                                        Map<String, Object> data = new HashMap<>(Objects.requireNonNull(dc.getData()));
+                                                            });
+                                                    db.collection(num)
+                                                            .document("Business")
+                                                            .collection("stockQuentity")
+                                                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                                    if (error != null) {
+                                                                        Log.d("ENimesh", "ERROR issss = " + error);
+                                                                    } else {
+                                                                        for (DocumentSnapshot dc : value) {
+                                                                            Map<String, Object> data = new HashMap<>(Objects.requireNonNull(dc.getData()));
 
-                                                                        String name = String.valueOf(data.get("productName"));
-                                                                        String quentity = String.valueOf(data.get("quentity"));
-                                                                        String price = String.valueOf(data.get("price"));
-                                                                        String seller = String.valueOf(data.get("seller"));
+                                                                            String name = String.valueOf(data.get("productName"));
+                                                                            String quentity = String.valueOf(data.get("quentity"));
+                                                                            String price = String.valueOf(data.get("price"));
+                                                                            String seller = String.valueOf(data.get("seller"));
 
-                                                                        boolean insertt = DB_local.addStockQty(name, quentity, price, seller);
-                                                                        if (insertt) {
-                                                                            Toast.makeText(OTP_Generator.this, "StockQuentity added", Toast.LENGTH_SHORT).show();
-                                                                        } else {
-                                                                            Toast.makeText(OTP_Generator.this, "ERROR while StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                                            boolean insertt = DB_local.addStockQty(name, quentity, price, seller);
+                                                                            if (insertt) {
+                                                                                Toast.makeText(OTP_Generator.this, "StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                                            } else {
+                                                                                Toast.makeText(OTP_Generator.this, "ERROR while StockQuentity added", Toast.LENGTH_SHORT).show();
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
-                                                            }
-                                                        });
+                                                            });
+                                                }
                                             }
                                         }
-                                    }
-                                });
+                                    });
 
-                                // Login in user after Successfully Download ---------
-                                SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("Login", "true");
-                                editor.putString("UserName", Enail);
-                                editor.apply();
+                                    // Login in user after Successfully Download ---------
+                                    SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putString("Login", "true");
+                                    editor.putString("UserName", Enail);
+                                    editor.apply();
 
-                                Intent SucessfullyLogin = new Intent(OTP_Generator.this, home.class);
-                                SucessfullyLogin.putExtra("Email", Enail);
-                                SucessfullyLogin.putExtra("Origin", "Login");
-                                startActivity(SucessfullyLogin);
-                                finish();
-                            } else {
-                                // IF User is already in SQLite then it create error so ---
-                                Toast.makeText(OTP_Generator.this, "Already have data in", Toast.LENGTH_SHORT).show();
+                                    Intent SucessfullyLogin = new Intent(OTP_Generator.this, home.class);
+                                    SucessfullyLogin.putExtra("Email", Enail);
+                                    SucessfullyLogin.putExtra("Origin", "Login");
+                                    startActivity(SucessfullyLogin);
+                                    finish();
+                                } else {
+                                    // IF User is already in SQLite then it create error so ---
+                                    Toast.makeText(OTP_Generator.this, "Already have data in", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     }
