@@ -99,6 +99,17 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
+//    Validate user
+    public boolean validateUser(String email){
+        SQLiteDatabase DB = this.getReadableDatabase();
+        Cursor cursor = DB.rawQuery("select * from users where email =?", new String[]{email});
+        if (cursor.getCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //    Geting existing user info for texting purposes in register ------- [select * from users] --
     public Cursor getdata() {
         SQLiteDatabase DB = this.getReadableDatabase();

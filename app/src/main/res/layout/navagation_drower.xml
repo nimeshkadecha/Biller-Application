@@ -137,9 +137,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Log Out"
-
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="@+id/backup"
         app:layout_constraintStart_toStartOf="@+id/backup"
         app:layout_constraintTop_toBottomOf="@+id/backup" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Switch
+        android:id="@+id/bio_lock_switch"
+        style="@style/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fingerprint unlock:  "
+        android:layout_marginTop="32dp"
+        android:padding="10dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/logOutButton"
+        app:layout_constraintStart_toStartOf="@+id/logOutButton"
+        app:layout_constraintTop_toBottomOf="@+id/logOutButton"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+   </androidx.constraintlayout.widget.ConstraintLayout>

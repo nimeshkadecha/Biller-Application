@@ -16,50 +16,39 @@
 
     <TextView
         android:id="@+id/textView4"
+        style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
-        style="@style/textView"
         android:layout_marginTop="70dp"
+        android:text="@string/login"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include3" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout3"
+
+    <Button
+        android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="60dp"
+        android:onClick="login"
+        android:text="@string/login"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
+        tools:ignore="DuplicateSpeakableTextCheck,UsingOnClickInXml,TextContrastCheck" />
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="register"
+        android:text="@string/register"
+
+        app:layout_constraintBottom_toBottomOf="@+id/login"
         app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
-
-        <Button
-            android:id="@+id/register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="register"
-            android:text="@string/register"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="UsingOnClickInXml,TextContrastCheck" />
-
-        <Button
-            android:id="@+id/login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:onClick="login"
-            android:text="@string/login"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/register"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="DuplicateSpeakableTextCheck,UsingOnClickInXml,TextContrastCheck" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="@+id/login"
+        tools:ignore="UsingOnClickInXml,TextContrastCheck" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -73,19 +62,19 @@
         app:endIconMode="clear_text"
         app:errorEnabled="true"
         app:helperText="Required*"
+        app:helperTextTextColor="#FF002E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:helperTextTextColor="#FF002E"
         app:startIconDrawable="@drawable/ic_email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
             style="@style/TextInputEditText"
-            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
+            android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -110,23 +99,23 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             style="@style/TextInputEditText"
-            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/forgotPassword"
-        android:layout_width="116dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:onClick="Forgot_Password"
         android:text="@string/forgot_password"
         android:textColor="#D0AFFF"
         android:textStyle="bold"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+        app:layout_constraintBottom_toTopOf="@+id/login"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
         tools:ignore="TouchTargetSizeCheck,UsingOnClickInXml" />
@@ -135,21 +124,51 @@
         android:id="@+id/permisions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/permision_request"
-        android:layout_marginTop="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Data_cloud"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
         tools:ignore="TextContrastCheck" />
 
-    <Button
-        android:id="@+id/Data_cloud"
+    <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:text="Login From Cloud"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/login"
+        app:layout_constraintStart_toStartOf="@+id/register"
+        app:layout_constraintTop_toBottomOf="@+id/register">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            style="@style/TextInputLayout"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:srcCompat="@drawable/baseline_cloud_24" />
+
+        <TextView
+            android:id="@+id/Data_cloud"
+            style="@style/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Login From Cloud"
+            android:textSize="21dp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/fingerprint_unlock"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout5"
+        app:layout_constraintTop_toTopOf="@+id/permisions"
+        app:srcCompat="@drawable/fingerprint_dialog_fp_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

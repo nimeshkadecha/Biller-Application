@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,17 +32,19 @@ public class MainActivity extends AppCompatActivity {
     private int StoragePermisionCode = 1;
     //    initlizing varablwe
     private EditText email, password;
-    private Button login, permisions,Data_cloud;
+    private Button login, permisions;
+
+    private TextView Data_cloud;
 
     //    Creating object
     private DBManager DBM;
 
     private ImageView menuclick;
 
-//    Shared preference to store Login Information !
+    //    Shared preference to store Login Information !
     public static final String SHARED_PREFS = "sharedPrefs";
 
-//    Verifying Wifi / internet is ON --------------------------------------------------------------
+    //    Verifying Wifi / internet is ON --------------------------------------------------------------
     boolean checkConnection() {
         ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -59,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        Checking if user is already loged in or not ----------------------------------------------
+        alreadyLogin();
+//--------------------------------------------------------------------------------------------------
 
 //      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
 //          Removing Suport bar / top line containing name
@@ -94,6 +101,41 @@ public class MainActivity extends AppCompatActivity {
                 requestStoragePermisions();
             }
         });
+// Fingerprint unlock
+
+        ImageView fingerprintUnlock = findViewById(R.id.fingerprint_unlock);
+
+        //        checking for fingerprint verification
+        SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String biomatrixLock = sp.getString("bioLock", "");
+        if (biomatrixLock.equals("true")) {
+            fingerprintUnlock.setVisibility(View.VISIBLE);
+
+        }
+
+        fingerprintUnlock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                boolean EV = EmailValidation(email.getText().toString());
+
+                if (EV) {
+                    boolean verify = DBM.validateUser(email.getText().toString());
+                    if (verify) {
+                        Intent FingerprintVerification = new Intent(MainActivity.this, fingerprintLock.class);
+
+                        FingerprintVerification.putExtra("Email", email.getText().toString());
+                        FingerprintVerification.putExtra("Origin", "Login");
+
+                        startActivity(FingerprintVerification);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Email Don't Exists", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Enter Email for login", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 //--------------------------------------------------------------------------------------------------
 
@@ -102,23 +144,19 @@ public class MainActivity extends AppCompatActivity {
         Data_cloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkConnection()){
+                if (checkConnection()) {
                     Intent forgotpassword = new Intent(MainActivity.this, ForgotPassword.class);
-                    forgotpassword.putExtra("Origin","Cloud");
+                    forgotpassword.putExtra("Origin", "Cloud");
                     startActivity(forgotpassword);
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 //--------------------------------------------------------------------------------------------------
-
-//        Checking if user is already loged in or not ----------------------------------------------
-        alreadyLogin();
-//--------------------------------------------------------------------------------------------------
     }
 
-//    Working on requesting STORAGE permission -----------------------------------------------------
+    //    Working on requesting STORAGE permission -----------------------------------------------------
     private void requestStoragePermisions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             new AlertDialog.Builder(this)
@@ -156,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     }
 //--------------------------------------------------------------------------------------------------
 
-//    Code for validating email starts--------------------------------------------------------------
+    //    Code for validating email starts--------------------------------------------------------------
     public boolean EmailValidation(String email) {
         String emailinput = email;
         if (!emailinput.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(emailinput).matches()) {
@@ -168,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     }
 //--------------------------------------------------------------------------------------------------
 
-//    Code for validation Password starts-----------------------------------------------------------
+    //    Code for validation Password starts-----------------------------------------------------------
     public boolean passwordValidation(String password) {
         String passwordInput = password;
         if (!passwordInput.isEmpty() && passwordInput.length() > 6) {
@@ -179,14 +217,14 @@ public class MainActivity extends AppCompatActivity {
     }
 //--------------------------------------------------------------------------------------------------
 
-//    Going to register page -----------------------------------------------------------------------
+    //    Going to register page -----------------------------------------------------------------------
     public void register(View view) {
         Intent register = new Intent(this, register.class);
         startActivity(register);
     }
 //--------------------------------------------------------------------------------------------------
 
-//    Going to HOME Page if ID Password Is correct -------------------------------------------------
+    //    Going to HOME Page if ID Password Is correct -------------------------------------------------
     public void login(View view) {
         Intent SucessfullyLogin = new Intent(this, home.class);
         boolean EV = EmailValidation(email.getText().toString());
@@ -197,10 +235,10 @@ public class MainActivity extends AppCompatActivity {
             String passwordTXT = password.getText().toString();
             verify = DBM.loginUser(emailTXT, passwordTXT);
             if (verify) {
-                SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+                SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putString("Login","true");
-                editor.putString("UserName",emailTXT);
+                editor.putString("Login", "true");
+                editor.putString("UserName", emailTXT);
 //                Log.d("ENimesh","Putting Email = " + emailTXT);
                 editor.apply();
 
@@ -227,27 +265,27 @@ public class MainActivity extends AppCompatActivity {
     }
 //--------------------------------------------------------------------------------------------------
 
-//    ON Click Forgot Password ---------------------------------------------------------------------
+    //    ON Click Forgot Password ---------------------------------------------------------------------
     public void Forgot_Password(View view) {
-        if(checkConnection()){
+        if (checkConnection()) {
             Intent forgotpassword = new Intent(this, ForgotPassword.class);
 
-            forgotpassword.putExtra("Origin","Forgot");
+            forgotpassword.putExtra("Origin", "Forgot");
             startActivity(forgotpassword);
 //            finish();
-        }else{
+        } else {
             Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
         }
 
     }
 //--------------------------------------------------------------------------------------------------
 
-//  Login in user if they are already Logged in ----------------------------------------------------
+    //  Login in user if they are already Logged in ----------------------------------------------------
     private void alreadyLogin() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String checkLogin = sharedPreferences.getString("Login", "");
-        String username = sharedPreferences.getString("UserName","");
-        if(Objects.equals(checkLogin, "true")) {
+        String username = sharedPreferences.getString("UserName", "");
+        if (Objects.equals(checkLogin, "true")) {
 
             Intent SucessfullyLogin = new Intent(this, home.class);
             SucessfullyLogin.putExtra("Email", username);
@@ -258,5 +296,4 @@ public class MainActivity extends AppCompatActivity {
         }
 //--------------------------------------------------------------------------------------------------
     }
-
 }
