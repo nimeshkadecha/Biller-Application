@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -65,7 +64,7 @@ public class home extends AppCompatActivity {
     private ProgressBar lodingPB;
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
-    private int[] billIdtxt;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -127,12 +126,12 @@ public class home extends AppCompatActivity {
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
             boolean insert = true;
-//            Log.d("ENimesh", "Count = " + Name_Sugg.getCount());
+
             NameSuggestion = new String[Name_Sugg.getCount()];
             do {
                 if (i != 0) {
                     for (int j = 0; j < i; j++) {
-//                        Log.d("ENimesh", "cursor data equality = " + Name_Sugg.getString(1));
+
                         if (NameSuggestion[j].equals(Name_Sugg.getString(1))) {
                             insert = false;
                             break;
@@ -141,19 +140,19 @@ public class home extends AppCompatActivity {
                         }
                     }
                 }
-//                Log.d("ENimesh", "loop i = " + i);
+
                 if (insert) {
                     NameSuggestion[i] = Name_Sugg.getString(1);
-//                    Log.d("ENimesh", "NameSuggestion = " + NameSuggestion[i]);
+
                     i++;
                 }
             } while (Name_Sugg.moveToNext());
-//            Log.d("ENimesh", "i = " + i);
+
 
             Names = new String[i];
             for (int j = 0; j < i; j++) {
                 Names[j] = NameSuggestion[j];
-//                Log.d("ENimesh", "Names = " + Names[j]);
+
             }
         } else {
             Names = new String[]{"No Data"};
@@ -194,7 +193,7 @@ public class home extends AppCompatActivity {
         date = findViewById(R.id.date);
 //  ------------------------------------------------------------------------------------------------
 
-//        Generating and formating Date ------------------------------------------------------------
+//        Generating and formatting Date ------------------------------------------------------------
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
@@ -240,26 +239,18 @@ public class home extends AppCompatActivity {
 //        Working with TOOLBAR STARTS --------------------------------------------------------------
 
 //        Removing Suport bar / top line containing name--------------------------------------------
-        Objects.requireNonNull(
-
-                        getSupportActionBar()).
-
-                hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
 //  ------------------------------------------------------------------------------------------------
 
 //        Finding and hinding navagation drawer ----------------------------------------------------
-        navagationDrawer =
-
-                findViewById(R.id.navigation);
+        navagationDrawer = findViewById(R.id.navigation);
         navagationDrawer.setVisibility(View.INVISIBLE);
 
 //  ------------------------------------------------------------------------------------------------
 
 //      Menu btn work ------------------------------------------------------------------------------
-        menu =
-
-                findViewById(R.id.Menu);
+        menu = findViewById(R.id.Menu);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,9 +267,7 @@ public class home extends AppCompatActivity {
 // -------------------------------------------------------------------------------------------------
 
 //      BackBtn in drawer --------------------------------------------------------------------------
-        backBtn =
-
-                findViewById(R.id.btnBack);
+        backBtn = findViewById(R.id.btnBack);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -290,14 +279,11 @@ public class home extends AppCompatActivity {
 // -------------------------------------------------------------------------------------------------
 
 //      Customer Info Button -----------------------------------------------------------------------
-        customerInfo =
-
-                findViewById(R.id.customerinfo);
+        customerInfo = findViewById(R.id.customerinfo);
 
         customerInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(home.this, "Customer Info Clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(home.this, customer_Info.class);
                 intent.putExtra("seller", email);
                 startActivity(intent);
@@ -306,15 +292,10 @@ public class home extends AppCompatActivity {
 //  ------------------------------------------------------------------------------------------------
 
 //      Edit Info btn ------------------------------------------------------------------------------
-        editInfo =
-
-                findViewById(R.id.editInfo);
+        editInfo = findViewById(R.id.editInfo);
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(home.this, "Edit info btn CLICKED", Toast.LENGTH_SHORT).show();
-
-//                This intent go to editinformation.class
                 Intent intent = new Intent(home.this, editInformation.class);
                 intent.putExtra("Email", email);
                 startActivity(intent);
@@ -324,15 +305,10 @@ public class home extends AppCompatActivity {
 //  ------------------------------------------------------------------------------------------------
 
 //      Edit Info btn ------------------------------------------------------------------------------
-        stock =
-
-                findViewById(R.id.stock);
+        stock = findViewById(R.id.stock);
         stock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(home.this, "Edit info btn CLICKED", Toast.LENGTH_SHORT).show();
-
-//                This intent go to editinformation.class
                 Intent intent = new Intent(home.this, manageStock.class);
                 intent.putExtra("Email", email);
                 startActivity(intent);
@@ -343,9 +319,7 @@ public class home extends AppCompatActivity {
 
 //      Backup Btn ---------------------------------------------------------------------------------
 
-        backup =
-
-                findViewById(R.id.backup);
+        backup = findViewById(R.id.backup);
         backup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -370,6 +344,7 @@ public class home extends AppCompatActivity {
 
                 alert.show();
 
+// Testing code to bypass OTP
 //                Intent backup = new Intent(home.this, Firestore_Backup.class);
 //                backup.putExtra("user", username);
 //                startActivity(backup);
@@ -439,22 +414,16 @@ public class home extends AppCompatActivity {
 //        Products enter intent add customer and go to next INTENT for adding product this will add customer information
 
         if (origin != null && origin.equalsIgnoreCase("addItem")) {
-            String cNametxt, cNumbertxt, datetext, sellertxt;
-            Bundle name1 = getIntent().getExtras();
-            cNametxt = name1.getString("cName");
+            String cNametxt, cNumbertxt, datetext;
 
-            Bundle num = getIntent().getExtras();
-            cNumbertxt = num.getString("cNumber");
+            Bundle bundle1 = getIntent().getExtras();
+            cNametxt = bundle1.getString("cName");
 
-            Bundle dat = getIntent().getExtras();
-            datetext = dat.getString("date");
+            cNumbertxt = bundle1.getString("cNumber");
 
-            Bundle bID = getIntent().getExtras();
-//            billIdtxt = new int[]{0};
-            billIdtxt[0] = bID.getInt("billId");
+            datetext = bundle1.getString("date");
 
-            Bundle seller = getIntent().getExtras();
-            sellertxt = seller.getString("seller");
+            billIdtxt[0] = bundle1.getInt("billId");
 
             if (cNametxt.length() != 0) {
                 name.setText(cNametxt);
@@ -462,21 +431,17 @@ public class home extends AppCompatActivity {
                 date.setText(datetext);
             }
         } else {
-//            int[] billIdtxt ;
             billIdtxt[0] = 0;
         }
 
         final int[] finalBillIdtxt = billIdtxt;
 
-        product =
-
-                findViewById(R.id.products);
+        product = findViewById(R.id.products);
 
         product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DB.createTable();
-//                billIDd[0]++;
                 Intent intent = new Intent(home.this, Additems.class);
 
                 String nametxt, numbertxt, datetxt;
@@ -507,12 +472,10 @@ public class home extends AppCompatActivity {
                         Toast.makeText(home.this, "Invalid Number", Toast.LENGTH_SHORT).show();
                     } else {
                         datetxt = date.getText().toString();
-                        Log.d("ENimesh", "finalBillIdtxt = " + finalBillIdtxt[0]);
+
                         if (finalBillIdtxt[0] == 0) {
                             finalBillIdtxt[0] = DB.getbillid();
                         }
-                        int billIDd = DB.getbillid();
-                        Log.d("ENimesh", "billIDd = " + finalBillIdtxt[0]);
 
                         intent.putExtra("cName", nametxt);
                         intent.putExtra("cNumber", numbertxt);
@@ -537,10 +500,7 @@ public class home extends AppCompatActivity {
         Cursor number = DB.Seller_Contact(email);
 
         number.moveToFirst();
-//        Log.d("ENimesh","count ="+number.getCount());
-//        Log.d("ENimesh","test2 ="+number.getString(0));
         String CN = number.getString(0);
-//        Log.d("ENimesh","NUmber ="+CN);
 
         mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -567,7 +527,6 @@ public class home extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 lodingPB.setVisibility(View.GONE);
-                Log.d("ENimesh", "ERROE = " + e);
                 Toast.makeText(home.this, "Failed to send OTP, Try Again after SOme time | " + e, Toast.LENGTH_SHORT).show();
             }
 
@@ -577,7 +536,6 @@ public class home extends AppCompatActivity {
                 Toast.makeText(home.this, "Sending OTP ...", Toast.LENGTH_SHORT).show();
 
                 Intent GETOTP = new Intent(home.this, Backup.class);
-//                Log.d("ENimesh","Sussecc OTP ="+s);
                 GETOTP.putExtra("number", CN);
                 GETOTP.putExtra("user", email);
                 GETOTP.putExtra("OTP", s);

@@ -3,7 +3,6 @@ package com.nimeshkadecha.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-//        holder.index.setText(String.valueOf(index.get(position)));
         holder.item.setText(String.valueOf(item.get(position)));
         holder.price.setText(String.valueOf(price.get(position)));
         holder.quantity.setText(String.valueOf(quantity.get(position)));
@@ -59,7 +57,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     Toast.makeText(context, "Failed to Removed", Toast.LENGTH_SHORT).show();
                     return false;
                 }else{
-                    Log.d("ENimesh", "onLongClick: POSITION = "+position);
                     Toast.makeText(context, "Removed", Toast.LENGTH_SHORT).show();
                     item.remove(position);
                     price.remove(position);
@@ -84,7 +81,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-//            index = itemView.findViewById(R.id.textindex);
             item = itemView.findViewById(R.id.textitem);
             price = itemView.findViewById(R.id.textprice);
             quantity = itemView.findViewById(R.id.textquantity);

@@ -110,16 +110,6 @@
         app:layout_constraintTop_toBottomOf="@+id/layoutQuantity"
         tools:ignore="TextContrastCheck" />
 
-    <include
-        android:id="@+id/navigation"
-        layout="@layout/navagation_drower"
-        android:layoutAnimation="@android:anim/linear_interpolator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </include>
-
     <Button
         android:id="@+id/show"
         android:layout_width="wrap_content"

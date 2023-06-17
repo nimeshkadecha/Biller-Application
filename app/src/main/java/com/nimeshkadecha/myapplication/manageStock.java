@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -28,8 +27,6 @@ import java.util.Objects;
 public class manageStock extends AppCompatActivity {
 
     private ImageView menu;
-
-    private Button VStock;
 
     //    Shared preference to Get User name
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -105,12 +102,10 @@ public class manageStock extends AppCompatActivity {
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
             boolean insert = true;
-//            Log.d("ENimesh", "Count = " + Name_Sugg.getCount());
             NameSuggestion = new String[Name_Sugg.getCount()];
             do {
                 if (i != 0) {
                     for (int j = 0; j < i; j++) {
-//                        Log.d("ENimesh", "cursor data equality = " + Name_Sugg.getString(1));
                         if (NameSuggestion[j].equals(Name_Sugg.getString(2))) {
                             insert = false;
                             break;
@@ -119,19 +114,15 @@ public class manageStock extends AppCompatActivity {
                         }
                     }
                 }
-//                Log.d("ENimesh", "loop i = " + i);
                 if (insert) {
                     NameSuggestion[i] = Name_Sugg.getString(2);
-//                    Log.d("ENimesh", "NameSuggestion = " + NameSuggestion[i]);
                     i++;
                 }
             } while (Name_Sugg.moveToNext());
-//            Log.d("ENimesh", "i = " + i);
 
             Names = new String[i];
             for (int j = 0; j < i; j++) {
                 Names[j] = NameSuggestion[j];
-//                Log.d("ENimesh", "Names = " + Names[j]);
             }
         } else {
             Names = new String[]{"No Data"};

@@ -52,7 +52,6 @@ public class stock_List_adapter extends RecyclerView.Adapter<stock_List_adapter.
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-//            index = itemView.findViewById(R.id.textindex);
             v = itemView.findViewById(R.id.set_color);
             Name = itemView.findViewById(R.id.stock_Name);
 

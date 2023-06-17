@@ -32,7 +32,6 @@ public class stock_qty_adapter  extends RecyclerView.Adapter<stock_qty_adapter.M
 
     @Override
     public void onBindViewHolder(@NonNull stock_qty_adapter.MyViewHolder holder, int position) {
-//        holder.index.setText(String.valueOf(index.get(position)));
         holder.item.setText(String.valueOf(item.get(position)));
         holder.quantity.setText(String.valueOf(quantity.get(position)));
     }
@@ -48,7 +47,6 @@ public class stock_qty_adapter  extends RecyclerView.Adapter<stock_qty_adapter.M
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-//            index = itemView.findViewById(R.id.textindex);
             item = itemView.findViewById(R.id.stock_qty_name);
             quantity = itemView.findViewById(R.id.stock_qty);
 

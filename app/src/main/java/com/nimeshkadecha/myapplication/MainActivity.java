@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private int StoragePermisionCode = 1;
     //    initlizing varablwe
     private EditText email, password;
-    private Button login, permisions;
+    private Button permisions;
 
     private TextView Data_cloud;
 
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 //        assign variable --------------------------------------------------------------------------
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
-        login = findViewById(R.id.login);
+
 //--------------------------------------------------------------------------------------------------
 
 //        assigning DBM ----------------------------------------------------------------------------
@@ -225,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
     }
 //--------------------------------------------------------------------------------------------------
 
-    //    Going to HOME Page if ID Password Is correct -------------------------------------------------
+//    Going to HOME Page if ID Password Is correct -------------------------------------------------
     public void login(View view) {
         Intent SucessfullyLogin = new Intent(this, home.class);
         boolean EV = EmailValidation(email.getText().toString());
@@ -240,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("Login", "true");
                 editor.putString("UserName", emailTXT);
-//                Log.d("ENimesh","Putting Email = " + emailTXT);
                 editor.apply();
 
                 SucessfullyLogin.putExtra("Email", emailTXT);

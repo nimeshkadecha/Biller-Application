@@ -26,9 +26,7 @@ import java.util.Objects;
 public class Additems extends AppCompatActivity {
 
     //    toolbar and navagation drawer starts;
-    private ImageView menu, backBtn;
-    private View navagationDrawer;
-    private TextView customerInfo, editInfo;
+    private ImageView menu;
     private Button Add;
 //    toolbar and navagation drawer ends;
 
@@ -72,84 +70,22 @@ public class Additems extends AppCompatActivity {
         //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        //        Hiding navigationgrawer
-        navagationDrawer = findViewById(R.id.navigation);
-        navagationDrawer.setVisibility(View.INVISIBLE);
-
         //        FINDING menu
         menu = findViewById(R.id.Menu);
         menu.setVisibility(View.INVISIBLE); // remove visibility
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navagationDrawer.setVisibility(View.VISIBLE);
-                Add.setVisibility(View.INVISIBLE);
-                show.setVisibility(View.INVISIBLE);
-
-            }
-        });
-
-        //        FINDING Backbtn
-        backBtn = findViewById(R.id.btnBack);
-
-        //        hiding navagation on back btn click
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navagationDrawer.setVisibility(View.INVISIBLE);
-                Add.setVisibility(View.VISIBLE);
-                show.setVisibility(View.VISIBLE);
-            }
-        });
-
-        //   customer info btn
-        customerInfo = findViewById(R.id.customerinfo);
-
-
-        customerInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(Additems.this, "Customer Info Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        //  Edit Info Button
-        editInfo = findViewById(R.id.editInfo);
-        editInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Additems.this, editInformation.class);
-                Bundle bundle = getIntent().getExtras();
-                String email = bundle.getString("Email");
-
-                intent.putExtra("Email", email);
-                startActivity(intent);
-
-            }
-        });
 
 //--------------------------------------------------------------------------------------------------
 
 //  INSERT OPERATION IN DISPLAY TABLE --------------------------------------------------------------
 
-        //        Getting INTENT
-        Bundle name = getIntent().getExtras();
-        cNametxt = name.getString("cName");
-
-        Bundle num = getIntent().getExtras();
-        cNumbertxt = num.getString("cNumber");
-
-        Bundle dat = getIntent().getExtras();
-        datetext = dat.getString("date");
-
-        Bundle bID = getIntent().getExtras();
-        billIdtxt = bID.getInt("billId");
-
-        Bundle seller = getIntent().getExtras();
-        sellertxt = seller.getString("seller");
-
-        Bundle origin = getIntent().getExtras();
-        origintxt = origin.getString("origin");
+        //        Getting INTENT data
+        Bundle bundle = getIntent().getExtras();
+        cNametxt = bundle.getString("cName");
+        cNumbertxt = bundle.getString("cNumber");
+        datetext = bundle.getString("date");
+        billIdtxt = bundle.getInt("billId");
+        sellertxt = bundle.getString("seller");
+        origintxt = bundle.getString("origin");
 
         final int[] validator = {0}; //  to change visibility of show button and add button
 
@@ -263,7 +199,7 @@ public class Additems extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(Additems.this, ShowList.class);
-
+                //passing customer information and billId
                 intent2.putExtra("seller", sellertxt);
 
                 intent2.putExtra("cName", cNametxt);
@@ -281,7 +217,7 @@ public class Additems extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------
     }
 
-    //    Going TO Home With User DATA ON BAck Button Press --------------------------------------------
+    //    Going TO Home With User DATA ON Back Button Press --------------------------------------------
     @Override
     public void onBackPressed() {
         Intent intent2 = new Intent(Additems.this, home.class);

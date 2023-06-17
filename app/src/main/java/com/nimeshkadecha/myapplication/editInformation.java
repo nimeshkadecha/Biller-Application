@@ -32,7 +32,6 @@ import java.util.Objects;
 public class editInformation extends AppCompatActivity {
 
     private ImageView menuclick;
-    private View conformationDialog;
 
     private DBManager DBM;
     private Button show, update, delete;

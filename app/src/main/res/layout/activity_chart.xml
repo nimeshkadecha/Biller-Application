@@ -21,8 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Card view for displaying the -->
-    <!-- Pie chart and details of pie chart -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewGraph"
         android:layout_width="match_parent"
@@ -35,18 +33,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8">
 
-
-        <!--Linear layout to display pie chart -->
-        <!-- and details of pie chart-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
             android:orientation="horizontal"
             android:weightSum="2">
-
-            <!--Pie chart to display the data-->
 
             <org.eazegraph.lib.charts.PieChart xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/piechart"
@@ -71,8 +63,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- Another Card view for displaying -->
-    <!-- Use of programming languages -->
     <androidx.cardview.widget.CardView
         android:id="@+id/details"
         android:layout_width="match_parent"
@@ -86,17 +76,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewGraph">
 
-        <!--Relative layout to display -->
-        <!-- use of programming languages -->
         <LinearLayout
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:orientation="vertical">
-
-            <!--Text view to use of -->
-            <!-- programming languages text-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

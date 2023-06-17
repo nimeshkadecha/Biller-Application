@@ -8,11 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.itextpdf.signatures.CertificateUtil;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
@@ -27,8 +23,6 @@ public class chart extends AppCompatActivity {
     private stock_qty_adapter S_Q_adapter;
     private stock_List_adapter S_L_adapter;
 
-    // Create the object of TextView and PieChart class
-    TextView tvR, tvPython, tvCPP, tvJava;
     PieChart pieChart;
 
     DBManager local_db = new DBManager(this);
@@ -38,13 +32,15 @@ public class chart extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
 
+//        Getting intent data
         Bundle bundle = getIntent().getExtras();
         String Seller_email = bundle.getString("seller");
         String intentt = bundle.getString("intent");
 
-        //        Removing Suport bar / top line containing name--------------------------------------------
+        //        Removing Support bar / top line containing name--------------------------------------------
         Objects.requireNonNull(getSupportActionBar()).hide();
 
+//        using switch to switch between quantity chart and if we add another in future
         switch (intentt){
             case "qty_chart":
                 ainput = new ArrayList<>();
@@ -70,7 +66,6 @@ public class chart extends AppCompatActivity {
 
                 get_Qty.moveToFirst();
                 Random rnd = new Random();
-//                paint.setARGB(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
                 pieChart = findViewById(R.id.piechart);
 
                 do{
@@ -96,42 +91,6 @@ public class chart extends AppCompatActivity {
                                     qty,
                                     Color.argb(255,r,g,b)));
                 }while (get_Qty.moveToNext());
-
-
-
-
-                // Set the percentage of language used
-//                tvR.setText(Integer.toString(40));
-//                tvPython.setText(Integer.toString(30));
-//                tvCPP.setText(Integer.toString(5));
-//                tvJava.setText(Integer.toString(25));
-
-                // Set the data and color to the pie chart
-//                pieChart.addPieSlice(
-//                        new PieModel(
-//                                "R",
-//                                40,
-//                                Color.parseColor(s)));
-//                pieChart.addPieSlice(
-//                        new PieModel(
-//                                "Python",
-//                                30,
-//                                Color.parseColor("#66BB6A")));
-//                pieChart.addPieSlice(
-//                        new PieModel(
-//                                "C++",
-//                                10,
-//                                Color.parseColor("#EF5350")));
-//                pieChart.addPieSlice(
-//                        new PieModel(
-//                                "R+",
-//                                25,
-//                                Color.parseColor("#FFA726")));
-//                pieChart.addPieSlice(
-//                        new PieModel(
-//                                "Java",
-//                                33,
-//                                Color.parseColor("#29B6F6")));
                 break;
 
             default:
@@ -141,8 +100,5 @@ public class chart extends AppCompatActivity {
                 startActivity(goTOReport);
                 break;
         }
-
-
-
     }
 }

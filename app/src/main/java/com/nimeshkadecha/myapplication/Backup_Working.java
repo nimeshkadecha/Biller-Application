@@ -29,6 +29,19 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Backup_Working extends AppCompatActivity {
+
+
+    /*
+    *
+    * OLD BACKUP FEATURE
+    *
+    * this is working code but we are not using it
+    *
+    * reason:-
+    *       This code upload data to Firebase Realtime database and that was becoming completed as we are implementation more and more feature so we canceled the plan to add data to realtime and switch to Firebase Firestore as it is comparatively easy to visualize where data is stored and how we access it
+    *
+    *
+    * */
     private TextView customerInfo, editInfo, backup, test;
     private ImageView menu, backBtn;
     private View navagationDrawer;

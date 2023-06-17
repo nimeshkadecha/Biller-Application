@@ -2,7 +2,6 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -80,17 +78,14 @@ public class ShowList extends AppCompatActivity {
         int billId;
 
         //        GETTING INTENT DATA
-        Bundle name = getIntent().getExtras();
-        cName = name.getString("cName");
+        Bundle bundle = getIntent().getExtras();
+        cName = bundle.getString("cName");
 
-        Bundle num = getIntent().getExtras();
-        cNumber = num.getString("cNumber");
+        cNumber = bundle.getString("cNumber");
 
-        Bundle dat = getIntent().getExtras();
-        date = dat.getString("date");
+        date = bundle.getString("date");
 
-        Bundle bID = getIntent().getExtras();
-        billId = bID.getInt("billId");
+        billId = bundle.getInt("billId");
 
 //--------------------------------------------------------------------------------------------------
 
@@ -105,14 +100,12 @@ public class ShowList extends AppCompatActivity {
             public void onClick(View v) {
                 save_CLicked[0]++;
 
-//                COnfirm sale Check it there is products in there or not
-                Boolean confirm_sale = DB.ConfirmSale(billId);
+//                Confirm sale Check it there is products in there or not
+                boolean confirm_sale = DB.ConfirmSale(billId); // this will check that there is at least 1 item in list
 
                 if (confirm_sale) {
                     //                INSERTING data in customer table
                     boolean check;
-
-//                String id = String.valueOf(billId);
 
                     check = DB.InsertCustomer(billId, cName, cNumber, date, sellertxt, 0);
 
@@ -266,29 +259,14 @@ public class ShowList extends AppCompatActivity {
                     } else {
                         selerDATA.moveToFirst();
                         do {
-                            //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph("E-mail: " + selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell());
@@ -371,10 +349,9 @@ public class ShowList extends AppCompatActivity {
 
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                         if (file.exists()) {
-//                            Uri uri = Uri.parse(storageVolume.getDirectory()+"/Documents/"+filename);
 
                             Uri uri = FileProvider.getUriForFile(ShowList.this, getApplicationContext().getPackageName() + ".provider", file);
-                            Log.d("pdfPath", "" + uri);
+
 
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setDataAndType(uri, "application/pdf");

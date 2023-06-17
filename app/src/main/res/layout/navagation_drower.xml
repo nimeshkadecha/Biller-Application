@@ -66,19 +66,6 @@
         app:layout_constraintStart_toStartOf="@+id/customerinfo"
         app:layout_constraintTop_toBottomOf="@+id/customerinfo" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/editInfo"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:minHeight="48dp"-->
-<!--        android:onClick="editInfo"-->
-<!--        android:text="@string/edit_information"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/customerinfo" />-->
-
     <Button
         android:id="@+id/report"
 
@@ -117,18 +104,6 @@
         app:layout_constraintEnd_toEndOf="@+id/stock"
         app:layout_constraintStart_toStartOf="@+id/stock"
         app:layout_constraintTop_toBottomOf="@+id/stock" />
-
-
-<!--    <TextView-->
-<!--        android:id="@+id/backup"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:text="@string/backup"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/editInfo" />-->
 
     <Button
         android:paddingEnd="150dp"

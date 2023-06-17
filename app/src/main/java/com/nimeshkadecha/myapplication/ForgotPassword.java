@@ -3,7 +3,6 @@ package com.nimeshkadecha.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,17 +12,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class ForgotPassword extends AppCompatActivity {
@@ -109,7 +104,6 @@ public class ForgotPassword extends AppCompatActivity {
     private void getOTP() {
 //        OTP From Firebase
         String CN = number.getText().toString();
-        Log.d("ENimesh", "NUmber =" + CN);
         mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
@@ -118,7 +112,6 @@ public class ForgotPassword extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                Log.d("ENimesh", "Error is =" + e);
                 Toast.makeText(ForgotPassword.this, "Failed to send OTP, Try Again", Toast.LENGTH_SHORT).show();
             }
 

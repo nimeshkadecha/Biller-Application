@@ -3,13 +3,11 @@ package com.nimeshkadecha.myapplication;
 import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
 import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
-import static com.nimeshkadecha.myapplication.home.SHARED_PREFS;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
@@ -22,9 +20,6 @@ import android.widget.Toast;
 import java.util.concurrent.Executor;
 
 public class fingerprintLock extends AppCompatActivity {
-
-    BiometricPrompt.PromptInfo promptlnfo;
-    ConstraintLayout mMainLayout;
 
     public static final String SHARED_PREFS = "sharedPrefs";
 
@@ -82,7 +77,6 @@ public class fingerprintLock extends AppCompatActivity {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("Login", "true");
                 editor.putString("UserName", email);
-//                Log.d("ENimesh","Putting Email = " + emailTXT);
                 editor.apply();
 
                 Intent bio_logedIN = new Intent(fingerprintLock.this, home.class);
