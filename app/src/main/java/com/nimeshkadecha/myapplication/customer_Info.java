@@ -116,7 +116,7 @@ public class customer_Info extends AppCompatActivity {
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
             boolean insert = true;
-            Log.d("ENimesh", "Count = " + Name_Sugg.getCount());
+
             NameSuggestion = new String[Name_Sugg.getCount()];
             do {
                 if (i != 0) {
@@ -345,6 +345,7 @@ public class customer_Info extends AppCompatActivity {
                     Cursor res;
                     res = DB.cusInfo(sellertxt);
 
+                    boolean show = true;
                     if (!nametxt.isEmpty()) {
                         char c[] = nametxt.toCharArray();
                         boolean contain_digit = false;
@@ -357,11 +358,14 @@ public class customer_Info extends AppCompatActivity {
                         }
                         if (contain_digit) {
                             if (NumberOfDigits == 10) {
+                                show = false;
                                 res = DB.Customernumberbill(nametxt, sellertxt);
                             } else {
-                                res = DB.CustomerBillID(Integer.parseInt(nametxt), sellertxt);
+                                show = false;
+                                res = DB.CustomerNameBill(nametxt, sellertxt);
                             }
                         } else {
+                            show = false;
                             res = DB.CustomerNameBill(nametxt, sellertxt);
                         }
                     } else if (!datetxt.isEmpty()) {
@@ -397,20 +401,25 @@ public class customer_Info extends AppCompatActivity {
 
                     buffer.append("Total = " + total);
 
+
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(customer_Info.this);
                     builder.setCancelable(true);
                     builder.setTitle("Bills");
                     builder.setMessage(buffer.toString());
-                    builder.setPositiveButton("Download PDF", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                createPDF();
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+//                    if (show){
+//                        builder.setPositiveButton("Download PDF", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                try {
+//                                    createPDF();
+//                                } catch (FileNotFoundException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        });
+//                    }
+
                     builder.show();
                 }
             }
@@ -455,8 +464,9 @@ public class customer_Info extends AppCompatActivity {
 //                           0  1     3   5       4
 
                     Cursor selerDATA = DB.GetUser(sellertxt);
+
                     if (selerDATA.getCount() == 0) {
-                        Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(customer_Info.this, "No Entry Exist seller error", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
                         selerDATA.moveToFirst();
@@ -502,14 +512,14 @@ public class customer_Info extends AppCompatActivity {
                     customerDetail = DB.cusInfo(sellertxt);
                     int checker = 0;
 
-                    if (!nametxt.isEmpty()) {
+                    if (nametxt.length() < 10) {
                         checker = 1;
-                        customerDetail = DB.CustomerNameBill(nametxt, sellertxt);
-                        list = DB.CustomerNameBill(nametxt, sellertxt);
+                        customerDetail = DB.CustomerBillID(Integer.parseInt(nametxt), sellertxt);
+                        list = DB.CustomerBillID(Integer.parseInt(nametxt), sellertxt);
                     } else if (!contactTXT.isEmpty()) {
                         checker = 2;
-                        customerDetail = DB.Customernumberbill(contactTXT, sellertxt);
-                        list = DB.Customernumberbill(contactTXT, sellertxt);
+                        customerDetail = DB.Customernumberbill(nametxt, sellertxt);
+                        list = DB.Customernumberbill(nametxt, sellertxt);
                     } else if (!datetxt.isEmpty()) {
                         if (!ToDate.isEmpty()) {
                             checker = 4;
@@ -533,7 +543,7 @@ public class customer_Info extends AppCompatActivity {
                     }
 
                     if (customerDetail.getCount() == 0) {
-                        Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(customer_Info.this, "No Entry Exist customer", Toast.LENGTH_SHORT).show();
                     } else {
 //                        ------------------------------------------------------------------------------
                         if (checker == 3 || checker == 4) {
@@ -565,7 +575,7 @@ public class customer_Info extends AppCompatActivity {
                                 int index = 0;
                                 int total = 0;
                                 if (list.getCount() == 0) {
-                                    Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(customer_Info.this, "No Entry Exist list 0", Toast.LENGTH_SHORT).show();
                                     return;
                                 } else {
                                     list.moveToFirst();
@@ -621,7 +631,7 @@ public class customer_Info extends AppCompatActivity {
                                 int index = 0;
                                 int total = 0;
                                 if (list.getCount() == 0) {
-                                    Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(customer_Info.this, "No Entry Exist list ", Toast.LENGTH_SHORT).show();
                                     return;
                                 } else {
                                     list.moveToFirst();
@@ -680,7 +690,7 @@ public class customer_Info extends AppCompatActivity {
                             int total = 0;
 
                             if (list.getCount() == 0) {
-                                Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(customer_Info.this, "No Entry Exist list 3", Toast.LENGTH_SHORT).show();
                                 return;
                             } else {
                                 list.moveToFirst();
