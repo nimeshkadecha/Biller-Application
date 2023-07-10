@@ -75,12 +75,12 @@ public class home extends AppCompatActivity {
         int billIdtxt[] = new int[5];
 
 
-//        Adding seller email from INTENT-----------------------------------------------------------
+//        Adding seller email from INTENT===========================================================
         Bundle bundle = getIntent().getExtras();
         String email = bundle.getString("Email");
         String origin = "Test";
         origin = bundle.getString("Origin");
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
 //        Geting Biomatrix unlock
         SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -110,11 +110,11 @@ public class home extends AppCompatActivity {
 
         }
 
-//      Progressbar Finding ------------------------------------------------------------------------
+//      Progressbar Finding ========================================================================
         lodingPB = findViewById(R.id.Ploding);
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 
-//      Finding edit texts -------------------------------------------------------------------------
+//      Finding edit texts =========================================================================
         name = findViewById(R.id.name);
 
 //        adding auto complete facility
@@ -191,9 +191,9 @@ public class home extends AppCompatActivity {
         });
 
         date = findViewById(R.id.date);
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//        Generating and formatting Date ------------------------------------------------------------
+//        Generating and formatting Date ============================================================
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
@@ -234,22 +234,22 @@ public class home extends AppCompatActivity {
                 return true;
             }
         });
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//        Working with TOOLBAR STARTS --------------------------------------------------------------
+//        Working with TOOLBAR STARTS ==============================================================
 
-//        Removing Suport bar / top line containing name--------------------------------------------
+//        Removing Suport bar / top line containing name============================================
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//        Finding and hinding navagation drawer ----------------------------------------------------
+//        Finding and hinding navagation drawer ====================================================
         navagationDrawer = findViewById(R.id.navigation);
         navagationDrawer.setVisibility(View.INVISIBLE);
 
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//      Menu btn work ------------------------------------------------------------------------------
+//      Menu btn work ==============================================================================
         menu = findViewById(R.id.Menu);
 
         menu.setOnClickListener(new View.OnClickListener() {
@@ -264,9 +264,9 @@ public class home extends AppCompatActivity {
 
             }
         });
-// -------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//      BackBtn in drawer --------------------------------------------------------------------------
+//      BackBtn in drawer ==========================================================================
         backBtn = findViewById(R.id.btnBack);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -276,9 +276,9 @@ public class home extends AppCompatActivity {
                 product.setVisibility(View.VISIBLE);
             }
         });
-// -------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//      Customer Info Button -----------------------------------------------------------------------
+//      Customer Info Button =======================================================================
         customerInfo = findViewById(R.id.customerinfo);
 
         customerInfo.setOnClickListener(new View.OnClickListener() {
@@ -289,9 +289,9 @@ public class home extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//      Edit Info btn ------------------------------------------------------------------------------
+//      Edit Info btn ==============================================================================
         editInfo = findViewById(R.id.editInfo);
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -302,9 +302,9 @@ public class home extends AppCompatActivity {
 
             }
         });
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//      Edit Info btn ------------------------------------------------------------------------------
+//      Edit Info btn ==============================================================================
         stock = findViewById(R.id.stock);
         stock.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,45 +315,49 @@ public class home extends AppCompatActivity {
 
             }
         });
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//      Backup Btn ---------------------------------------------------------------------------------
+//      Backup Btn =================================================================================
 
         backup = findViewById(R.id.backup);
         backup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(home.this);
-                alert.setTitle("Backup");
-                alert.setMessage("This would require OTP to Access ");
-                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                        String username = sharedPreferences.getString("UserName", "");
-                        getOTP(username);
-                    }
-                });
-                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
+                Intent localBackup = new Intent(home.this, LocalBackup.class);
+                startActivity(localBackup);
 
-                alert.show();
+//                FIRESTORE BACKUP PATH ============================================================
+//                AlertDialog.Builder alert = new AlertDialog.Builder(home.this);
+//                alert.setTitle("Backup");
+//                alert.setMessage("This would require OTP to Access ");
+//                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//                        String username = sharedPreferences.getString("UserName", "");
+//                        getOTP(username);
+//                    }
+//                });
+//                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        dialogInterface.dismiss();
+//                    }
+//                });
+//
+//                alert.show();
 
 // Testing code to bypass OTP
 //                Intent backup = new Intent(home.this, Firestore_Backup.class);
 //                backup.putExtra("user", username);
 //                startActivity(backup);
-
+//+===============================================================================================
             }
         });
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//        Report button ----------------------------------------------------------------------------
+//        Report button ============================================================================
         report =
 
                 findViewById(R.id.report);
@@ -366,9 +370,9 @@ public class home extends AppCompatActivity {
             }
         });
 
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//      Log Out btn --------------------------------------------------------------------------------
+//      Log Out btn ================================================================================
         logout =
 
                 findViewById(R.id.logOutButton);
@@ -387,11 +391,11 @@ public class home extends AppCompatActivity {
                 finish();
             }
         });
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//        WORKING IN NAVAGATION DRAWER Ends  -------------------------------------------------------
+//        WORKING IN NAVAGATION DRAWER Ends  =======================================================
 
-//        Clossing navagation drawer ---------------------------------------------------------------
+//        Clossing navagation drawer ===============================================================
 
         homeLayout =
 
@@ -407,9 +411,9 @@ public class home extends AppCompatActivity {
             }
         });
 
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
-//        Enter Product BTN ------------------------------------------------------------------------
+//        Enter Product BTN ========================================================================
 
 //        Products enter intent add customer and go to next INTENT for adding product this will add customer information
 
@@ -489,10 +493,10 @@ public class home extends AppCompatActivity {
                 }
             }
         });
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
     }
 
-    //    Generating OTP -------------------------------------------------------------------------------
+    //    Generating OTP ===============================================================================
     private void getOTP(String email) {
 
         lodingPB.setVisibility(View.VISIBLE);
@@ -553,11 +557,11 @@ public class home extends AppCompatActivity {
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
 
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
     }
 
 
-    //  Alert dialog box for Exiting Application -------------------------------------------------------
+    //  Alert dialog box for Exiting Application =======================================================
     @Override
     public void onBackPressed() {
         if (String.valueOf(navagationDrawer.getVisibility()).equals("0")) {
@@ -584,5 +588,5 @@ public class home extends AppCompatActivity {
             alert.show();
         }
     }
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 }
