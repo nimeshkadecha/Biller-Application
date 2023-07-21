@@ -46,7 +46,7 @@ public class ShowList extends AppCompatActivity {
 
     private StorageVolume storageVolume;
 
-    private Button back, save, display, pdf, addmore;
+    private Button back, save, display, pdf, addmore,checkPrice;
 
     final int[] save_CLicked = {0};
 
@@ -71,6 +71,7 @@ public class ShowList extends AppCompatActivity {
         //    Back button;
         back = findViewById(R.id.Back);
         back.setVisibility(View.INVISIBLE);
+        checkPrice = findViewById(R.id.checkTotalBtn);
 //--------------------------------------------------------------------------------------------------
 
 //        Getting all data -------------------------------------------------------------------------
@@ -117,6 +118,7 @@ public class ShowList extends AppCompatActivity {
 
                         if (update) {
                             save.setVisibility(View.INVISIBLE);
+                            checkPrice.setVisibility(View.INVISIBLE);
                             pdf.setVisibility(View.VISIBLE);
                             back.setVisibility(View.VISIBLE);
                             display.setVisibility(View.VISIBLE);
@@ -197,7 +199,22 @@ public class ShowList extends AppCompatActivity {
         });
 //--------------------------------------------------------------------------------------------------
 
+//        Check Total Button ---------------------------------------------------------------------------
 
+        checkPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                int total = DB.checkTotal(billId);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ShowList.this);
+                builder.setCancelable(true);
+                builder.setTitle("Quick Total");
+                builder.setMessage("Current total = " + total);
+                builder.show();
+            }
+        });
+
+//--------------------------------------------------------------------------------------------------
         StorageManager storageManager = (StorageManager) getSystemService(STORAGE_SERVICE);
         List<StorageVolume> storageVolumes = storageManager.getStorageVolumes();
 
@@ -267,7 +284,9 @@ public class ShowList extends AppCompatActivity {
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-                            table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            if(!selerDATA.getString(3).equals("no")){
+                                table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            }
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell());
                         } while (selerDATA.moveToNext());

@@ -112,10 +112,21 @@
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Switch
+            android:id="@+id/switch1GST"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="I have GST number"
+            android:layout_margin="5dp"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutGST_Number"
             style="@style/TextInputLayout"
-
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:hint="@string/gst_number"
@@ -124,7 +135,7 @@
             app:helperTextTextColor="#FF002E"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword">
+            app:layout_constraintTop_toBottomOf="@+id/switch1GST">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/gst"

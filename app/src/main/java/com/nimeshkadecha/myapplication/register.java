@@ -7,11 +7,17 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
@@ -21,6 +27,10 @@ public class register extends AppCompatActivity {
     private DBManager DBM;
     private Button show;
     private ImageView menuclick;
+
+    private TextInputLayout gstLayout;
+
+    private Switch gstSwitch;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -48,8 +58,29 @@ public class register extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         gst = findViewById(R.id.gst);
+        gstLayout = findViewById(R.id.textInputLayoutGST_Number);
+// Making GST button invisible so that user can togel switch
+        gst.setVisibility(View.GONE);
+        gstLayout.setVisibility(View.GONE);
+        gst.setText("no");
         contact = findViewById(R.id.contactNumber);
         address = findViewById(R.id.address);
+        gstSwitch = findViewById(R.id.switch1GST);
+        gstSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
+                    gst.setText("");
+                    gst.setVisibility(View.VISIBLE);
+                    gstLayout.setVisibility(View.VISIBLE);
+
+                }else{
+                    gst.setVisibility(View.GONE);
+                    gstLayout.setVisibility(View.GONE);
+                    gst.setText("no");
+                }
+            }
+        });
 
         show = findViewById(R.id.show);
         show.setVisibility(View.INVISIBLE);

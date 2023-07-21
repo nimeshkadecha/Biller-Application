@@ -44,13 +44,6 @@
             android:name=".Firestore_Backup"
             android:exported="false" />
         <activity
-            android:name=".Backup_Working"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".Backup"
             android:exported="false">
             <meta-data

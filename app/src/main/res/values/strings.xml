@@ -58,7 +58,7 @@
     <string name="Menulogo">menu</string>
     <string name="item_price">Item Price :</string>
     <string name="item_quantity">Item quantity :</string>
-    <string name="subtotal">subtotal :</string>
+    <string name="subtotal">Subtotal :</string>
     <string name="customer_information">Customer Detail</string>
     <string name="about">About</string>
     <string name="edit_information">Edit Information</string>

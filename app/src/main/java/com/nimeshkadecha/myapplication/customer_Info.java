@@ -496,7 +496,9 @@ public class customer_Info extends AppCompatActivity {
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("GST: "+selerDATA.getString(3)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            if(!selerDATA.getString(3).equals("no")) {
+                                table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            }
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell());
 

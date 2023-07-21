@@ -7,6 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+
 public class DBManager extends SQLiteOpenHelper {
     public DBManager(Context context) {
 //        Creating database with name = Biller
@@ -56,8 +62,6 @@ public class DBManager extends SQLiteOpenHelper {
         DB.execSQL("drop table if exists users");
         DB.execSQL("drop table if exists display");
         DB.execSQL("drop table if exists customer");
-
-
     }
 
     //    Register User ------------------------------------------------------------------------------
@@ -99,8 +103,8 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-//    Validate user
-    public boolean validateUser(String email){
+    //    Validate user
+    public boolean validateUser(String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
         Cursor cursor = DB.rawQuery("select * from users where email =?", new String[]{email});
         if (cursor.getCount() > 0) {
@@ -205,12 +209,12 @@ public class DBManager extends SQLiteOpenHelper {
         Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{email});
 
         if (cursor.getCount() > 0) {
-            long check1, check2,check3,check4;
+            long check1, check2, check3, check4;
             check1 = DB.delete("display", "seller = ?", new String[]{email});
             check2 = DB.delete("customer", "seller = ?", new String[]{email});
             check3 = DB.delete("stock", "seller = ?", new String[]{email});
             check4 = DB.delete("stockQuentity", "seller = ?", new String[]{email});
-            if (check1 == -1 || check2 == -1 || check3 == -1 || check4 == -1 ) {
+            if (check1 == -1 || check2 == -1 || check3 == -1 || check4 == -1) {
                 return false;
             } else {
 //                Resetting Auto increment to 0
@@ -248,26 +252,68 @@ public class DBManager extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put("Product", name);
-        contentValues.put("price", price);
-        contentValues.put("quantity", quantity);
-        contentValues.put("subtotal", subtotal);
-        contentValues.put("customerName", cName);
-        contentValues.put("customerNumber", cNumber);
-        contentValues.put("date", date);
-        contentValues.put("billId", billId);
-        contentValues.put("seller", email);
-        contentValues.put("backup", state);
+        //  Checking if the product is same them update the quantity
+        Cursor data = displayList(billId);
 
-        long result;
+        data.moveToFirst();
 
-        result = DB.insert("display", null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
+        boolean check_if_already_added = false;
+        int number_of_product = 0;
+
+        if (data.getCount() != 0) {
+            do {
+                if (data.getString(1).equals(name)) {
+                    check_if_already_added = true;
+                    number_of_product = data.getInt(3);
+                }
+            } while (data.moveToNext());
         }
 
+        if (check_if_already_added) {
+            number_of_product += 1;
+            subtotal = pricecustom * number_of_product;
+
+            contentValues.put("Product", name);
+            contentValues.put("price", price);
+            contentValues.put("quantity", number_of_product);
+            contentValues.put("subtotal", subtotal);
+            contentValues.put("customerName", cName);
+            contentValues.put("customerNumber", cNumber);
+            contentValues.put("date", date);
+            contentValues.put("billId", billId);
+            contentValues.put("seller", email);
+            contentValues.put("backup", state);
+
+            long result;
+
+//            result = DB.insert("display", null, contentValues);
+            result = DB.update("display", contentValues, "billid=?", new String[]{String.valueOf(billId)});
+            if (result == -1) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            contentValues.put("Product", name);
+            contentValues.put("price", price);
+            contentValues.put("quantity", quantity);
+            contentValues.put("subtotal", subtotal);
+            contentValues.put("customerName", cName);
+            contentValues.put("customerNumber", cNumber);
+            contentValues.put("date", date);
+            contentValues.put("billId", billId);
+            contentValues.put("seller", email);
+            contentValues.put("backup", state);
+
+            long result;
+
+            result = DB.insert("display", null, contentValues);
+            if (result == -1) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     //    Bill id is unique every time so no need of email -- [select * from display where billId =? ]---
@@ -278,13 +324,51 @@ public class DBManager extends SQLiteOpenHelper {
         return cursor;
     }
 
-//    Remove from list
-    public Cursor removeItem(String id){
+    //    Remove from list -- [delete from display where index =? ]---
+    public Cursor removeItem(String id) {
         SQLiteDatabase DB = this.getWritableDatabase();
 
-        Cursor c=DB.rawQuery("delete from display where indexs = ?",new String[]{id});
+        Cursor c = DB.rawQuery("delete from display where indexs = ?", new String[]{id});
 
-        return  c;
+        return c;
+    }
+
+    //    Remove from list -- [Update Quantity in display where index =? ]---
+    public boolean updateQuentity(int quentity, int subtotal, int index) {
+
+        SQLiteDatabase DB = this.getWritableDatabase();
+
+        //        Getting all values in
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("quantity", String.valueOf(quentity));
+        contentValues.put("subtotal", subtotal);
+
+        long check;
+        check = DB.update("display", contentValues, "indexs =?", new String[]{String.valueOf(index)});
+        if (check == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // Checking Total without saving -- [
+    public int checkTotal(int billID) {
+        SQLiteDatabase DB = this.getReadableDatabase();
+
+        Cursor c = DB.rawQuery("Select * from display where billId =?", new String[]{String.valueOf(billID)});
+
+        int total = 0;
+        c.moveToFirst();
+        if(c.getCount() == 0){
+            return 0;
+        }
+
+        do{
+            total += c.getInt(4);
+        }while (c.moveToNext());
+
+        return total;
 
     }
 
@@ -437,12 +521,12 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public boolean ConfirmSale(int billId){
+    public boolean ConfirmSale(int billId) {
         Cursor cursor = getSubTotal(billId);
 
-        if(cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
 
@@ -614,34 +698,34 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public boolean updateStockStatus(int id,String seller){
+    public boolean updateStockStatus(int id, String seller) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor data = viewStockhistory(seller);
 
         data.moveToFirst();
 
-        if(data.getCount()>0){
-             do{
-                 ContentValues contentValues = new ContentValues();
+        if (data.getCount() > 0) {
+            do {
+                ContentValues contentValues = new ContentValues();
 //                 contentValues.put("productID", data.getString(0));
-                 contentValues.put("productName", data.getString(1));
-                 contentValues.put("catagory", data.getString(2));
-                 contentValues.put("purchesPrice", data.getString(3));
-                 contentValues.put("sellingPrice", data.getString(4));
-                 contentValues.put("date", data.getString(5));
-                 contentValues.put("quentity", data.getString(6));
-                 contentValues.put("seller", data.getString(7));
-                 contentValues.put("backup", 1);
+                contentValues.put("productName", data.getString(1));
+                contentValues.put("catagory", data.getString(2));
+                contentValues.put("purchesPrice", data.getString(3));
+                contentValues.put("sellingPrice", data.getString(4));
+                contentValues.put("date", data.getString(5));
+                contentValues.put("quentity", data.getString(6));
+                contentValues.put("seller", data.getString(7));
+                contentValues.put("backup", 1);
 
-                 long result = db.update("stock", contentValues, "seller = ? and productID = ? ", new String[]{seller, String.valueOf(id)});
-                 if (result == -1) {
-                     return false;
-                 } else {
-                     return true;
-                 }
-             }while (data.moveToNext());
-        }else{
+                long result = db.update("stock", contentValues, "seller = ? and productID = ? ", new String[]{seller, String.valueOf(id)});
+                if (result == -1) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } while (data.moveToNext());
+        } else {
             return false;
         }
 
@@ -651,8 +735,8 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Log.d("ENimesh","getProductQuentity name = "+name);
-        Log.d("ENimesh","getProductQuentity seller = "+seller);
+        Log.d("ENimesh", "getProductQuentity name = " + name);
+        Log.d("ENimesh", "getProductQuentity seller = " + seller);
 
         Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? AND productName = ?", new String[]{seller, name});
 
@@ -823,41 +907,41 @@ public class DBManager extends SQLiteOpenHelper {
         return c;
     }
 
-    public Cursor viewProductHistory(String seller,String product) {
+    public Cursor viewProductHistory(String seller, String product) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller =? AND productName=? ", new String[]{seller,product});
+        Cursor c = db.rawQuery("Select * from stock where seller =? AND productName=? ", new String[]{seller, product});
 
         return c;
     }
 
-    public Cursor viewCategoryHistory(String seller,String catagory) {
+    public Cursor viewCategoryHistory(String seller, String catagory) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller =? AND catagory=? ", new String[]{seller,catagory});
+        Cursor c = db.rawQuery("Select * from stock where seller =? AND catagory=? ", new String[]{seller, catagory});
 
         return c;
     }
 
-    public Cursor viewSlaseProductHistory(String seller,String product){
+    public Cursor viewSlaseProductHistory(String seller, String product) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND seller = ?",new String[]{product,seller});
+        Cursor c = db.rawQuery("Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND seller = ?", new String[]{product, seller});
         return c;
     }
 
-    public Cursor viewSlaseCategoryHistory(String seller,String catagory) {
+    public Cursor viewSlaseCategoryHistory(String seller, String catagory) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select DISTINCT productName from stock where seller =? AND catagory=? ", new String[]{seller,catagory});
+        Cursor c = db.rawQuery("Select DISTINCT productName from stock where seller =? AND catagory=? ", new String[]{seller, catagory});
 
         return c;
     }
 
-    public boolean addStockQty(String name,String quentity,String sPrice,String seller){
+    public boolean addStockQty(String name, String quentity, String sPrice, String seller) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -897,12 +981,33 @@ public class DBManager extends SQLiteOpenHelper {
 
         check = db.insert("stock", null, cv);
 
-        if(check == -1){
+        if (check == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
 
+    }
+
+    public String downloadBackup(Context context) {
+        try {
+            File internalDbFile = context.getDatabasePath("Biller");
+            File backupFile = new File(context.getExternalFilesDir(null), "Biller_backup.db");
+
+            Log.d("ENimesh", "backup file = " + backupFile.toString());
+            FileChannel src = new FileInputStream(internalDbFile).getChannel();
+            FileChannel dst = new FileOutputStream(backupFile).getChannel();
+
+            dst.transferFrom(src, 0, src.size());
+
+            src.close();
+            dst.close();
+
+            return backupFile.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "false";
+        }
     }
 
 }
