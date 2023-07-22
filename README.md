@@ -20,7 +20,7 @@ Effortlessly keep track of your inventory with Biller's comprehensive stock mana
 Biller enables the generation of GST-compliant bills entirely offline. Ensure compliance with tax regulations, calculate accurate GST amounts, and print or save GST bills in PDF format without the need for an internet connection.
 
 ### 6. Customer History Management:
-Maintain a detailed history of your customers' transactions and interactions with the built-in customer management system. Access previous bills, purchase patterns, and contact information to offer personalized service and enhance customer relationships.
+Maintain a detailed history of your customer's transactions and interactions with the built-in customer management system. Access previous bills, purchase patterns, and contact information to offer personalized service and enhance customer relationships.
 
 ### 7. Offline Backup:
 We understand the importance of data security. Biller includes an automatic offline backup feature, ensuring that your data remains safe and retrievable, even in the event of device malfunction or data loss.
@@ -41,6 +41,6 @@ Gain valuable insights into your business performance with comprehensive and cus
 
 Biller redefines mobile billing applications with its advanced offline capabilities, robust security measures, and feature-rich functionalities. Streamline your billing processes, manage your stock efficiently, and access essential business reports - all while ensuring your data remains within your control.
 
-Experience the power and convenience of Biller by downloading the app from the Google Play Store or Apple App Store today. Should you require any assistance or have inquiries, our dedicated support team is here to assist you every step of the way.
+Experience the power and convenience of Biller by downloading the app from the Amazon App Store today. Should you require any assistance or have inquiries, our dedicated support team is here to assist you every step of the way.
 
 Elevate your billing experience with Biller - Your Reliable Mobile Biller Solution.
