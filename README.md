@@ -33,7 +33,7 @@ Gain valuable insights into your business performance with comprehensive and cus
 
 ## System Requirements:
 
-- Platform: Android 7.0 or higher, iOS 12 or later
+- Platform: Android 7.0 or higher
 - Storage: Minimum 100 MB of available storage space
 - Fingerprint Unlock: Available on devices with supported fingerprint sensors
 
