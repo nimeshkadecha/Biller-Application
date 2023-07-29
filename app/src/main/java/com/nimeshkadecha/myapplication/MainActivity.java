@@ -97,17 +97,19 @@ public class MainActivity extends AppCompatActivity {
         permisions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestStoragePermisions();
+                requestStoragePermissions();
             }
         });
-// Fingerprint unlock
+
+
+//        Fingerprint unlock -----------------------------------------------------------------------
 
         ImageView fingerprintUnlock = findViewById(R.id.fingerprint_unlock);
 
         //        checking for fingerprint verification
         SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        String biomatrixLock = sp.getString("bioLock", "");
-        if (biomatrixLock.equals("true")) {
+        String bio_matrix_lock = sp.getString("bioLock", "");
+        if (bio_matrix_lock.equals("true")) {
             fingerprintUnlock.setVisibility(View.VISIBLE);
 
         }
@@ -143,21 +145,23 @@ public class MainActivity extends AppCompatActivity {
         Data_cloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkConnection()) {
-                    Intent forgotpassword = new Intent(MainActivity.this, ForgotPassword.class);
-                    forgotpassword.putExtra("Origin", "Cloud");
-                    startActivity(forgotpassword);
-
-                } else {
-                    Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
-                }
+                Intent i = new Intent(MainActivity.this,LocalBackup.class);
+                startActivity(i);
+//                if (checkConnection()) {
+//                    Intent forgotpassword = new Intent(MainActivity.this, ForgotPassword.class);
+//                    forgotpassword.putExtra("Origin", "Cloud");
+//                    startActivity(forgotpassword);
+//
+//                } else {
+//                    Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
 //--------------------------------------------------------------------------------------------------
     }
 
     //    Working on requesting STORAGE permission -----------------------------------------------------
-    private void requestStoragePermisions() {
+    private void requestStoragePermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission is needed for")

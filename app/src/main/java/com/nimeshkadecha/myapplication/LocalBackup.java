@@ -4,14 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.style.UpdateAppearance;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,6 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
 
@@ -38,17 +44,17 @@ public class LocalBackup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               String check = dbManager.downloadBackup(LocalBackup.this);
-               if(!check.equals("false")){
-                   Toast.makeText(LocalBackup.this, "Success", Toast.LENGTH_SHORT).show();
-                   AlertDialog.Builder builder = new AlertDialog.Builder(LocalBackup.this);
-                   builder.setCancelable(true);
-                   builder.setTitle("Bills");
-                   builder.setMessage("You can locate the backup at \n \""+check+"\" ");
-                   builder.show();
-               }else{
-                   Toast.makeText(LocalBackup.this, "Failed", Toast.LENGTH_SHORT).show();
-               }
+                String check = dbManager.downloadBackup(LocalBackup.this);
+                if (!check.equals("false")) {
+                    Toast.makeText(LocalBackup.this, "Success", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LocalBackup.this);
+                    builder.setCancelable(true);
+                    builder.setTitle("Bills");
+                    builder.setMessage("You can locate the backup at \n \"" + check + "\" ");
+                    builder.show();
+                } else {
+                    Toast.makeText(LocalBackup.this, "Failed", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -61,62 +67,100 @@ public class LocalBackup extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void selectBackupFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*"); // Set the MIME type to all files
-        startActivityForResult(intent, 100);
+        startActivityForResult(intent, 101);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 100 && resultCode == RESULT_OK) {
-            if (data != null && data.getData() != null) {
-                Uri fileUri = data.getData();
-                boolean success = restoreBackupFromUri(LocalBackup.this,fileUri);
+        if (requestCode == 101 && resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedFileUri = data.getData();
 
-                if (success) {
-                    // Backup data restored successfully
-                    Toast.makeText(this, "Backup data restored successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Error restoring backup data
-                    Toast.makeText(this, "Error restoring backup data", Toast.LENGTH_SHORT).show();
+            if (selectedFileUri != null) {
+
+                Log.d("ENimesh", "Selected file URL " + selectedFileUri);
+
+                try {
+                    File selectedFile = convertUriToFile(this,selectedFileUri); // Get the File from the file picker or any other source
+                    String restoreSuccess = dbManager.UploadLocalBackup(this, selectedFile);
+                    Log.d("ENimesh", "result !!! restore ? = " + restoreSuccess);
+                    // Now you have the File object, and you can use it as needed
+                    // For example, you can copy, move, or read the contents of the file
+                } catch (IOException e) {
+                    Log.d("ENimesh","catch ="+e.toString());
+                    e.printStackTrace();
+                    // Handle the error here
                 }
+
+            } else {
+                Toast.makeText(this, "Null ?1", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    public static File convertUriToFile(Context context, Uri uri) throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            // Open an input stream from the Uri
+            ContentResolver contentResolver = context.getContentResolver();
+            input = contentResolver.openInputStream(uri);
+
+            // Create a temporary file in the app's cache directory
+            Log.d("ENimesh","current dirr:"+ context.getCacheDir());
+            Log.d("ENimesh","input:"+ input);
+            File outputFile = new File(context.getCacheDir(), "temp_file_biller");
+
+            // Create a stream to write data to the output file
+            output = new FileOutputStream(outputFile);
+
+
+            byte data[] = new byte[4096];
+            int count;
+            while ((count = input.read(data)) != -1) {
+                // Write data to the output stream
+                output.write(data, 0, count);
+            }
+
+            return outputFile; // Return the temporary file
+        } finally {
+            try {
+                if (output != null)
+                    output.close();
+                if (input != null)
+                    input.close();
+            } catch (IOException ignored) {
             }
         }
     }
 
-    public static boolean restoreBackupFromUri(Context context, Uri backupFileUri) {
-        try {
-            // Get the path of the backup file
-            String backupFilePath = backupFileUri.getPath();
 
-            // Open the database and close it to create an empty database file
-            SQLiteDatabase targetDatabase = SQLiteDatabase.openOrCreateDatabase(":memory:", null);
-            targetDatabase.close();
-
-            // Get the database directory path
-            File dbDir = context.getDatabasePath("biller").getParentFile();
-
-            // Copy the backup file to the database directory with the correct name
-            File backupFile = new File(backupFilePath);
-            File targetFile = new File(dbDir, "biller");
-            FileChannel src = new FileInputStream(backupFile).getChannel();
-            FileChannel dst = new FileOutputStream(targetFile).getChannel();
-            dst.transferFrom(src, 0, src.size());
-
-            src.close();
-            dst.close();
-
-            return true;
-        } catch (SQLiteException | IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
+    // Helper method to get File from Uri
+//    private File getFileFromUri(Uri uri) {
+//        String filePath = null;
+//        if ("content".equalsIgnoreCase(uri.getScheme())) {
+//            String[] projection = {MediaStore.MediaColumns.DATA};
+//            try (Cursor cursor = getContentResolver().query(uri, projection, null, null, null)) {
+//                if (cursor != null && cursor.moveToFirst()) {
+//                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+//                    filePath = cursor.getString(columnIndex);
+//                }
+//            }
+//        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+//            filePath = uri.getPath();
+//        }
+//
+//        if (filePath != null) {
+//            return new File(filePath);
+//        }
+//
+//        return null;
+//    }
 }

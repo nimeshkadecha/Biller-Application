@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 
 public class DBManager extends SQLiteOpenHelper {
@@ -991,23 +993,91 @@ public class DBManager extends SQLiteOpenHelper {
 
     public String downloadBackup(Context context) {
         try {
-            File internalDbFile = context.getDatabasePath("Biller");
-            File backupFile = new File(context.getExternalFilesDir(null), "Biller_backup.db");
+            // Step 1: Get the path to the app's internal database
+            String internalDatabasePath = context.getDatabasePath("Biller").getPath();
 
-            Log.d("ENimesh", "backup file = " + backupFile.toString());
-            FileChannel src = new FileInputStream(internalDbFile).getChannel();
-            FileChannel dst = new FileOutputStream(backupFile).getChannel();
+            // Step 2: Open the database file using FileChannel for efficient file copy
+            File databaseFile = new File(internalDatabasePath);
+            FileInputStream fis = new FileInputStream(databaseFile);
+            FileChannel src = fis.getChannel();
 
+            // Step 3: Create the backup file on external storage or other location
+            String backupPath = Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.nimeshkadecha.Biller/files/";
+            File backupFolder = new File(backupPath);
+            if (!backupFolder.exists()) {
+                backupFolder.mkdirs();
+            }
+            String backupDatabasePath = backupPath + "Biller_Backup.db";
+            FileOutputStream fos = new FileOutputStream(backupDatabasePath);
+            FileChannel dst = fos.getChannel();
+
+            // Step 4: Copy the database file to the backup location
             dst.transferFrom(src, 0, src.size());
 
+            // Step 5: Close the channels
             src.close();
             dst.close();
+            fis.close();
+            fos.close();
 
-            return backupFile.toString();
+            return "true"; // Backup successful
         } catch (IOException e) {
+            Log.d("ENimesh","ERROR Is: "+ e.toString());
             e.printStackTrace();
             return "false";
         }
+    }
+
+    public String  UploadLocalBackup(Context context,File selectedFile){
+        File dbFile = context.getDatabasePath("Biller");
+        try (FileChannel src = new FileInputStream(selectedFile).getChannel();
+             FileChannel dst = new FileOutputStream(dbFile).getChannel()) {
+            dst.transferFrom(src, 0, src.size());
+
+            Log.d("ENimesh", "Database imported from: " + selectedFile.getAbsolutePath());
+            return "True";
+        } catch (IOException e) {
+            Log.e("ENimesh", "Error importing database: " + e.getMessage());
+            return "False";
+        }
+
+
+//        try {
+//            // Step 1: Get the path to the app's internal database
+//            String internalDatabasePath = context.getDatabasePath("Biller").getPath();
+//
+//            // Step 2: Open the database file using FileChannel for efficient file copy
+//            File databaseFile = new File(internalDatabasePath);
+//            FileInputStream fis = new FileInputStream(databaseFile);
+//            FileChannel src = fis.getChannel();
+//
+//            // Step 3: Create the backup file on external storage or other location
+//            String backupPath = backupFile.toString();
+//            File backupFolder = new File(backupPath);
+//            if (!backupFolder.exists()) {
+//                backupFolder.mkdirs();
+//            }
+//            String backupDatabasePath = backupPath + "Biller_Backup.db";
+//            FileOutputStream fos = new FileOutputStream(backupDatabasePath);
+//            FileChannel dst = fos.getChannel();
+//
+//            // Step 4: Copy the database file to the backup location
+//            dst.transferFrom(src, 0, src.size());
+//
+//            // Step 5: Close the channels
+//            src.close();
+//            dst.close();
+//            fis.close();
+//            fos.close();
+//
+//            return "true"; // Backup successful
+//        } catch (IOException e) {
+//            Log.d("ENimesh","ERROR Is: "+ e.toString());
+//            e.printStackTrace();
+//            return "false";
+//        }
+
+
     }
 
 }
