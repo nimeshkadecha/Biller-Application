@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +19,9 @@ import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -27,16 +31,109 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class LocalBackup extends AppCompatActivity {
 
     DBManager dbManager = new DBManager(this);
+    public static final String SHARED_PREFS = "sharedPrefs";
+
+    Button showPathAuto;
+    Switch AutoUploadSwitch;
+
+    private TextView uploadDate, Download, AutoUpdateLabel, AutoUpdateDate;
+
+    //      Getting Current Date to put ----------------------------------------------------------------
+    Date c = Calendar.getInstance().getTime();
+
+    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    String formattedDate = df.format(c);
+//--------------------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_local_backup);
+
+//        Using Shared Preference to store Last Date -----------------------------------------------
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String UploadDate = sharedPreferences.getString("Last Upload", "Not Uploaded");
+        String DownloadDate = sharedPreferences.getString("Last Download", "Not Downloaded");
+        String AutoUpload = sharedPreferences.getString("AutoUpload", "Not Uploaded");
+//--------------------------------------------------------------------------------------------------
+
+        //Upload Date
+        uploadDate = findViewById(R.id.uploadDate);
+        uploadDate.setText(UploadDate);
+
+        // Download Date
+        Download = findViewById(R.id.Download);
+        Download.setText(DownloadDate);
+
+        //butotn
+        showPathAuto = findViewById(R.id.showPathAuto);
+        showPathAuto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(LocalBackup.this);
+                builder.setCancelable(true);
+                builder.setTitle("Automatic Backup Location");
+                builder.setMessage("If enabled then you can find backup at \n:/Android/data/com.nimeshkadecha.Biller/Auto Backup/Auto_Biller_Backup.db");
+                builder.show();
+            }
+        });
+
+        AutoUpdateLabel = findViewById(R.id.AutoUpdateLable);
+
+        AutoUpdateDate = findViewById(R.id.autouploadDate);
+
+        AutoUploadSwitch = findViewById(R.id.autoBackupSwitch);
+
+        AutoUploadSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    boolean check = dbManager.AutoLocalBackup(LocalBackup.this);
+
+                    if(check){
+                        Date c = Calendar.getInstance().getTime();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                        String formattedDate = df.format(c);
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("AutoUpload", formattedDate);
+                        editor.apply();
+                        AutoUpdateDate.setText(formattedDate);
+                    }
+
+                    AutoUpdateLabel.setVisibility(View.VISIBLE);
+                    AutoUpdateDate.setVisibility(View.VISIBLE);
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("AutoBackup", "true");
+                    editor.apply();
+                } else {
+                    AutoUpdateLabel.setVisibility(View.GONE);
+                    AutoUpdateDate.setVisibility(View.GONE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("AutoBackup", "false");
+                    editor.apply();
+                }
+            }
+        });
+
+        String checkAutoBackup = sharedPreferences.getString("AutoBackup", "");
+        if (checkAutoBackup.equals("true")) {
+
+            AutoUploadSwitch.setChecked(true);
+            AutoUpdateLabel.setVisibility(View.VISIBLE);
+            AutoUpdateDate.setVisibility(View.VISIBLE);
+            AutoUpdateDate.setText(AutoUpload);
+        }
 
         Button DownloadBTN = findViewById(R.id.Downloadbtn);
 
@@ -46,27 +143,31 @@ public class LocalBackup extends AppCompatActivity {
 
                 String check = dbManager.downloadBackup(LocalBackup.this);
                 if (!check.equals("false")) {
+                    SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("Last Download", formattedDate);
+                    editor.apply();
+                    Download.setText(formattedDate);
+
                     Toast.makeText(LocalBackup.this, "Success", Toast.LENGTH_SHORT).show();
                     AlertDialog.Builder builder = new AlertDialog.Builder(LocalBackup.this);
                     builder.setCancelable(true);
                     builder.setTitle("Bills");
                     builder.setMessage("You can locate the backup at \n \"" + check + "\" ");
                     builder.show();
+
                 } else {
                     Toast.makeText(LocalBackup.this, "Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
         Button uploadBTN = findViewById(R.id.LocaluploadDatabtn);
-
         uploadBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectBackupFile();
             }
         });
-
     }
 
     private void selectBackupFile() {
@@ -81,25 +182,26 @@ public class LocalBackup extends AppCompatActivity {
 
         if (requestCode == 101 && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedFileUri = data.getData();
-
             if (selectedFileUri != null) {
-
-                Log.d("ENimesh", "Selected file URL " + selectedFileUri);
-
                 try {
-                    File selectedFile = convertUriToFile(this,selectedFileUri); // Get the File from the file picker or any other source
+                    File selectedFile = convertUriToFile(this, selectedFileUri); // Get the File from the file picker or any other source
                     String restoreSuccess = dbManager.UploadLocalBackup(this, selectedFile);
-                    Log.d("ENimesh", "result !!! restore ? = " + restoreSuccess);
+                    SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("Last Upload", formattedDate);
+                    editor.apply();
+
+                    uploadDate.setText(formattedDate);
+                    Toast.makeText(this, "Application Data is updated", Toast.LENGTH_SHORT).show();
                     // Now you have the File object, and you can use it as needed
                     // For example, you can copy, move, or read the contents of the file
                 } catch (IOException e) {
-                    Log.d("ENimesh","catch ="+e.toString());
+                    Log.d("ENimesh", "catch =" + e.toString());
                     e.printStackTrace();
                     // Handle the error here
                 }
-
             } else {
-                Toast.makeText(this, "Null ?1", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "selectedFileUri == Null", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -114,13 +216,10 @@ public class LocalBackup extends AppCompatActivity {
             input = contentResolver.openInputStream(uri);
 
             // Create a temporary file in the app's cache directory
-            Log.d("ENimesh","current dirr:"+ context.getCacheDir());
-            Log.d("ENimesh","input:"+ input);
             File outputFile = new File(context.getCacheDir(), "temp_file_biller");
 
             // Create a stream to write data to the output file
             output = new FileOutputStream(outputFile);
-
 
             byte data[] = new byte[4096];
             int count;
@@ -140,27 +239,4 @@ public class LocalBackup extends AppCompatActivity {
             }
         }
     }
-
-
-    // Helper method to get File from Uri
-//    private File getFileFromUri(Uri uri) {
-//        String filePath = null;
-//        if ("content".equalsIgnoreCase(uri.getScheme())) {
-//            String[] projection = {MediaStore.MediaColumns.DATA};
-//            try (Cursor cursor = getContentResolver().query(uri, projection, null, null, null)) {
-//                if (cursor != null && cursor.moveToFirst()) {
-//                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-//                    filePath = cursor.getString(columnIndex);
-//                }
-//            }
-//        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-//            filePath = uri.getPath();
-//        }
-//
-//        if (filePath != null) {
-//            return new File(filePath);
-//        }
-//
-//        return null;
-//    }
 }

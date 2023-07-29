@@ -8,18 +8,18 @@
 
 <!--    <include-->
 <!--        layout="@layout/toolbar"-->
-<!--        -->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <LinearLayout
+        android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-
+        android:layout_marginTop="50dp"
+        android:background="#27676767"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:layout_marginTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
@@ -41,21 +41,21 @@
 
             <TextView
                 android:id="@+id/Download"
+                style="@style/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="25dp"
                 android:text="Not Downloaded"
-                style="@style/textView"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView10"
+                style="@style/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                style="@style/textView"
                 android:text="Last Download :"
                 app:layout_constraintBottom_toBottomOf="@+id/Download"
                 app:layout_constraintEnd_toStartOf="@+id/Download"
@@ -70,7 +70,7 @@
         android:fadingEdge="horizontal"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-
+        android:background="#27676767"
         android:layout_marginTop="200dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -117,13 +117,80 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        android:fadingEdge="horizontal"
+        android:orientation="horizontal"
+        android:background="#27676767"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Switch
+                android:id="@+id/autoBackupSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_marginTop="10dp"
+                android:text="Automatic offline backup"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <Button
+                android:id="@+id/showPathAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show location"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/AutoUpdateLable" />
+
+            <TextView
+                android:id="@+id/AutoUpdateLable"
+                style="@style/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Last auto Download At:"
+                android:visibility="gone"
+                android:layout_marginStart="40dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/autoBackupSwitch" />
+
+            <TextView
+                android:id="@+id/autouploadDate"
+                style="@style/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Not Uploaded"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/AutoUpdateLable"
+                app:layout_constraintStart_toEndOf="@+id/AutoUpdateLable"
+                app:layout_constraintTop_toTopOf="@+id/AutoUpdateLable" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/title"
         style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:text="Local Backup Data"
+        android:text="Local Backup Managment"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"

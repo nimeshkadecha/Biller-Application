@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,15 +68,15 @@ public class customer_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_info);
 
-//        Finding Layout for Spinner (DropDown MEnu) -----------------------------------------------
+//        Finding Layout for Spinner (DropDown MEnu) ===============================================
         cl = findViewById(R.id.contactlayout);
         dl = findViewById(R.id.datelayout);
         edl = findViewById(R.id.rangedate);
         bl = findViewById(R.id.billIDlayout);
         CN = findViewById(R.id.namelayout);
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//        CLick Listener to inform user to select Respective Layout --------------------------------
+//        CLick Listener to inform user to select Respective Layout ================================
         cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,23 +95,23 @@ public class customer_Info extends AppCompatActivity {
                 Toast.makeText(customer_Info.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
             }
         });
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//        Getting User from INTENT -----------------------------------------------------------------
+//        Getting User from INTENT =================================================================
         Bundle seller = getIntent().getExtras();
         String sellertxt = seller.getString("seller");
 
-//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
+//      WORKING WITH TOOLBAR Starts ================================================================
 //          Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-//          menu Button ----------------------------------------------------------------------------
+//          menu Button ============================================================================
         menuclick = findViewById(R.id.Menu);
 //          Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//        Finding Edittext -------------------------------------------------------------------------
+//        Finding Edittext =========================================================================
         nameedt = findViewById(R.id.name);
 //        Adding Autocomplete Text view LIST
         String[] NameSuggestion;
@@ -203,17 +204,17 @@ public class customer_Info extends AppCompatActivity {
         nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, mergedString));
 
         todateedt = findViewById(R.id.rangeDatetEDT);
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//        Calculating And Formatting DATE ----------------------------------------------------------
+//        Calculating And Formatting DATE ==========================================================
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = df.format(c);
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//        Adding current date On click of edit text ------------------------------------------------
+//        Adding current date On click of edit text ================================================
         dateedt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,11 +285,11 @@ public class customer_Info extends AppCompatActivity {
                 return true;
             }
         });
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
         searchbtn = findViewById(R.id.searchbtn);
 
-//        Adding Spinner (Dropdown menu) -----------------------------------------------------------
+//        Adding Spinner (Dropdown menu) ===========================================================
         spinner = findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(customer_Info.this, android.R.layout.simple_spinner_item, shorting);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -330,9 +331,9 @@ public class customer_Info extends AppCompatActivity {
                 Toast.makeText(customer_Info.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
             }
         });
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//      Search Button ------------------------------------------------------------------------------
+//      Search Button ==============================================================================
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -425,7 +426,14 @@ public class customer_Info extends AppCompatActivity {
                         }
                     });
 
+                    builder.setNegativeButton("Delete Listing", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
                     builder.show();
+
                 }
             }
 
@@ -477,29 +485,29 @@ public class customer_Info extends AppCompatActivity {
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(32)).setBorder(Border.NO_BORDER));
-// --------------------------------------------------------------------------------------------------
+// =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph("Address: "+selerDATA.getString(5)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
-// --------------------------------------------------------------------------------------------------
+// =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("E-mail: "+selerDATA.getString(1)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
-// --------------------------------------------------------------------------------------------------
+                            table1.addCell(new Cell().add(new Paragraph("E=mail: "+selerDATA.getString(1)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+// =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph("Mo: "+selerDATA.getString(4)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
-// --------------------------------------------------------------------------------------------------
+// =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
                             if(!selerDATA.getString(3).equals("no")) {
                                 table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
-// --------------------------------------------------------------------------------------------------
+// =================================================================================================
                             table1.addCell(new Cell());
 
                         } while (selerDATA.moveToNext());
@@ -607,7 +615,6 @@ public class customer_Info extends AppCompatActivity {
                     if (customerDetail.getCount() == 0) {
                         Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     } else {
-//                        ------------------------------------------------------------------------------
                         if (checker == 3 || checker == 4) {
 //                            Date & range search
                             customerDetail.moveToFirst();
@@ -804,359 +811,13 @@ public class customer_Info extends AppCompatActivity {
                 }
             }
         });
-//--------------------------------------------------------------------------------------------------
+// =================================================================================================
 
-//      PDF Button ---------------------------------------------------------------------------------
+//      PDF Button =================================================================================
         pdf = findViewById(R.id.pdfC);
         pdf.setVisibility(View.GONE);
-//        pdf.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    createPDF();
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @SuppressLint("DefaultLocale")
-//            private String getrandom() {
-//                Random rnd = new Random();
-//                int otp = rnd.nextInt(999999999);
-//                return String.format("%09d", otp);
-//            }
-//
-//            //            Creating PDF
-//            private void createPDF() throws FileNotFoundException {
-//                String nametxt, datetxt, billIDtxt, contactTXT, ToDate;
-//
-//                nametxt = nameedt.getText().toString();
-//                datetxt = dateedt.getText().toString();
-//                billIDtxt = billidedt.getText().toString();
-//                contactTXT = contactedt.getText().toString();
-//                ToDate = todateedt.getText().toString();
-//
-//                if (nametxt.isEmpty() && datetxt.isEmpty() && billIDtxt.isEmpty() && contactTXT.isEmpty()) {
-//                    Toast.makeText(customer_Info.this, "Fill at least one information to search", Toast.LENGTH_SHORT).show();
-//                } else {
-//
-//
-//                    String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
-////                File name
-////                    String id = String.valueOf(billId);
-////                Create file object
-//                    String s = getrandom();
-//                    File file = new File(pdfPath, "Renewed BILL" + s + ".pdf");
-//                    OutputStream outputStream = new FileOutputStream(file);
-//
-//                    PdfWriter writer = new PdfWriter(file);
-//                    PdfDocument pdfDocument = new PdfDocument(writer);
-//                    Document document = new Document(pdfDocument);
-//
-//                    float cWidth[] = {120, 220, 120, 100};
-//                    Table table1 = new Table(cWidth);
-//
-////        Table 1 do this
-////        Want users||||| NAME EMail GST ADDRESS NUMBER
-////                           0  1     3   5       4
-//
-//                    Cursor selerDATA = DB.GetUser(sellertxt);
-//                    if (selerDATA.getCount() == 0) {
-//                        Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    } else {
-//                        selerDATA.moveToFirst();
-//                        do {
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
-////                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(14)));
-//
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
-////                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1)+"").setFontSize(14)));
-//
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
-////                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4)+"").setFontSize(14)));
-//
-//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
-////                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3)+"").setFontSize(14)));
-//
-//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
-////                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5)+"").setFontSize(14)));
-//                        } while (selerDATA.moveToNext());
-//                    }
-//
-//
-//                    //        Table 2 do this    FROM BILLID
-////        Want display ||||||  customerName=5 customerNumber=6 date=7
-//
-//                    float cWidth3[] = {142, 142, 142, 142};
-//                    Table table3 = new Table(cWidth3);
-//
-//                    float cWidth5[] = {142, 142, 142, 142};
-//                    Table table5 = new Table(cWidth5);
-//
-//                    float cWidth2[] = {270, 100, 100, 100};
-//                    Table table2 = new Table(cWidth2);
-//
-//
-//                    Cursor customerDetail;
-//                    Cursor list;
-//                    customerDetail = DB.cusInfo(sellertxt);
-//                    int checker = 0;
-//
-//                    if (!nametxt.isEmpty()) {
-//                        checker = 1;
-//                        customerDetail = DB.CustomerNameBill(nametxt, sellertxt);
-//                        list = DB.CustomerNameBill(nametxt, sellertxt);
-//                    } else if (!contactTXT.isEmpty()) {
-//                        checker = 2;
-//                        customerDetail = DB.Customernumberbill(contactTXT, sellertxt);
-//                        list = DB.Customernumberbill(contactTXT, sellertxt);
-//                    } else if (!datetxt.isEmpty()) {
-//                        if (!ToDate.isEmpty()) {
-//                            checker = 4;
-//                            customerDetail = DB.rangeSearch(datetxt, ToDate, sellertxt);
-//                            list = DB.rangeSearch(datetxt, ToDate, sellertxt);
-//                        } else {
-//                            checker = 3;
-//                            customerDetail = DB.CustomerDateBill(datetxt, sellertxt);
-//                            list = DB.CustomerDateBill(datetxt, sellertxt);
-//                        }
-//                    } else if (!billIDtxt.isEmpty()) {
-//                        checker = 5;
-//                        Integer billID;
-//                        billID = Integer.parseInt(billIDtxt);
-//                        customerDetail = DB.CustomerBillID(billID, sellertxt);
-//                        list = DB.CustomerBillID(billID, sellertxt);
-//                    } else {
-//                        customerDetail = DB.cusInfo(sellertxt);
-//                        list = DB.cusInfo(sellertxt);
-//                        Toast.makeText(customer_Info.this, "Error", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    if (customerDetail.getCount() == 0) {
-//                        Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
-//                    } else {
-////                        ------------------------------------------------------------------------------
-//                        if (checker == 3 || checker == 4) {
-////                            Date & range search
-//                            customerDetail.moveToFirst();
-//                            do {
-//                                table5.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//
-//                                table5.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//
-//                                table5.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(8) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//
-////Just Printing headings -----------------------------------------------------------------------
-//                                table5.addCell(new Cell().add(new Paragraph("Product Name")));
-//                                table5.addCell(new Cell().add(new Paragraph("Product Price")));
-//                                table5.addCell(new Cell().add(new Paragraph("Product Quantity")));
-//                                table5.addCell(new Cell().add(new Paragraph("Sub Total")));
-//
-////                                this index help to privent repit table printing
-//                                int index = 0;
-//                                int total = 0;
-//                                if (list.getCount() == 0) {
-//                                    Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
-//                                    return;
-//                                } else {
-//                                    list.moveToFirst();
-//                                    do {
-////                                        Index 8 is bill ID
-//                                        if (customerDetail.getString(8).equals(list.getString(8))) {
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
-//                                            total += list.getInt(4);
-//                                            index++;
-//                                        }
-//                                    } while (list.moveToNext());
-//                                }
-//
-//                                int ix = customerDetail.getPosition() + index - 1;
-//                                customerDetail.moveToPosition(ix);
-//
-//                                table5.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-//                                table5.addCell(new Cell().add(new Paragraph(total + "")));
-//                                table5.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
-//
-//                            } while (customerDetail.moveToNext());
-//// -----------------------------------------------------------------------------------------------------------------------
-//                        } else if (checker == 1 || checker == 2) {
-//                            customerDetail.moveToFirst();
-//                            do {
-//                                table5.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//
-//                                table5.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//
-//                                table5.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(8) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-//
-////Just Printing headings -----------------------------------------------------------------------
-//                                table5.addCell(new Cell().add(new Paragraph("Product Name")));
-//                                table5.addCell(new Cell().add(new Paragraph("Product Price")));
-//                                table5.addCell(new Cell().add(new Paragraph("Product Quantity")));
-//                                table5.addCell(new Cell().add(new Paragraph("Sub Total")));
-//
-////                                customerDetail.moveToFirst();
-//
-////                                this index help to privent repit table printing
-//                                int index = 0;
-//                                int total = 0;
-//                                if (list.getCount() == 0) {
-//                                    Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
-//                                    return;
-//                                } else {
-//                                    list.moveToFirst();
-//
-//                                    do {
-//                                        if (customerDetail.getString(8).equals(list.getString(8))) {
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-//                                            table5.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
-//                                            total += list.getInt(4);
-//                                            index++;
-//                                        }
-//                                    } while (list.moveToNext());
-//                                }
-//
-//                                int ix = customerDetail.getPosition() + index - 1;
-//                                customerDetail.moveToPosition(ix);
-//
-//                                table5.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-//                                table5.addCell(new Cell().add(new Paragraph(total + "")));
-//                                table5.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
-//
-//                            } while (customerDetail.moveToNext());
-//                        }
-////                        _----------------------------------------------------------------------------
-//                        else {
-//                            customerDetail.moveToFirst();
-//
-//                            table3.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table3.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////                            table3.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)));
-////                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(5)+"").setFontSize(14)));
-////
-////                            table3.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)));
-////                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(6)+"").setFontSize(14)));
-//
-//                            if (!ToDate.isEmpty() && !datetxt.isEmpty()) {
-//                                table3.addCell(new Cell().add(new Paragraph("From Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table3.addCell(new Cell().add(new Paragraph("To Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table3.addCell(new Cell().add(new Paragraph(ToDate + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////
-////                                 table3.addCell(new Cell().add(new Paragraph("From Date").setFontSize(14)));
-////                                table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(7)+"").setFontSize(14)));
-////                                table3.addCell(new Cell().add(new Paragraph("To Date").setFontSize(14)));
-////                                table3.addCell(new Cell().add(new Paragraph(ToDate+"").setFontSize(14)));
-//
-//                            } else {
-//                                table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                                table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////                                table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)));
-////                                table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(7)+"").setFontSize(14)));
-//                            }
-//
-////                            table3.addCell((new Cell().add(new Paragraph("Bill ID: ").setFontSize(14))));
-////                            table3.addCell((new Cell().add(new Paragraph(customerDetail.getString(8)).setFontSize(14))));
-//                            table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(8) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//////Just Printing headings -----------------------------------------------------------------------
-//                            table2.addCell(new Cell().add(new Paragraph("Product Name")));
-//                            table2.addCell(new Cell().add(new Paragraph("Product Price")));
-//                            table2.addCell(new Cell().add(new Paragraph("Product Quantity")));
-//                            table2.addCell(new Cell().add(new Paragraph("Sub Total")));
-//
-//                            customerDetail.moveToFirst();
-//
-//                            int total = 0;
-//
-//                            if (list.getCount() == 0) {
-//                                Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
-//                                return;
-//                            } else {
-//                                list.moveToFirst();
-//                                do {
-//                                    table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-//                                    table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-//                                    table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-//                                    table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
-//                                    total += list.getInt(4);
-//                                } while (list.moveToNext());
-//                            }
-//
-//                            table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-//                            table2.addCell(new Cell().add(new Paragraph(total + "")));
-//
-//                        }
-////                        ---------------------------Working------------------------------------------
-////                Displaying data
-//                        document.add(table1);
-//                        document.add(new Paragraph("\n"));
-//                        if (checker <= 4) {
-//                            document.add(table5);
-//                        } else {
-//                            document.add(table3);
-//                            document.add(new Paragraph("\n"));
-//                            document.add(table2);
-//                        }
-//                        document.close();
-//                        Toast.makeText(customer_Info.this, "PDF Created", Toast.LENGTH_SHORT).show();
-//
-////                Opening PDf ---------------------------------
-//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-//                            if (file.exists()) {
-//                                Uri uri = FileProvider.getUriForFile(customer_Info.this, getApplicationContext().getPackageName() + ".provider", file);
-//                                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                                intent.setDataAndType(uri, "application/pdf");
-//                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//                                startActivity(intent);
-//                            } else {
-//                                Toast.makeText(customer_Info.this, "File can't be created", Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                        }
-//                    }
-//
-//                }
-//            }
-//        });
-//--------------------------------------------------------------------------------------------------
-
-//        Show ALl Customer Button -----------------------------------------------------------------
+// =================================================================================================
+//        Show ALl Customer Button =================================================================
         showbtn = findViewById(R.id.showallData);
 
         showbtn.setOnClickListener(new View.OnClickListener() {
@@ -1189,7 +850,47 @@ public class customer_Info extends AppCompatActivity {
         });
     }
 
-    //--------------------------------------------------------------------------------------------------
+// =================================================================================================
+
+//  AUTO BACKUP ====================================================================================
+
+    //    On pause
+    @Override
+    protected void onPause() {
+        super.onPause();
+        final String SHARED_PREFS = "sharedPrefs";
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        DBManager dbManager = new DBManager(getApplicationContext());
+        boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+        if(check){
+            Date c = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            String formattedDate = df.format(c);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("AutoUpload", formattedDate);
+            editor.apply();
+        }
+    }
+
+    // on stop
+    @Override
+    protected void onStop() {
+        super.onStop();
+        final String SHARED_PREFS = "sharedPrefs";
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        DBManager dbManager = new DBManager(getApplicationContext());
+        boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+        if(check){
+            Date c = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            String formattedDate = df.format(c);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("AutoUpload", formattedDate);
+            editor.apply();
+        }
+    }
+
+//  ================================================================================================
     @Override
     public void onBackPressed() {
         finish();

@@ -358,9 +358,7 @@ public class home extends AppCompatActivity {
 //  ================================================================================================
 
 //        Report button ============================================================================
-        report =
-
-                findViewById(R.id.report);
+        report =findViewById(R.id.report);
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -373,9 +371,7 @@ public class home extends AppCompatActivity {
 //  ================================================================================================
 
 //      Log Out btn ================================================================================
-        logout =
-
-                findViewById(R.id.logOutButton);
+        logout =findViewById(R.id.logOutButton);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -588,5 +584,43 @@ public class home extends AppCompatActivity {
             alert.show();
         }
     }
+//  ================================================================================================
+
+//  AUTO BACKUP ====================================================================================
+
+//    On pause
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        DBManager dbManager = new DBManager(getApplicationContext());
+        boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+        if(check){
+            Date c = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            String formattedDate = df.format(c);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("AutoUpload", formattedDate);
+            editor.apply();
+        }
+    }
+
+    // on stop
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        DBManager dbManager = new DBManager(getApplicationContext());
+        boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+        if(check){
+            Date c = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            String formattedDate = df.format(c);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("AutoUpload", formattedDate);
+            editor.apply();
+        }
+    }
+
 //  ================================================================================================
 }

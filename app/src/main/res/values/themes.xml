@@ -17,6 +17,10 @@
 
     </style>
 
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#f00</item>
+    </style>
+
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxStrokeColor">#3c85f2</item> <!-- // click karya pachi je color ave ee -->
         <item name="boxBackgroundColor">@color/day_back</item> <!-- // box no background color -->

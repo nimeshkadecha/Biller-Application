@@ -148,7 +148,7 @@
             style="@style/TextInputLayout"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:srcCompat="@drawable/baseline_cloud_24" />
+            app:srcCompat="@drawable/baseline_cloud_sync_24" />
 
         <TextView
             android:id="@+id/Data_cloud"
@@ -156,7 +156,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="Login From Cloud"
+            android:text="Upload Backup File"
             android:textSize="21dp" />
     </LinearLayout>
 
