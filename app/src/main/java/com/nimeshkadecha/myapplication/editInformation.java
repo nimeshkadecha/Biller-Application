@@ -71,6 +71,7 @@ public class editInformation extends AppCompatActivity {
         String number = "";
 
         header = findViewById(R.id.Header);
+        header.setText("Update data of E-Mail : " + email);
         name = findViewById(R.id.rName);
         password = findViewById(R.id.password);
         gst = findViewById(R.id.gst);
@@ -84,14 +85,12 @@ public class editInformation extends AppCompatActivity {
                 name.setText(getuserinfo.getString(0));
                 password.setText(getuserinfo.getString(2));
                 gst.setText(getuserinfo.getString(3));
-                contact.setText(email);
+                contact.setText(getuserinfo.getString(4));
                 address.setText(getuserinfo.getString(5));
-                number = getuserinfo.getString(4);
-                header.setText("Update data of { +91 " + getuserinfo.getString(4) + " }");
             } while (getuserinfo.moveToNext());
         }
 
-//  ------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
 //      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
 //          Removing Suport bar / top line containing name
@@ -101,7 +100,7 @@ public class editInformation extends AppCompatActivity {
         menuclick = findViewById(R.id.Menu);
 //          Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-//--------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
 //        SHOW Btn Works starts --------------------------------------------------------------------
         show = findViewById(R.id.show);
@@ -131,7 +130,7 @@ public class editInformation extends AppCompatActivity {
                 builder.show();
             }
         });
-//--------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
 //       UPDATE btn Code Starts --------------------------------------------------------------------
         update = findViewById(R.id.update);
@@ -139,75 +138,43 @@ public class editInformation extends AppCompatActivity {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkConnection()) {
 
-                    String nameTXT = name.getText().toString();
-//                String emailTXT = name.getText().toString();
-                    String passwordTXT = password.getText().toString();
-                    String gstTXT = gst.getText().toString();
-                    String EmailTXT = contact.getText().toString();
-                    String addressTXT = address.getText().toString();
+                String nameTXT = name.getText().toString();
+                String passwordTXT = password.getText().toString();
+                String gstTXT = gst.getText().toString();
+                String contactNumberTXT = contact.getText().toString();
+                String addressTXT = address.getText().toString();
 
 //                VALIDATING password
-                    MainActivity ma;
-                    ma = new MainActivity();
-                    boolean passwordCheck;
-                    passwordCheck = ma.passwordValidation(passwordTXT);
-                    int PasswordChecking = 0;
-                    if (passwordCheck) {
-                        PasswordChecking = 1;
-                    } else {
-                        PasswordChecking = 0;
-                        password = findViewById(R.id.password);
-                        passwordTXT = name.getText().toString();
-                    }
-
-                    if (nameTXT.isEmpty() || passwordTXT.isEmpty() || gstTXT.isEmpty() || EmailTXT.isEmpty() || addressTXT.isEmpty()) {
-                        Toast.makeText(editInformation.this, "Fill Up complete Form", Toast.LENGTH_SHORT).show();
-                    } else {
-                        if (PasswordChecking == 1) {
-                            boolean check;
-                            check = DBM.UpdateUser(nameTXT, email, passwordTXT, gstTXT, finalNumber, addressTXT);
-                            if (check) {
-
-//                            TODO :UPDATE
-                                Map<String, String> Update = new HashMap<>();
-
-                                Update.put("Name", nameTXT);
-                                Update.put("Enail", email);
-                                Update.put("Password", passwordTXT);
-                                Update.put("GST", gstTXT);
-                                Update.put("Contact", finalNumber);
-                                Update.put("Address", addressTXT);
-
-                                db.collection(finalNumber)
-                                        .document("Seller")
-                                        .set(Update)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(editInformation.this, "Data Updated In cloud", Toast.LENGTH_SHORT).show();
-                                                }else{
-                                                    Toast.makeText(editInformation.this, "Failed to Updated In cloud", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                Toast.makeText(editInformation.this, "Data Updated Locally", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(editInformation.this, "Data Not Updated", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-
-                            Toast.makeText(editInformation.this, "Invalid Password", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                MainActivity ma;
+                ma = new MainActivity();
+                boolean passwordCheck;
+                passwordCheck = ma.passwordValidation(passwordTXT);
+                int PasswordChecking = 0;
+                if (passwordCheck) {
+                    PasswordChecking = 1;
                 } else {
-                    Toast.makeText(editInformation.this, "No Internet", Toast.LENGTH_SHORT).show();
+                    PasswordChecking = 0;
+                    password = findViewById(R.id.password);
+                    passwordTXT = name.getText().toString();
+                }
+                if (nameTXT.isEmpty() || passwordTXT.isEmpty() || gstTXT.isEmpty() || contactNumberTXT.isEmpty() || addressTXT.isEmpty()) {
+                    Toast.makeText(editInformation.this, "Fill Up complete Form", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (PasswordChecking == 1) {
+                        boolean check;
+                        check = DBM.UpdateUser(nameTXT, email, passwordTXT, gstTXT, contactNumberTXT, addressTXT);
+                        if(check){
+                            Toast.makeText(editInformation.this, "Data Updated", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        Toast.makeText(editInformation.this, "Invalid Password", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
-//--------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
 //        DELETE BUTTON ----------------------------------------------------------------------------
         delete = findViewById(R.id.Delete);
@@ -246,7 +213,7 @@ public class editInformation extends AppCompatActivity {
             }
         });
     }
-    //--------------------------------------------------------------------------------------------------
+//  ================================================================================================
 
 //  AUTO BACKUP ====================================================================================
 
@@ -258,7 +225,7 @@ public class editInformation extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);
@@ -276,7 +243,7 @@ public class editInformation extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);

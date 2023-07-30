@@ -1,15 +1,18 @@
 package com.nimeshkadecha.myapplication;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,9 +35,19 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class OTP_Generator extends AppCompatActivity {
 
@@ -44,7 +57,22 @@ public class OTP_Generator extends AppCompatActivity {
 
     private ImageView menuclick;
 
+    private View PlodingView;
+
     private String b = "Biller";
+
+    private CountDownTimer countDownTimer;
+    private static final long TIMER_DURATION = 60000; // 1 minute in milliseconds
+    private static final long TIMER_INTERVAL = 1000; // 1 second in milliseconds
+
+    //        finding textviews;
+    TextView timerTV;
+    TextView resendTV ;
+
+    //      Getting Verification ID from INTENT --------------------------------------------------------
+    String OTP ;
+    String email ;
+//--------------------------------------------------------------------------------------------------
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -58,10 +86,23 @@ public class OTP_Generator extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp_generator);
 
+        //        finding textviews;
+        timerTV = findViewById(R.id.timerOTP);
+        resendTV = findViewById(R.id.resendButton);
+
+//        STARTING timer for resend otp
+        startTimer();
+
+//        progressbar
+        PlodingView = findViewById(R.id.Ploding);
+
 //      Getting Verification ID from INTENT --------------------------------------------------------
         Bundle otpp = getIntent().getExtras();
-        String OTP = otpp.getString("OTP");
+        final String[] OTP = {otpp.getString("OTP")};
+        String email = otpp.getString("Email");
 //--------------------------------------------------------------------------------------------------
+
+        OTP[0] = otpp.getString("OTP");
 
 //      Getting Origin From Intent -----------------------------------------------------------------
         Bundle bundle = getIntent().getExtras();
@@ -81,6 +122,7 @@ public class OTP_Generator extends AppCompatActivity {
 
 //      Verifying OTP ------------------------------------------------------------------------------
         verifyy = findViewById(R.id.Verify);
+        final String[] finalOTP = {OTP[0]};
         verifyy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,208 +130,179 @@ public class OTP_Generator extends AppCompatActivity {
                 String otpInput = otp.getText().toString().trim();
                 boolean OTP_V = OTPValidate(otpInput);
                 if (OTP_V) {
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(OTP, otpInput);
-
-                    mAuth.signInWithCredential(credential)
-                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-                                    Bundle bundle = getIntent().getExtras();
-                                    String number = bundle.getString("number");
-
-                                    if (origin != null && origin.equalsIgnoreCase("Cloud")) {
-                                        downloadData(number);
-                                    } else {
-                                        Intent GoToResetPassword = new Intent(OTP_Generator.this, resetPassword.class);
+                    if(finalOTP[0].equals(otpInput)){
+                        Intent GoToResetPassword = new Intent(OTP_Generator.this, resetPassword.class);
                                         //                Fowarding number to intent reset password
-                                        GoToResetPassword.putExtra("number", number);
-
-                                        startActivity(GoToResetPassword);
-                                        finish();
-                                    }
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(OTP_Generator.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                        Bundle bundle = getIntent().getExtras();
+                        String Email = bundle.getString("Email");
+                        GoToResetPassword.putExtra("Email", Email);
+                        startActivity(GoToResetPassword);
+                        finish();
+                    }
                 } else {
                     Toast.makeText(OTP_Generator.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
 //--------------------------------------------------------------------------------------------------
 
+        String finalEmail = email;
+        resendTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlodingView .setVisibility(View.VISIBLE);
+                String otp = getrandom();
+                finalOTP[0] = otp;
+                GenerateOtpWithEmail(finalEmail,otp);
+            }
+        });
 
-    //    If Origin is cloud then Downloading Data From CLoud ------------------------------------------
-    private void downloadData(String num) {
-        db.collection(num)
-                .document("Seller")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
+    }
 
-                            String name = String.valueOf(document.get("Name"));
-                            String Contact = String.valueOf(document.get("Contact"));
-                            String Enail = String.valueOf(document.get("Enail"));
-                            String GST = String.valueOf(document.get("GST"));
-                            String Password = String.valueOf(document.get("Password"));
-                            String Address = String.valueOf(document.get("Address"));
+    @SuppressLint("DefaultLocale")
+    private String getrandom() {
+        Random rnd = new Random();
+        int otp = rnd.nextInt(999999);
+        return String.format("%06d", otp);
+    }
 
-                            if (document.get("Contact") == null) {
-                                AlertDialog.Builder ad = new AlertDialog.Builder(OTP_Generator.this);
-                                ad.setMessage("Based on our search in our cloud system, we were unable to locate any records associated with this contact number.");
-                                ad.setTitle("Warning");
-                                ad.setCancelable(false);
-                                ad.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+    private void GenerateOtpWithEmail(String email,String otp) {
+        // Replace "your_api_url" with the actual URL of the API endpoint you want to call
+        String apiUrl = "https://solution-tech-nimesh.000webhostapp.com/OTP_Service/sendOTP.php";
+
+        // Create a JSON object with the four parameters
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("To", email);
+            jsonData.put("OTP_Code", otp);
+            jsonData.put("Company_name", "BillerApp");
+            jsonData.put("Company_email", "nimeshkadecha4560@gmail.com");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return; // JSON creation failed, exit the method
+        }
+
+        // Define the MediaType for JSON data
+        okhttp3.MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+        // Create an OkHttpClient
+        OkHttpClient client = new OkHttpClient();
+
+        // Create the request body using the JSON data
+        RequestBody requestBody = RequestBody.create(jsonData.toString(), JSON);
+
+        // Create the POST request
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .post(requestBody)
+                .build();
+
+        // Execute the request in a background thread (AsyncTask, ThreadPool, etc.)
+        // For simplicity, we use a separate thread using Thread class here
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Execute the request and get the response
+                    Response response = client.newCall(request).execute();
+
+                    // Check if the request was successful (HTTP 2xx response codes)
+                    if (response.isSuccessful()) {
+
+                        String responseData = response.body().string();
+                        Log.d("ENimesh","Response !! = " +responseData);
+                        // Extract the JSON response part from the overall response data
+                        String jsonResponseString = responseData.substring(responseData.indexOf("{"), responseData.lastIndexOf("}") + 1);
+                        try {
+                            // Parse the JSON response data
+                            JSONObject jsonObject = new JSONObject(jsonResponseString);
+
+                            // Extract the relevant information from the JSON object
+                            String message = jsonObject.getString("status");
+
+                            if(message.equals("false")){
+                                OTP_Generator.this.runOnUiThread(new Runnable() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
+                                    public void run() {
+                                        Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                                ad.show();
-                            } else {
-                                boolean reg = DB_local.registerUser(name, Enail, Password, GST, Contact, Address);
-                                if (reg) {
-                                    Query q = db.collection(num)
-                                            .document("Business")
-                                            .collection("Customer_Info").orderBy("Bill_ID", Query.Direction.DESCENDING)
-                                            .limit(1);
-
-                                    Task<QuerySnapshot> querySnapshotTask = q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (QueryDocumentSnapshot dq : task.getResult()) {
-                                                    String bID = String.valueOf(dq.get("Bill_ID"));
-                                                    String cNmae = String.valueOf(dq.get("C_Name"));
-                                                    String cNum = String.valueOf(dq.get("C_Number"));
-                                                    String date = String.valueOf(dq.get("Date"));
-                                                    String Seller = String.valueOf(dq.get("Seller"));
-                                                    String Total = String.valueOf(dq.get("Total"));
-
-                                                    boolean ins = DB_local.InsertCustomerCloud(Integer.parseInt(bID), cNmae, cNum, date, Seller, 1, Total);
-                                                    if (ins) {
-                                                        Toast.makeText(OTP_Generator.this, "Customer information Added", Toast.LENGTH_SHORT).show();
-                                                    }
-
-                                                    Query q2 = db.collection(num)
-                                                            .document("Business")
-                                                            .collection("Bill_Info").whereEqualTo("BillId", bID);
-
-                                                    q2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                            if (task.isSuccessful()) {
-                                                                for (QueryDocumentSnapshot qd : task.getResult()) {
-                                                                    int bID = Integer.parseInt(String.valueOf(qd.get("BillId")));
-                                                                    String cNmae = String.valueOf(qd.get("Customer_Name"));
-                                                                    String cNum = String.valueOf(qd.get("Customer_Number"));
-                                                                    String date = String.valueOf(qd.get("Date"));
-
-                                                                    String P_Name = String.valueOf(qd.get("P_Name"));
-                                                                    String P_Price = String.valueOf(qd.get("P_Price"));
-                                                                    String P_Qty = String.valueOf(qd.get("P_Qty"));
-                                                                    String Seller = String.valueOf(qd.get("Seller"));
-
-                                                                    boolean ins_DIS = DB_local.Insert_List(P_Name, P_Price, P_Qty, cNmae, cNum, date, bID, Seller, 1);
-                                                                    if (ins_DIS) {
-                                                                        Toast.makeText(OTP_Generator.this, "Adding Bills.", Toast.LENGTH_SHORT).show();
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                    DB_local.createTable();
-                                                    db.collection(num)
-                                                            .document("Business")
-                                                            .collection("Stock").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (QueryDocumentSnapshot qd : task.getResult()) {
-                                                                            Map<String, Object> data = new HashMap<>(Objects.requireNonNull(qd.getData()));
-
-                                                                            String productID = String.valueOf(data.get("productID"));
-                                                                            String productName = String.valueOf(data.get("productName"));
-                                                                            String catagory = String.valueOf(data.get("catagory"));
-                                                                            String purchesPrice = String.valueOf(data.get("purchesPrice"));
-                                                                            String sellingPrice = String.valueOf(data.get("sellingPrice"));
-                                                                            String date = String.valueOf(data.get("date"));
-                                                                            String quentity = String.valueOf(data.get("quentity"));
-                                                                            String seller = String.valueOf(data.get("seller"));
-
-                                                                            boolean ins = DB_local.downloadStock(productName, catagory, purchesPrice, sellingPrice, date, quentity, seller);
-
-                                                                            if (ins) {
-                                                                                Toast.makeText(OTP_Generator.this, "Stock added", Toast.LENGTH_SHORT).show();
-                                                                            } else {
-                                                                                Toast.makeText(OTP_Generator.this, "Error while adding Stock", Toast.LENGTH_SHORT).show();
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            });
-                                                    db.collection(num)
-                                                            .document("Business")
-                                                            .collection("stockQuentity")
-                                                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                                                    if (error != null) {
-                                                                        Log.d("ENimesh", "ERROR issss = " + error);
-                                                                    } else {
-                                                                        for (DocumentSnapshot dc : value) {
-                                                                            Map<String, Object> data = new HashMap<>(Objects.requireNonNull(dc.getData()));
-
-                                                                            String name = String.valueOf(data.get("productName"));
-                                                                            String quentity = String.valueOf(data.get("quentity"));
-                                                                            String price = String.valueOf(data.get("price"));
-                                                                            String seller = String.valueOf(data.get("seller"));
-
-                                                                            boolean insertt = DB_local.addStockQty(name, quentity, price, seller);
-                                                                            if (insertt) {
-                                                                                Toast.makeText(OTP_Generator.this, "StockQuentity added", Toast.LENGTH_SHORT).show();
-                                                                            } else {
-                                                                                Toast.makeText(OTP_Generator.this, "ERROR while StockQuentity added", Toast.LENGTH_SHORT).show();
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        }
-                                    });
-
-                                    // Login in user after Successfully Download ---------
-                                    SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sp.edit();
-                                    editor.putString("Login", "true");
-                                    editor.putString("UserName", Enail);
-                                    editor.apply();
-
-                                    Intent SucessfullyLogin = new Intent(OTP_Generator.this, home.class);
-                                    SucessfullyLogin.putExtra("Email", Enail);
-                                    SucessfullyLogin.putExtra("Origin", "Login");
-                                    startActivity(SucessfullyLogin);
-                                    finish();
-                                } else {
-                                    // IF User is already in SQLite then it create error so ---
-                                    Toast.makeText(OTP_Generator.this, "Already have data in", Toast.LENGTH_SHORT).show();
-                                }
+                                Log.d("ENimesh","String = " + message);
+                            }else{
+                                OTP_Generator.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(OTP_Generator.this, "Resend successfully", Toast.LENGTH_SHORT).show();
+                                        OTP = otp;
+                                        timerTV.setVisibility(View.VISIBLE);
+                                        startTimer();
+                                        resendTV.setVisibility(View.GONE);
+                                    }
+                                });
+                                PlodingView.setVisibility(View.GONE);
                             }
+
+                        } catch (JSONException e) {
+                            OTP_Generator.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            e.printStackTrace();
+                            // Handle JSON parsing exceptions
                         }
+                        // Process the response data here (responseData contains the API response)
+                    } else {
+                        OTP_Generator.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        Log.d("ENimesh","Failed");
+                        // Handle the error if the request was not successful
+                        // For example, you can get the error message using response.message()
                     }
-                });
+                } catch (Exception e) {
+                    OTP_Generator.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    e.printStackTrace();
+                    Log.d("ENimesh","catched " + e.toString());
+                    // Handle any exceptions that occurred during the request
+                }
+            }
+        }).start();
     }
 //--------------------------------------------------------------------------------------------------
+
+    private void startTimer() {
+        countDownTimer = new CountDownTimer(TIMER_DURATION, TIMER_INTERVAL) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Calculate the remaining minutes and seconds
+                long minutes = millisUntilFinished / 60000;
+                long seconds = (millisUntilFinished % 60000) / 1000;
+
+                // Update the timer TextView with the remaining time
+                timerTV.setText(String.format("%d:%02d", minutes, seconds));
+            }
+
+            @Override
+            public void onFinish() {
+                // Enable the resend button and reset the timer TextView
+                resendTV.setVisibility(View.VISIBLE);
+                timerTV.setVisibility(View.GONE);
+            }
+        };
+
+        // Start the timer
+        countDownTimer.start();
+    }
 
     //    OTP validation -------------------------------------------------------------------------------
     private boolean OTPValidate(String otpInput) {
@@ -300,5 +313,7 @@ public class OTP_Generator extends AppCompatActivity {
         }
     }
 //--------------------------------------------------------------------------------------------------
+
+
 
 }

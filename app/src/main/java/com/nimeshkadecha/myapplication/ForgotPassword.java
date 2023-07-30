@@ -3,7 +3,10 @@ package com.nimeshkadecha.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,15 +21,26 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ForgotPassword extends AppCompatActivity {
 
-    private EditText number;
+    private EditText Email;
 
     private ImageView menuclick;
 
+    private View PlodingView;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
 
@@ -50,7 +64,7 @@ public class ForgotPassword extends AppCompatActivity {
 //        WORKING WITH TOOLBAR Ends-----------------------------------------------------------------
 
 //        Finding  ---------------------------------------------------------------------------------
-        number = findViewById(R.id.contactnumber);
+        Email = findViewById(R.id.contactnumber);
         heading = findViewById(R.id.textView5);
 
         // Getting Data From Intent to find where it come from
@@ -62,14 +76,18 @@ public class ForgotPassword extends AppCompatActivity {
         }
 //--------------------------------------------------------------------------------------------------
 
-    }
+//        Finding progressbar
+        PlodingView = findViewById(R.id.Ploding);
 
-//    Function to Validate Number ------------------------------------------------------------------
-    private boolean numberValidation(EditText number) {
-        String numberInput = number.getText().toString().trim();
-        if (numberInput.length() == 10) {
+
+    }
+    //    Code for validating email starts--------------------------------------------------------------
+    public boolean EmailValidation(String email) {
+        String emailinput = email;
+        if (!emailinput.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(emailinput).matches()) {
             return true;
         } else {
+
             return false;
         }
     }
@@ -77,70 +95,117 @@ public class ForgotPassword extends AppCompatActivity {
 
 //   "Get OTP" button On click -----------------------------------------------------------------------
     public void GetOTP(View view) {
-        boolean NV = numberValidation(number);
+        boolean NV = EmailValidation(Email.getText().toString().trim());
         if (NV) {
-            //     remove coment from getOTP() in next line and remove intent
-            // Calling Function to get OTP
-            getOTP();
+            //        finding button
+            Button getOTPButton = findViewById(R.id.button);
 
-            // Testing Code to BY PASS OTP REQUIREMENT THERE IS FEW MORE TO COMMENT
-//            Intent TestDownload = new Intent(ForgotPassword.this,OTP_Generator.class);
-//
-//            TestDownload.putExtra("Origin", "Cloud");
-//            TestDownload.putExtra("number", number.getText().toString());
-//
-//            startActivity(TestDownload);
+            getOTPButton.setEnabled(false);
+            GenerateOtpWithEmail(Email.getText().toString().trim());
+            PlodingView.setVisibility(View.VISIBLE);
 
         } else {
-            Toast.makeText(this, "Invalid Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
         }
     }
-//--------------------------------------------------------------------------------------------------
 
-
-// Get OTP Function body ---------------------------------------------------------------------------
     @SuppressLint("DefaultLocale")
-//    Generating OTP
-    private void getOTP() {
-//        OTP From Firebase
-        String CN = number.getText().toString();
-        mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                Toast.makeText(ForgotPassword.this, "Verified..?", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onVerificationFailed(@NonNull FirebaseException e) {
-                Toast.makeText(ForgotPassword.this, "Failed to send OTP, Try Again", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-
-                Toast.makeText(ForgotPassword.this, "Sending OTP ...", Toast.LENGTH_SHORT).show();
-                Intent GETOTP = new Intent(ForgotPassword.this, OTP_Generator.class);
-
-                // If Origin is from Cloud Then it Going TO download Data Else it go to Reset password
-                Bundle bundle = getIntent().getExtras();
-                String origin = bundle.getString("Origin");
-                if (origin != null && origin.equalsIgnoreCase("Cloud")) {
-                    GETOTP.putExtra("Origin", "Cloud");
-                }
-                GETOTP.putExtra("number", CN);
-                GETOTP.putExtra("OTP", s);
-                startActivity(GETOTP);
-                finish();
-            }
-        };
-        PhoneAuthOptions options =
-                PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber("+91 " + CN)
-                        .setTimeout(60L, TimeUnit.SECONDS)
-                        .setActivity(this)
-                        .setCallbacks(mCAllbacks)
-                        .build();
-        PhoneAuthProvider.verifyPhoneNumber(options);
-//--------------------------------------------------------------------------------------------------
+    private String getrandom() {
+        Random rnd = new Random();
+        int otp = rnd.nextInt(999999);
+        return String.format("%06d", otp);
     }
+
+    private void GenerateOtpWithEmail(String email) {
+        // Replace "your_api_url" with the actual URL of the API endpoint you want to call
+        String apiUrl = "https://solution-tech-nimesh.000webhostapp.com/OTP_Service/sendOTP.php";
+
+        String otp = getrandom();
+        // Create a JSON object with the four parameters
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("To", email);
+            jsonData.put("OTP_Code", otp);
+            jsonData.put("Company_name", "BillerApp");
+            jsonData.put("Company_email", "nimeshkadecha4560@gmail.com");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return; // JSON creation failed, exit the method
+        }
+
+        // Define the MediaType for JSON data
+        okhttp3.MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+        // Create an OkHttpClient
+        OkHttpClient client = new OkHttpClient();
+
+        // Create the request body using the JSON data
+        RequestBody requestBody = RequestBody.create(jsonData.toString(), JSON);
+
+        // Create the POST request
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .post(requestBody)
+                .build();
+
+        // Execute the request in a background thread (AsyncTask, ThreadPool, etc.)
+        // For simplicity, we use a separate thread using Thread class here
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Execute the request and get the response
+                    Response response = client.newCall(request).execute();
+
+                    // Check if the request was successful (HTTP 2xx response codes)
+                    if (response.isSuccessful()) {
+
+                        String responseData = response.body().string();
+                        Log.d("ENimesh","Response !! = " +responseData);
+                        // Extract the JSON response part from the overall response data
+                        String jsonResponseString = responseData.substring(responseData.indexOf("{"), responseData.lastIndexOf("}") + 1);
+                        try {
+                            // Parse the JSON response data
+                            JSONObject jsonObject = new JSONObject(jsonResponseString);
+
+                            // Extract the relevant information from the JSON object
+                            String message = jsonObject.getString("status");
+
+                            if(message.equals("false")){
+                                Log.d("ENimesh","String = " + message);
+                            }else{
+//                                Log.d("ENimesh","String = " + message);
+                                Intent GETOTP = new Intent(ForgotPassword.this, OTP_Generator.class);
+                                GETOTP.putExtra("Email", email);
+                                GETOTP.putExtra("OTP", otp);
+                                startActivity(GETOTP);
+                                PlodingView.setVisibility(View.GONE);
+                                ForgotPassword.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                    }
+                                });
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            // Handle JSON parsing exceptions
+                        }
+                        // Process the response data here (responseData contains the API response)
+                    } else {
+                        Log.d("ENimesh","Failed");
+                        // Handle the error if the request was not successful
+                        // For example, you can get the error message using response.message()
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("ENimesh","catched " + e.toString());
+                    // Handle any exceptions that occurred during the request
+                }
+            }
+        }).start();
+    }
+//--------------------------------------------------------------------------------------------------
 }

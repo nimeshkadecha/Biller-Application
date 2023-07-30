@@ -125,7 +125,7 @@ public class ShowList extends AppCompatActivity {
                             addmore.setVisibility(View.INVISIBLE);
                             Toast.makeText(ShowList.this, "Saved ", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(ShowList.this, "Error While managing Stock", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ShowList.this, "Failed to remove stock", Toast.LENGTH_SHORT).show();
                         }
 
 

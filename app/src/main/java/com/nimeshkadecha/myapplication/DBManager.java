@@ -131,18 +131,18 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     //    Reset Password! -----------------[select * from users where contact = ?]----------------------
-    public boolean resetPassword(String number, String password) {
+    public boolean resetPassword(String Email, String password) {
         SQLiteDatabase DB = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put("password", password);
 
-        Cursor cursor = DB.rawQuery("select * from users where contact = ?", new String[]{number});
+        Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{Email});
 
         if (cursor.getCount() > 0) {
             long result;
 
-            result = DB.update("users", contentValues, "contact =?", new String[]{number});
+            result = DB.update("users", contentValues, "email =?", new String[]{Email});
             if (result == -1) {
                 return false;
             } else {
@@ -666,10 +666,10 @@ public class DBManager extends SQLiteOpenHelper {
                 "seller TEXT," +
                 "backup Integer)");
 
-        DB.execSQL("Create TABLE IF NOT EXISTS stockQuentity(productName TEXT primary key ," +
+        DB.execSQL("Create TABLE IF NOT EXISTS stockQuentity(productName TEXT ," +
                 "quentity TEXT," +
                 "price TEXT," +
-                "seller TEXT," +
+                "seller TEXT primary key," +
                 "backup Integer)");
     }
 

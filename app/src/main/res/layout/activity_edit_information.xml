@@ -109,6 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:hint="@string/gst_number"
+            app:helperText="ADD 'no' if you don't have GST number "
             app:endIconMode="clear_text"
             app:helperTextTextColor="#FF002E"
             app:layout_constraintEnd_toEndOf="parent"
@@ -130,13 +131,15 @@
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="@string/e_mail"
+            android:hint="@string/contact_number"
             app:endIconMode="clear_text"
             app:helperTextTextColor="#FF002E"
+            app:prefixText="+91"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
-            app:startIconDrawable="@drawable/ic_email">
+            app:startIconDrawable="@drawable/ic_phone">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/contactNumber"
@@ -144,7 +147,7 @@
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="number"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -155,6 +158,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/update"
+        android:layout_marginEnd="30dp"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
@@ -165,6 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/show"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"

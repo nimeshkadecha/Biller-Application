@@ -10,8 +10,8 @@
         android:shape="ring"
         android:useLevel="false"
         >
-        <size android:width="76dip"
-            android:height="76dip"/>
+        <size android:width="100dip"
+            android:height="100dip"/>
         <gradient android:angle="0"
             android:endColor="#00ffffff"
             android:startColor="@color/purple_200"
