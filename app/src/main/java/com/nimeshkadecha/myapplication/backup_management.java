@@ -18,6 +18,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,7 +52,14 @@ public class backup_management extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_local_backup);
+        setContentView(R.layout.backup_management);
+
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
 
 //        Using Shared Preference to store Last Date -----------------------------------------------
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -231,4 +241,39 @@ public class backup_management extends AppCompatActivity {
             }
         }
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
 }

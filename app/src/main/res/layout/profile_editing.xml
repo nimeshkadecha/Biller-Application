@@ -14,78 +14,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/head"
-        style="@style/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/register"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="@+id/include4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/head">
+        app:layout_constraintTop_toBottomOf="@+id/Header">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutName"
             style="@style/TextInputLayout"
             android:layout_width="380dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="10dp"
             android:hint="@string/name"
             app:endIconMode="clear_text"
-            app:helperText="Require*"
             app:helperTextTextColor="#FF002E"
+            app:counterMaxLength="70"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:counterMaxLength="70"
             app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/ic_baseline_drive_file_rename_outline_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/rName"
+                style="@style/TextInputEditText"
+                android:textColorHint="#FA0202"
                 android:layout_width="380dp"
-                android:layout_height="wrap_content"
-                style="@style/TextInputEditText"
                 android:maxLength="70"
-                android:textColorHint="#FA0202"
-                tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutEmail"
-            style="@style/TextInputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/e_mail"
-            app:endIconMode="clear_text"
-            app:helperText="Required*"
-            app:helperTextTextColor="#FF002E"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
-            app:startIconDrawable="@drawable/ic_email">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                style="@style/TextInputEditText"
-                android:textColorHint="#FA0202"
                 tools:ignore="TextContrastCheck" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -93,13 +56,13 @@
             style="@style/TextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:hint="@string/password"
             app:endIconMode="password_toggle"
-            app:helperText="Required*"
             app:helperTextTextColor="#FF002E"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
             app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -112,30 +75,45 @@
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Switch
-            android:id="@+id/switch1GST"
-            android:layout_width="match_parent"
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/TextInputLayout"
+            android:layout_width="380dp"
             android:layout_height="wrap_content"
-            android:text="I have GST number"
-            android:layout_margin="5dp"
-            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:hint="@string/address"
+            app:counterEnabled="true"
+            app:counterMaxLength="200"
+            app:endIconMode="clear_text"
+            app:helperTextTextColor="#FF002E"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
+            app:startIconDrawable="@drawable/ic_baseline_home_work_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address"
+                style="@style/TextInputEditText"
+                android:textColorHint="#FA0202"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:maxLength="200"
+                tools:ignore="TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutGST_Number"
             style="@style/TextInputLayout"
             android:layout_width="380dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:hint="@string/gst_number"
+            app:helperText="ADD 'no' if you don't have GST number "
             app:endIconMode="clear_text"
-            app:helperText="Require*"
             app:helperTextTextColor="#FF002E"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switch1GST">
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/gst"
@@ -149,18 +127,17 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout4"
             style="@style/TextInputLayout"
-
             android:layout_width="380dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:hint="@string/contact_number"
-            app:counterEnabled="true"
             app:endIconMode="clear_text"
-            app:helperText="Require*"
             app:helperTextTextColor="#FF002E"
+            app:prefixText="+91"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
-            app:prefixText="+91"
             app:startIconDrawable="@drawable/ic_phone">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -169,61 +146,66 @@
                 android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:maxLength="10"
+                android:inputType="number"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/address"
-            app:counterEnabled="true"
-            app:counterMaxLength="200"
-            app:endIconMode="clear_text"
-            app:helperText="Require*"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:helperTextTextColor="#FF002E"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
-            app:startIconDrawable="@drawable/ic_baseline_home_work_24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/address"
-                android:layout_width="380dp"
-                android:layout_height="wrap_content"
-                android:maxLength="200"
-                style="@style/TextInputEditText"
-                android:textColorHint="#FA0202"
-                tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/register"
+        android:id="@+id/update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="register"
-        android:text="@string/register"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/update"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-        tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+        tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:text="@string/show"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/register"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include4" />
+
+    <Button
+        android:id="@+id/Delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/update"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        tools:ignore="TextContrastCheck" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-6774391225250306/9234720248"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

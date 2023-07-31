@@ -20,6 +20,8 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -54,7 +56,14 @@ public class show_list extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_list);
+        setContentView(R.layout.show_list);
+
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
 
 //        Getting data from intent -----------------------------------------------------------------
         Bundle seller = getIntent().getExtras();
@@ -434,4 +443,39 @@ public class show_list extends AppCompatActivity {
         }
     }
 //--------------------------------------------------------------------------------------------------
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
 }

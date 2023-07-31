@@ -17,6 +17,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.concurrent.Executor;
 
 public class fingerprint_lock extends AppCompatActivity {
@@ -30,7 +33,14 @@ public class fingerprint_lock extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fingerprint_lock);
+        setContentView(R.layout.fingerprint_lock);
+
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
 
         Button back = findViewById(R.id.back);
 
@@ -118,6 +128,40 @@ public class fingerprint_lock extends AppCompatActivity {
                 finish();
             }
         });
-
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
 }

@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.Objects;
 
 public class reset_password extends AppCompatActivity {
@@ -28,7 +31,15 @@ public class reset_password extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reset_password);
+        setContentView(R.layout.reset_password);
+
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+
 //        finding
         password = findViewById(R.id.password);
         confirmPassword = findViewById(R.id.ConfirmPassword);
@@ -106,4 +117,39 @@ public class reset_password extends AppCompatActivity {
         }
     }
 //--------------------------------------------------------------------------------------------------
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
 }

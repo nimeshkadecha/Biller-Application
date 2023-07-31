@@ -28,6 +28,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -73,7 +76,14 @@ public class login_Screen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login_screen);
+
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
 
 //        Checking if user is already loged in or not ----------------------------------------------
         alreadyLogin();
@@ -357,7 +367,7 @@ public class login_Screen extends AppCompatActivity {
     //    ON Click Forgot Password ---------------------------------------------------------------------
     public void Forgot_Password(View view) {
         if (checkConnection()) {
-            Intent forgotpassword = new Intent(this, ForgotPassword.class);
+            Intent forgotpassword = new Intent(this, forgot_password.class);
 
             forgotpassword.putExtra("Origin", "Forgot");
             startActivity(forgotpassword);
@@ -385,4 +395,39 @@ public class login_Screen extends AppCompatActivity {
         }
 //--------------------------------------------------------------------------------------------------
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
 }

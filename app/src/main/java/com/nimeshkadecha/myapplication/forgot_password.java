@@ -18,6 +18,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +33,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ForgotPassword extends AppCompatActivity {
+public class forgot_password extends AppCompatActivity {
 
     private EditText Email;
 
@@ -58,7 +61,15 @@ public class ForgotPassword extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forgot_password);
+        setContentView(R.layout.forgot_password);
+
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+
 //        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
     //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
@@ -187,12 +198,12 @@ public class ForgotPassword extends AppCompatActivity {
                                 Log.d("ENimesh","String = " + message);
                             }else{
 //                                Log.d("ENimesh","String = " + message);
-                                Intent GETOTP = new Intent(ForgotPassword.this, otp_validation.class);
+                                Intent GETOTP = new Intent(forgot_password.this, otp_validation.class);
                                 GETOTP.putExtra("Email", email);
                                 GETOTP.putExtra("OTP", otp);
                                 startActivity(GETOTP);
                                 PlodingView.setVisibility(View.GONE);
-                                ForgotPassword.this.runOnUiThread(new Runnable() {
+                                forgot_password.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         finish();
@@ -220,4 +231,39 @@ public class ForgotPassword extends AppCompatActivity {
         }).start();
     }
 //--------------------------------------------------------------------------------------------------
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
 }

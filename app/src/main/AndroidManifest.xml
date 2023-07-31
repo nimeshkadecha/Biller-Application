@@ -25,6 +25,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+
+<!--        ads-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6774391225250306~2244441536"/>
+
         <activity
             android:name=".backup_management"
             android:exported="false" />
@@ -83,7 +89,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ForgotPassword"
+            android:name=".forgot_password"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

@@ -65,4 +65,7 @@ dependencies {
 //    okHTTP
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
+//    for ads
+    implementation 'com.google.android.gms:play-services-ads:22.2.0'
+
 }

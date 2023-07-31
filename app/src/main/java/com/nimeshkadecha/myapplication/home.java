@@ -25,6 +25,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,13 +56,19 @@ public class home extends AppCompatActivity {
     private ProgressBar lodingPB;
 
 
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.home);
         int billIdtxt[] = new int[5];
+
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
 
 
 //        Adding seller email from INTENT===========================================================
@@ -318,7 +327,7 @@ public class home extends AppCompatActivity {
 //  ================================================================================================
 
 //        Report button ============================================================================
-        report =findViewById(R.id.report);
+        report = findViewById(R.id.report);
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,7 +340,7 @@ public class home extends AppCompatActivity {
 //  ================================================================================================
 
 //      Log Out btn ================================================================================
-        logout =findViewById(R.id.logOutButton);
+        logout = findViewById(R.id.logOutButton);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -444,7 +453,6 @@ public class home extends AppCompatActivity {
                         intent.putExtra("seller", email);
                         intent.putExtra("origin", "home");
                         startActivity(intent);
-                        finish();
                     }
                 }
             }
@@ -481,16 +489,49 @@ public class home extends AppCompatActivity {
     }
 //  ================================================================================================
 
-//  AUTO BACKUP ====================================================================================
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
 
-//    On pause
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Google ads code --------------------------------------------------------------------------
+        AdView mAdView;
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+//  ================================================================================================
+    }
+
+//  AUTO BACKUP ------------------------------------------------------------------------------------
+
+    //    On pause
     @Override
     protected void onPause() {
         super.onPause();
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);
@@ -507,7 +548,7 @@ public class home extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);

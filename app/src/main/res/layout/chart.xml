@@ -25,10 +25,9 @@
         android:id="@+id/cardViewGraph"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="5dp"
         android:elevation="10dp"
         app:cardCornerRadius="10dp"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8">
@@ -67,8 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_below="@+id/cardViewGraph"
-        android:layout_marginTop="32dp"
-
+        android:layout_marginTop="5dp"
         android:elevation="10dp"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,5 +95,17 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-6774391225250306/9234720248"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
