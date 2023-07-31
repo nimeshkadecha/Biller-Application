@@ -2,13 +2,10 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +23,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class editInformation extends AppCompatActivity {
+public class profile_editing extends AppCompatActivity {
 
     private ImageView menuclick;
 
@@ -87,7 +84,7 @@ public class editInformation extends AppCompatActivity {
             public void onClick(View v) {
                 Cursor res = DBM.GetUser(email);
                 if (res.getCount() == 0) {
-                    Toast.makeText(editInformation.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(profile_editing.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -101,7 +98,7 @@ public class editInformation extends AppCompatActivity {
                     buffer.append("Address: " + res.getString(5) + "\n\n");
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(editInformation.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(profile_editing.this);
                 builder.setCancelable(true);
                 builder.setTitle("Users");
                 builder.setMessage(buffer.toString());
@@ -124,8 +121,8 @@ public class editInformation extends AppCompatActivity {
                 String addressTXT = address.getText().toString();
 
 //                VALIDATING password
-                MainActivity ma;
-                ma = new MainActivity();
+                login_Screen ma;
+                ma = new login_Screen();
                 boolean passwordCheck;
                 passwordCheck = ma.passwordValidation(passwordTXT);
                 int PasswordChecking = 0;
@@ -137,17 +134,17 @@ public class editInformation extends AppCompatActivity {
                     passwordTXT = name.getText().toString();
                 }
                 if (nameTXT.isEmpty() || passwordTXT.isEmpty() || gstTXT.isEmpty() || contactNumberTXT.isEmpty() || addressTXT.isEmpty()) {
-                    Toast.makeText(editInformation.this, "Fill Up complete Form", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(profile_editing.this, "Fill Up complete Form", Toast.LENGTH_SHORT).show();
                 } else {
                     if (PasswordChecking == 1) {
                         boolean check;
                         check = DBM.UpdateUser(nameTXT, email, passwordTXT, gstTXT, contactNumberTXT, addressTXT);
                         if(check){
-                            Toast.makeText(editInformation.this, "Data Updated", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(profile_editing.this, "Data Updated", Toast.LENGTH_SHORT).show();
                         }
 
                     } else {
-                        Toast.makeText(editInformation.this, "Invalid Password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(profile_editing.this, "Invalid Password", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -159,7 +156,7 @@ public class editInformation extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(editInformation.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(profile_editing.this);
                 alert.setTitle("Delete user");
                 alert.setMessage("Confirm deleting Account permanently ");
                 alert.setPositiveButton("Confirm Delete", new DialogInterface.OnClickListener() {
@@ -171,19 +168,19 @@ public class editInformation extends AppCompatActivity {
 //                        Deleting all users data
 
 //                        Going back to login after deleting user
-                            Intent intent = new Intent(editInformation.this, MainActivity.class);
+                            Intent intent = new Intent(profile_editing.this, login_Screen.class);
                             startActivity(intent);
                             finish();
-                            Toast.makeText(editInformation.this, "User DELETED ...", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(profile_editing.this, "User DELETED ...", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(editInformation.this, "Unable to delete user at this Time", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(profile_editing.this, "Unable to delete user at this Time", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(editInformation.this, "Deletion Cancel", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(profile_editing.this, "Deletion Cancel", Toast.LENGTH_SHORT).show();
                         dialogInterface.dismiss();
                     }
                 });

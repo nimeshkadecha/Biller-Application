@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
 
-public class resetPassword extends AppCompatActivity {
+public class reset_password extends AppCompatActivity {
 
     private EditText password, confirmPassword;
 
@@ -88,12 +88,12 @@ public class resetPassword extends AppCompatActivity {
                     editor.putString("UserName",Email);
                     editor.apply();
 
-                    Intent SucessfullyLogin = new Intent(resetPassword.this, home.class);
+                    Intent SucessfullyLogin = new Intent(reset_password.this, home.class);
                     SucessfullyLogin.putExtra("Email", Email);
                     SucessfullyLogin.putExtra("Origin", "Login");
                     startActivity(SucessfullyLogin);
                     finish();
-                    Toast.makeText(resetPassword.this, "Password Updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(reset_password.this, "Password Updated", Toast.LENGTH_SHORT).show();
 
                 } else {
                     Toast.makeText(this, "Password NOT reset Successfully", Toast.LENGTH_SHORT).show();

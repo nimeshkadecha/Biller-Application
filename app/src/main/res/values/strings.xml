@@ -49,11 +49,11 @@
     <string name="item_price">Item Price :</string>
     <string name="item_quantity">Item quantity :</string>
     <string name="subtotal">Subtotal :</string>
-    <string name="customer_information">Customer Detail</string>
+    <string name="customer_information">Bill Management</string>
     <string name="about">About</string>
-    <string name="edit_information">Edit Information</string>
-    <string name="backup">Backup Data</string>
-    <string name="stock">Manage Stock</string>
+    <string name="edit_information">Profile Editing</string>
+    <string name="backup">Backup Management</string>
+    <string name="stock">Stock Control</string>
     <string name="viewS">View Stock</string>
     <string name="addS">Add Stock</string>
 </resources>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="50dp"
-    tools:context=".fingerprintLock">
+    tools:context=".fingerprint_lock">
 
     <Button
         android:id="@+id/back"

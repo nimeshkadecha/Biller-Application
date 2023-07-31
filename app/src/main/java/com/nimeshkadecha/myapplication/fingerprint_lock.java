@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import java.util.concurrent.Executor;
 
-public class fingerprintLock extends AppCompatActivity {
+public class fingerprint_lock extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
 
@@ -53,7 +53,7 @@ public class fingerprintLock extends AppCompatActivity {
         }
 
         executor = ContextCompat.getMainExecutor(this);
-        biometricPrompt = new BiometricPrompt(fingerprintLock.this,
+        biometricPrompt = new BiometricPrompt(fingerprint_lock.this,
                 executor, new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errorCode,
@@ -79,7 +79,7 @@ public class fingerprintLock extends AppCompatActivity {
                 editor.putString("UserName", email);
                 editor.apply();
 
-                Intent bio_logedIN = new Intent(fingerprintLock.this, home.class);
+                Intent bio_logedIN = new Intent(fingerprint_lock.this, home.class);
 
 
                 bio_logedIN.putExtra("Email", email);
@@ -111,7 +111,7 @@ public class fingerprintLock extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(fingerprintLock.this,MainActivity.class);
+                Intent i = new Intent(fingerprint_lock.this, login_Screen.class);
 
                 startActivity(i);
 

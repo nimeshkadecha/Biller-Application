@@ -8,14 +8,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,19 +19,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 
-public class LocalBackup extends AppCompatActivity {
+public class backup_management extends AppCompatActivity {
 
     DBManager dbManager = new DBManager(this);
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -79,7 +71,7 @@ public class LocalBackup extends AppCompatActivity {
         showPathAuto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(LocalBackup.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
                 builder.setCancelable(true);
                 builder.setTitle("Automatic Backup Location");
                 builder.setMessage("If enabled then you can find backup at \n:/Android/data/com.nimeshkadecha.Biller/Auto Backup/Auto_Biller_Backup.db");
@@ -97,7 +89,7 @@ public class LocalBackup extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
-                    boolean check = dbManager.AutoLocalBackup(LocalBackup.this);
+                    boolean check = dbManager.AutoLocalBackup(backup_management.this);
 
                     if(check){
                         Date c = Calendar.getInstance().getTime();
@@ -141,7 +133,7 @@ public class LocalBackup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String check = dbManager.downloadBackup(LocalBackup.this);
+                String check = dbManager.downloadBackup(backup_management.this);
                 if (!check.equals("false")) {
                     SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
@@ -149,15 +141,15 @@ public class LocalBackup extends AppCompatActivity {
                     editor.apply();
                     Download.setText(formattedDate);
 
-                    Toast.makeText(LocalBackup.this, "Success", Toast.LENGTH_SHORT).show();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LocalBackup.this);
+                    Toast.makeText(backup_management.this, "Success", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
                     builder.setCancelable(true);
                     builder.setTitle("Bills");
                     builder.setMessage("You can locate the backup at \n \"" + check + "\" ");
                     builder.show();
 
                 } else {
-                    Toast.makeText(LocalBackup.this, "Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(backup_management.this, "Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });

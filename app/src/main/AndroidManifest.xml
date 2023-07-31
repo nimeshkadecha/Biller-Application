@@ -26,57 +26,57 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".LocalBackup"
+            android:name=".backup_management"
             android:exported="false" />
         <activity
-            android:name=".fingerprintLock"
+            android:name=".fingerprint_lock"
             android:exported="false" />
         <activity
             android:name=".chart"
             android:exported="false" />
         <activity
-            android:name=".manageStock"
+            android:name=".stock_control"
             android:exported="false" />
         <activity
-            android:name=".Report"
+            android:name=".inventory_insights"
             android:exported="false" />
         <activity
-            android:name=".Additems"
+            android:name=".add_product"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".customer_Info"
+            android:name=".bill_management"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ShowList"
+            android:name=".show_list"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".editInformation"
+            android:name=".profile_editing"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".resetPassword"
+            android:name=".reset_password"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".OTP_Generator"
+            android:name=".otp_validation"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -104,7 +104,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".login_Screen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

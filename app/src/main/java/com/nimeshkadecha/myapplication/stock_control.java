@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class manageStock extends AppCompatActivity {
+public class stock_control extends AppCompatActivity {
 
     private ImageView menu;
 
@@ -89,7 +89,7 @@ public class manageStock extends AppCompatActivity {
             products = new String[]{"NO Suggestion Available"};
         }
 
-        itemName.setAdapter(new ArrayAdapter<>(manageStock.this, android.R.layout.simple_list_item_1, products));
+        itemName.setAdapter(new ArrayAdapter<>(stock_control.this, android.R.layout.simple_list_item_1, products));
 
         AutoCompleteTextView catagory = findViewById(R.id.categoryedt);
 
@@ -128,7 +128,7 @@ public class manageStock extends AppCompatActivity {
             Names = new String[]{"No Data"};
         }
 
-        catagory.setAdapter(new ArrayAdapter<>(manageStock.this, android.R.layout.simple_list_item_1, Names));
+        catagory.setAdapter(new ArrayAdapter<>(stock_control.this, android.R.layout.simple_list_item_1, Names));
 
 
         EditText porchesPriceEdt = findViewById(R.id.porchesPriceEdt);
@@ -154,7 +154,7 @@ public class manageStock extends AppCompatActivity {
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(manageStock.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(stock_control.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         PurchesDate.setText(" ");
@@ -176,7 +176,7 @@ public class manageStock extends AppCompatActivity {
                 String nametxt, catagorytxt, pPricetxt, sPricetxt, qtytxt, datetxt;
                 if (itemName.getText().toString().trim().equals("") && catagory.getText().toString().trim().equals("") &&
                         porchesPriceEdt.getText().toString().trim().equals("") && sellPrice.getText().toString().trim().equals("") && PurchesDate.getText().toString().trim().equals("") && quantity.getText().toString().trim().equals("")) {
-                    Toast.makeText(manageStock.this, "Fill Above Detail add Inventory", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(stock_control.this, "Fill Above Detail add Inventory", Toast.LENGTH_SHORT).show();
                 } else if (itemName.getText().toString().trim().equals("")) {
                     itemName.setError("Enter Name of your Product");
                 } else if (catagory.getText().toString().trim().equals("")) {
@@ -199,9 +199,9 @@ public class manageStock extends AppCompatActivity {
                     datetxt = PurchesDate.getText().toString();
                     boolean insert = DB.AddStock(nametxt, catagorytxt, pPricetxt, sPricetxt, datetxt, qtytxt, seller);
                     if (insert) {
-                        Toast.makeText(manageStock.this, "Product Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(stock_control.this, "Product Added", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(manageStock.this, "Error while adding Product", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(stock_control.this, "Error while adding Product", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -225,13 +225,13 @@ public class manageStock extends AppCompatActivity {
                         buffer.append("Quantity = " + data.getString(1) + "\n\n");
                     }
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(manageStock.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(stock_control.this);
                     builder.setCancelable(true);
                     builder.setTitle("Stock");
                     builder.setMessage(buffer.toString());
                     builder.show();
                 } else {
-                    Toast.makeText(manageStock.this, "No data available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(stock_control.this, "No data available", Toast.LENGTH_SHORT).show();
                 }
             }
         });

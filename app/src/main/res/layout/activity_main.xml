@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:theme="@style/Theme.MyApplication"
-    tools:context=".MainActivity">
+    tools:context=".login_Screen">
 
     <include
         android:id="@+id/include3"

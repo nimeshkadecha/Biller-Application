@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class ShowList extends AppCompatActivity {
+public class show_list extends AppCompatActivity {
     private ArrayList<String> ainput, aprice, aquantity, asubtotal, aindex;
     private RecyclerView recyclerView;
     private MyAdapter adapter;
@@ -123,17 +123,17 @@ public class ShowList extends AppCompatActivity {
                             back.setVisibility(View.VISIBLE);
                             display.setVisibility(View.VISIBLE);
                             addmore.setVisibility(View.INVISIBLE);
-                            Toast.makeText(ShowList.this, "Saved ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(show_list.this, "Saved ", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(ShowList.this, "Failed to remove stock", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(show_list.this, "Failed to remove stock", Toast.LENGTH_SHORT).show();
                         }
 
 
                     } else {
-                        Toast.makeText(ShowList.this, "Error ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(show_list.this, "Error ", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(ShowList.this,"Please Add some item to proceed",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(show_list.this,"Please Add some item to proceed",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -143,7 +143,7 @@ public class ShowList extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent2 = new Intent(ShowList.this, home.class);
+                Intent intent2 = new Intent(show_list.this, home.class);
                 intent2.putExtra("Email", sellertxt);
                 startActivity(intent2);
                 finish();
@@ -155,7 +155,7 @@ public class ShowList extends AppCompatActivity {
         addmore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent3 = new Intent(ShowList.this, Additems.class);
+                Intent intent3 = new Intent(show_list.this, add_product.class);
                 intent3.putExtra("seller", sellertxt);
                 intent3.putExtra("cName", cName);
                 intent3.putExtra("cNumber", cNumber);
@@ -175,7 +175,7 @@ public class ShowList extends AppCompatActivity {
 
                 Cursor res = DB.billTotal(billId);
                 if (res.getCount() == 0) {
-                    Toast.makeText(ShowList.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -189,7 +189,7 @@ public class ShowList extends AppCompatActivity {
                     buffer.append("Total = " + res.getString(4) + "\n\n");
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ShowList.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(show_list.this);
                 builder.setCancelable(true);
                 builder.setTitle("Bill");
                 builder.setMessage(buffer.toString());
@@ -206,7 +206,7 @@ public class ShowList extends AppCompatActivity {
             public void onClick(View view) {
 
                 int total = DB.checkTotal(billId);
-                AlertDialog.Builder builder = new AlertDialog.Builder(ShowList.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(show_list.this);
                 builder.setCancelable(true);
                 builder.setTitle("Quick Total");
                 builder.setMessage("Current total = " + total);
@@ -271,7 +271,7 @@ public class ShowList extends AppCompatActivity {
 
                     Cursor selerDATA = DB.GetUser(sellertxt);
                     if (selerDATA.getCount() == 0) {
-                        Toast.makeText(ShowList.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
                         selerDATA.moveToFirst();
@@ -302,7 +302,7 @@ public class ShowList extends AppCompatActivity {
 
                     Cursor customerDetail = DB.billTotal(billId);
                     if (customerDetail.getCount() == 0) {
-                        Toast.makeText(ShowList.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
                         customerDetail.moveToFirst();
@@ -335,7 +335,7 @@ public class ShowList extends AppCompatActivity {
 
                     Cursor list = DB.displayList(billId);
                     if (list.getCount() == 0) {
-                        Toast.makeText(ShowList.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
                         list.moveToFirst();
@@ -362,14 +362,14 @@ public class ShowList extends AppCompatActivity {
                     document.add(new Paragraph("\n"));
                     document.add(END);
                     document.close();
-                    Toast.makeText(ShowList.this, "PDF Created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(show_list.this, "PDF Created", Toast.LENGTH_SHORT).show();
 
 //                Opening PDf ---------------------------------
 
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                         if (file.exists()) {
 
-                            Uri uri = FileProvider.getUriForFile(ShowList.this, getApplicationContext().getPackageName() + ".provider", file);
+                            Uri uri = FileProvider.getUriForFile(show_list.this, getApplicationContext().getPackageName() + ".provider", file);
 
 
                             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -377,7 +377,7 @@ public class ShowList extends AppCompatActivity {
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(ShowList.this, "File can't be created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(show_list.this, "File can't be created", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -396,15 +396,15 @@ public class ShowList extends AppCompatActivity {
         aquantity = new ArrayList<>();
         asubtotal = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview);
-        adapter = new MyAdapter(ShowList.this, ainput, aprice, aquantity, asubtotal, aindex);
+        adapter = new MyAdapter(show_list.this, ainput, aprice, aquantity, asubtotal, aindex);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(ShowList.this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(show_list.this));
 
         Cursor cursor = DB.displayList(billId);
         cursor.moveToFirst();
         if (cursor.getCount() == 0) {
-            Toast.makeText(ShowList.this, "No Entry Exists", Toast.LENGTH_SHORT).show();
+            Toast.makeText(show_list.this, "No Entry Exists", Toast.LENGTH_SHORT).show();
         } else {
             do {
                 aindex.add(cursor.getString(0));
@@ -427,7 +427,7 @@ public class ShowList extends AppCompatActivity {
             Bundle seller = getIntent().getExtras();
             String sellertxt = seller.getString("seller");
 
-            Intent intent2 = new Intent(ShowList.this, home.class);
+            Intent intent2 = new Intent(show_list.this, home.class);
             intent2.putExtra("Email", sellertxt);
             startActivity(intent2);
             finish();

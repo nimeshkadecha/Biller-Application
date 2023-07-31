@@ -31,6 +31,108 @@
         app:layout_constraintStart_toEndOf="@+id/btnBack"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/customerinfo"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:textAlignment="textStart"
+                android:text="@string/customer_information"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <Button
+                android:id="@+id/editInfo"
+                android:textAlignment="textStart"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minHeight="48dp"
+                android:text="@string/edit_information"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/customerinfo"
+                app:layout_constraintStart_toStartOf="@+id/customerinfo"
+                app:layout_constraintTop_toBottomOf="@+id/customerinfo" />
+
+            <Button
+                android:id="@+id/report"
+                android:textAlignment="textStart"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Inventory Insights"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/editInfo"
+                app:layout_constraintStart_toStartOf="@+id/editInfo"
+                app:layout_constraintTop_toBottomOf="@+id/editInfo" />
+
+            <Button
+                android:textAlignment="textStart"
+                android:id="@+id/stock"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/stock"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/report"
+                app:layout_constraintStart_toStartOf="@+id/report"
+                app:layout_constraintTop_toBottomOf="@+id/report" />
+
+            <Button
+                android:textAlignment="textStart"
+                android:id="@+id/backup"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/backup"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/stock"
+                app:layout_constraintStart_toStartOf="@+id/stock"
+                app:layout_constraintTop_toBottomOf="@+id/stock" />
+
+            <Button
+                android:textAlignment="textStart"
+                android:id="@+id/logOutButton"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Log Out"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/backup"
+                app:layout_constraintStart_toStartOf="@+id/backup"
+                app:layout_constraintTop_toBottomOf="@+id/backup" />
+
+            <Switch
+                android:id="@+id/bio_lock_switch"
+                style="@style/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fingerprint unlock:  "
+                android:layout_marginTop="32dp"
+                android:padding="10dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/logOutButton"
+                app:layout_constraintStart_toStartOf="@+id/logOutButton"
+                app:layout_constraintTop_toBottomOf="@+id/logOutButton"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+    </ScrollView>
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_marginTop="40dp"
@@ -40,95 +142,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
         app:srcCompat="@drawable/biller" />
-
-    <Button
-        android:id="@+id/customerinfo"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:paddingEnd="70dp"
-        android:text="@string/customer_information"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    <Button
-        android:id="@+id/editInfo"
-        android:paddingEnd="70dp"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:minHeight="48dp"
-        android:text="@string/edit_information"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/customerinfo"
-        app:layout_constraintStart_toStartOf="@+id/customerinfo"
-        app:layout_constraintTop_toBottomOf="@+id/customerinfo" />
-
-    <Button
-        android:id="@+id/report"
-
-        android:paddingEnd="75dp"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Business Report"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/editInfo"
-        app:layout_constraintStart_toStartOf="@+id/editInfo"
-        app:layout_constraintTop_toBottomOf="@+id/editInfo" />
-
-    <Button
-        android:paddingEnd="99dp"
-        android:id="@+id/stock"
-
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/stock"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/report"
-        app:layout_constraintStart_toStartOf="@+id/report"
-        app:layout_constraintTop_toBottomOf="@+id/report" />
-
-    <Button
-        android:paddingEnd="110dp"
-        android:id="@+id/backup"
-        android:layout_width="250dp"
-
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/backup"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/stock"
-        app:layout_constraintStart_toStartOf="@+id/stock"
-        app:layout_constraintTop_toBottomOf="@+id/stock" />
-
-    <Button
-        android:paddingEnd="150dp"
-        android:id="@+id/logOutButton"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Log Out"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/backup"
-        app:layout_constraintStart_toStartOf="@+id/backup"
-        app:layout_constraintTop_toBottomOf="@+id/backup" />
-
-    <Switch
-        android:id="@+id/bio_lock_switch"
-        style="@style/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fingerprint unlock:  "
-        android:layout_marginTop="32dp"
-        android:padding="10dp"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/logOutButton"
-        app:layout_constraintStart_toStartOf="@+id/logOutButton"
-        app:layout_constraintTop_toBottomOf="@+id/logOutButton"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
-
    </androidx.constraintlayout.widget.ConstraintLayout>

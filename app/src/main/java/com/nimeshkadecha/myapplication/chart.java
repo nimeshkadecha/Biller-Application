@@ -95,7 +95,7 @@ public class chart extends AppCompatActivity {
 
             default:
                 Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                Intent goTOReport = new Intent(chart.this, Report.class);
+                Intent goTOReport = new Intent(chart.this, inventory_insights.class);
                 goTOReport.putExtra("seller", Seller_email);
                 startActivity(goTOReport);
                 break;

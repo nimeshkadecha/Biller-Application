@@ -271,7 +271,7 @@ public class home extends AppCompatActivity {
         customerInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(home.this, customer_Info.class);
+                Intent intent = new Intent(home.this, bill_management.class);
                 intent.putExtra("seller", email);
                 startActivity(intent);
             }
@@ -283,7 +283,7 @@ public class home extends AppCompatActivity {
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(home.this, editInformation.class);
+                Intent intent = new Intent(home.this, profile_editing.class);
                 intent.putExtra("Email", email);
                 startActivity(intent);
 
@@ -296,7 +296,7 @@ public class home extends AppCompatActivity {
         stock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(home.this, manageStock.class);
+                Intent intent = new Intent(home.this, stock_control.class);
                 intent.putExtra("Email", email);
                 startActivity(intent);
 
@@ -310,7 +310,7 @@ public class home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent localBackup = new Intent(home.this, LocalBackup.class);
+                Intent localBackup = new Intent(home.this, backup_management.class);
                 startActivity(localBackup);
 //+===============================================================================================
             }
@@ -322,7 +322,7 @@ public class home extends AppCompatActivity {
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goTOReport = new Intent(home.this, Report.class);
+                Intent goTOReport = new Intent(home.this, inventory_insights.class);
                 goTOReport.putExtra("seller", email);
                 startActivity(goTOReport);
             }
@@ -342,7 +342,7 @@ public class home extends AppCompatActivity {
                 editor.putString("UserName", "");
                 editor.apply();
 
-                Intent logOUT = new Intent(home.this, MainActivity.class);
+                Intent logOUT = new Intent(home.this, login_Screen.class);
                 startActivity(logOUT);
                 finish();
             }
@@ -402,7 +402,7 @@ public class home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DB.createTable();
-                Intent intent = new Intent(home.this, Additems.class);
+                Intent intent = new Intent(home.this, add_product.class);
 
                 String nametxt, numbertxt, datetxt;
                 nametxt = name.getText().toString();

@@ -1,11 +1,8 @@
 package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -32,7 +29,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class OTP_Generator extends AppCompatActivity {
+public class otp_validation extends AppCompatActivity {
 
     private EditText otp;
 
@@ -121,7 +118,7 @@ public class OTP_Generator extends AppCompatActivity {
                 boolean OTP_V = OTPValidate(otpInput);
                 if (OTP_V) {
                     if(finalOTP[0].equals(otpInput)){
-                        Intent GoToResetPassword = new Intent(OTP_Generator.this, resetPassword.class);
+                        Intent GoToResetPassword = new Intent(otp_validation.this, reset_password.class);
                                         //                Fowarding number to intent reset password
                         Bundle bundle = getIntent().getExtras();
                         String Email = bundle.getString("Email");
@@ -130,7 +127,7 @@ public class OTP_Generator extends AppCompatActivity {
                         finish();
                     }
                 } else {
-                    Toast.makeText(OTP_Generator.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(otp_validation.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -146,7 +143,7 @@ public class OTP_Generator extends AppCompatActivity {
                     finalOTP[0] = otp;
                     GenerateOtpWithEmail(finalEmail,otp);
                 }else{
-                    Toast.makeText(OTP_Generator.this, "No internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(otp_validation.this, "No internet", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -216,18 +213,18 @@ public class OTP_Generator extends AppCompatActivity {
                             String message = jsonObject.getString("status");
 
                             if(message.equals("false")){
-                                OTP_Generator.this.runOnUiThread(new Runnable() {
+                                otp_validation.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(otp_validation.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 Log.d("ENimesh","String = " + message);
                             }else{
-                                OTP_Generator.this.runOnUiThread(new Runnable() {
+                                otp_validation.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(OTP_Generator.this, "Resend successfully", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(otp_validation.this, "Resend successfully", Toast.LENGTH_SHORT).show();
                                         OTP = otp;
                                         timerTV.setVisibility(View.VISIBLE);
                                         startTimer();
@@ -238,10 +235,10 @@ public class OTP_Generator extends AppCompatActivity {
                             }
 
                         } catch (JSONException e) {
-                            OTP_Generator.this.runOnUiThread(new Runnable() {
+                            otp_validation.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(otp_validation.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
                                 }
                             });
                             e.printStackTrace();
@@ -249,10 +246,10 @@ public class OTP_Generator extends AppCompatActivity {
                         }
                         // Process the response data here (responseData contains the API response)
                     } else {
-                        OTP_Generator.this.runOnUiThread(new Runnable() {
+                        otp_validation.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(otp_validation.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
                             }
                         });
                         Log.d("ENimesh","Failed");
@@ -260,10 +257,10 @@ public class OTP_Generator extends AppCompatActivity {
                         // For example, you can get the error message using response.message()
                     }
                 } catch (Exception e) {
-                    OTP_Generator.this.runOnUiThread(new Runnable() {
+                    otp_validation.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(OTP_Generator.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(otp_validation.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
                         }
                     });
                     e.printStackTrace();

@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class login_Screen extends AppCompatActivity {
 
     private int StoragePermisionCode = 1;
     //    initlizing varablwe
@@ -100,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
 
 //        Working with Permission ------------------------------------------------------------------
         permisions = findViewById(R.id.permisions);
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(login_Screen.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             permisions.setVisibility(View.INVISIBLE);
         } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, StoragePermisionCode);
+            ActivityCompat.requestPermissions(login_Screen.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, StoragePermisionCode);
             permisions.setVisibility(View.VISIBLE);
         }
 
@@ -136,17 +136,17 @@ public class MainActivity extends AppCompatActivity {
                 if (EV) {
                     boolean verify = DBM.validateUser(email.getText().toString());
                     if (verify) {
-                        Intent FingerprintVerification = new Intent(MainActivity.this, fingerprintLock.class);
+                        Intent FingerprintVerification = new Intent(login_Screen.this, fingerprint_lock.class);
 
                         FingerprintVerification.putExtra("Email", email.getText().toString());
                         FingerprintVerification.putExtra("Origin", "Login");
 
                         startActivity(FingerprintVerification);
                     } else {
-                        Toast.makeText(MainActivity.this, "Email Don't Exists", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(login_Screen.this, "Email Don't Exists", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Enter Email for login", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(login_Screen.this, "Enter Email for login", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, StoragePermisionCode);
+                            ActivityCompat.requestPermissions(login_Screen.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, StoragePermisionCode);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

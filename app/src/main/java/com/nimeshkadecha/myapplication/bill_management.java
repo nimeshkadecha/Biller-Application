@@ -25,8 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.itextpdf.kernel.colors.Color;
-import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -46,7 +44,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
-public class customer_Info extends AppCompatActivity {
+public class bill_management extends AppCompatActivity {
 
     private EditText dateedt, billidedt, todateedt;
 
@@ -80,19 +78,19 @@ public class customer_Info extends AppCompatActivity {
         cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(customer_Info.this, "Select Number from dropdown menu", Toast.LENGTH_SHORT).show();
+                Toast.makeText(bill_management.this, "Select Number from dropdown menu", Toast.LENGTH_SHORT).show();
             }
         });
         dl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(customer_Info.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
+                Toast.makeText(bill_management.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
             }
         });
         edl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(customer_Info.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
+                Toast.makeText(bill_management.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
             }
         });
 // =================================================================================================
@@ -148,7 +146,7 @@ public class customer_Info extends AppCompatActivity {
         } else {
             Names = new String[]{"No DAta"};
         }
-        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, Names));
+        nameedt.setAdapter(new ArrayAdapter<>(bill_management.this, android.R.layout.simple_list_item_1, Names));
 
         dateedt = findViewById(R.id.date);
         billidedt = findViewById(R.id.billID);
@@ -201,7 +199,7 @@ public class customer_Info extends AppCompatActivity {
             len++;
         }
 
-        nameedt.setAdapter(new ArrayAdapter<>(customer_Info.this, android.R.layout.simple_list_item_1, mergedString));
+        nameedt.setAdapter(new ArrayAdapter<>(bill_management.this, android.R.layout.simple_list_item_1, mergedString));
 
         todateedt = findViewById(R.id.rangeDatetEDT);
 // =================================================================================================
@@ -222,7 +220,7 @@ public class customer_Info extends AppCompatActivity {
                 if (date.isEmpty()) {
                     dateedt.setText(formattedDate);
                 } else {
-                    Toast.makeText(customer_Info.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(bill_management.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -239,7 +237,7 @@ public class customer_Info extends AppCompatActivity {
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(customer_Info.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(bill_management.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         dateedt.setText(" ");
@@ -257,7 +255,7 @@ public class customer_Info extends AppCompatActivity {
                 if (date.isEmpty()) {
                     todateedt.setText(formattedDate);
                 } else {
-                    Toast.makeText(customer_Info.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(bill_management.this, "Long press to open date picker", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -274,7 +272,7 @@ public class customer_Info extends AppCompatActivity {
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(customer_Info.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(bill_management.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         todateedt.setText(" ");
@@ -291,7 +289,7 @@ public class customer_Info extends AppCompatActivity {
 
 //        Adding Spinner (Dropdown menu) ===========================================================
         spinner = findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(customer_Info.this, android.R.layout.simple_spinner_item, shorting);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(bill_management.this, android.R.layout.simple_spinner_item, shorting);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -322,13 +320,13 @@ public class customer_Info extends AppCompatActivity {
                     contactedt.setVisibility(View.GONE);
                     todateedt.setVisibility(View.VISIBLE);
                 } else {
-                    Toast.makeText(customer_Info.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(bill_management.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(customer_Info.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
+                Toast.makeText(bill_management.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
             }
         });
 // =================================================================================================
@@ -347,9 +345,9 @@ public class customer_Info extends AppCompatActivity {
 
 
                 if (nametxt.isEmpty() && datetxt.isEmpty() && ToDate.isEmpty()) {
-                    Toast.makeText(customer_Info.this, "Fill at least one information to search", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(bill_management.this, "Fill at least one information to search", Toast.LENGTH_SHORT).show();
                 } else if (datetxt.isEmpty() && !ToDate.isEmpty()) {
-                    Toast.makeText(customer_Info.this, "Enter Starting Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(bill_management.this, "Enter Starting Date", Toast.LENGTH_SHORT).show();
                 } else {
                     Cursor res;
                     res = DB.cusInfo(sellertxt);
@@ -386,11 +384,11 @@ public class customer_Info extends AppCompatActivity {
                         }
                     } else {
                         res = DB.cusInfo(sellertxt);
-                        Toast.makeText(customer_Info.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(bill_management.this, "Error", Toast.LENGTH_SHORT).show();
                     }
 
                     if (res.getCount() == 0) {
-                        Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -411,7 +409,7 @@ public class customer_Info extends AppCompatActivity {
 
                     buffer.append("Total = " + total);
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(customer_Info.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(bill_management.this);
                     builder.setCancelable(true);
                     builder.setTitle("Bills");
                     builder.setMessage(buffer.toString());
@@ -453,7 +451,7 @@ public class customer_Info extends AppCompatActivity {
                 ToDate = todateedt.getText().toString();
 
                 if (nametxt.isEmpty() && datetxt.isEmpty() && billIDtxt.isEmpty() && contactTXT.isEmpty()) {
-                    Toast.makeText(customer_Info.this, "Fill at least one information to search", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(bill_management.this, "Fill at least one information to search", Toast.LENGTH_SHORT).show();
                 } else {
                     String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
 //                File name
@@ -476,7 +474,7 @@ public class customer_Info extends AppCompatActivity {
 
                     Cursor selerDATA = DB.GetUser(sellertxt);
                     if (selerDATA.getCount() == 0) {
-                        Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
                         selerDATA.moveToFirst();
@@ -594,7 +592,7 @@ public class customer_Info extends AppCompatActivity {
                     } else {
                         customerDetail = DB.cusInfo(sellertxt);
                         list = DB.cusInfo(sellertxt);
-                        Toast.makeText(customer_Info.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(bill_management.this, "Error", Toast.LENGTH_SHORT).show();
                     }
 
                     Log.d("ENimesh","checker = " + checker);
@@ -613,7 +611,7 @@ public class customer_Info extends AppCompatActivity {
                      */
 
                     if (customerDetail.getCount() == 0) {
-                        Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     } else {
                         if (checker == 3 || checker == 4) {
 //                            Date & range search
@@ -644,7 +642,7 @@ public class customer_Info extends AppCompatActivity {
                                 int index = 0;
                                 int total = 0;
                                 if (list.getCount() == 0) {
-                                    Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                                     return;
                                 } else {
                                     list.moveToFirst();
@@ -700,7 +698,7 @@ public class customer_Info extends AppCompatActivity {
                                 int index = 0;
                                 int total = 0;
                                 if (list.getCount() == 0) {
-                                    Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                                     return;
                                 } else {
                                     list.moveToFirst();
@@ -759,7 +757,7 @@ public class customer_Info extends AppCompatActivity {
                             int total = 0;
 
                             if (list.getCount() == 0) {
-                                Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                                 return;
                             } else {
                                 list.moveToFirst();
@@ -791,18 +789,18 @@ public class customer_Info extends AppCompatActivity {
                         document.add(new Paragraph("\n"));
                         document.add(END);
                         document.close();
-                        Toast.makeText(customer_Info.this, "PDF Created", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(bill_management.this, "PDF Created", Toast.LENGTH_SHORT).show();
 
 //                Opening PDf ---------------------------------
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                             if (file.exists()) {
-                                Uri uri = FileProvider.getUriForFile(customer_Info.this, getApplicationContext().getPackageName() + ".provider", file);
+                                Uri uri = FileProvider.getUriForFile(bill_management.this, getApplicationContext().getPackageName() + ".provider", file);
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
                                 intent.setDataAndType(uri, "application/pdf");
                                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(customer_Info.this, "File can't be created", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(bill_management.this, "File can't be created", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -826,7 +824,7 @@ public class customer_Info extends AppCompatActivity {
 
                 Cursor res = DB.cusInfo(sellertxt);
                 if (res.getCount() == 0) {
-                    Toast.makeText(customer_Info.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -840,7 +838,7 @@ public class customer_Info extends AppCompatActivity {
                     buffer.append("Total = " + res.getString(4) + "\n\n");
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(customer_Info.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(bill_management.this);
                 builder.setCancelable(true);
                 builder.setTitle("Bills");
                 builder.setMessage(buffer.toString());

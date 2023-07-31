@@ -23,7 +23,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
-public class Report extends AppCompatActivity {
+public class inventory_insights extends AppCompatActivity {
 
     DBManager dbLocal = new DBManager(this);
 
@@ -57,7 +57,7 @@ public class Report extends AppCompatActivity {
         if (getinfo.getCount() <= 0) {
             Toast.makeText(this, "You don't have any stock available", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "GoTo manage stock to enter Stock", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(Report.this, home.class);
+            Intent i = new Intent(inventory_insights.this, home.class);
             i.putExtra("Email", Seller_email);
             i.putExtra("Origin", "test");
             startActivity(i);
@@ -85,7 +85,7 @@ public class Report extends AppCompatActivity {
             products = new String[]{"NO Suggestion Available"};
         }
 
-        itemName.setAdapter(new ArrayAdapter<>(Report.this, android.R.layout.simple_list_item_1, products));
+        itemName.setAdapter(new ArrayAdapter<>(inventory_insights.this, android.R.layout.simple_list_item_1, products));
 
         AutoCompleteTextView catagory = findViewById(R.id.report_Catagory_name);
 
@@ -123,7 +123,7 @@ public class Report extends AppCompatActivity {
             Names = new String[]{"No Data"};
         }
 
-        catagory.setAdapter(new ArrayAdapter<>(Report.this, android.R.layout.simple_list_item_1, Names));
+        catagory.setAdapter(new ArrayAdapter<>(inventory_insights.this, android.R.layout.simple_list_item_1, Names));
 
 
         //        working with switches
@@ -180,10 +180,10 @@ public class Report extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (switchRecords.isChecked()) {
-                    Toast.makeText(Report.this, "Sales records search", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(inventory_insights.this, "Sales records search", Toast.LENGTH_SHORT).show();
                     heading.setText("Sales Record");
                 } else {
-                    Toast.makeText(Report.this, "Inventory records search", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(inventory_insights.this, "Inventory records search", Toast.LENGTH_SHORT).show();
                     heading.setText("Stock Record");
                 }
             }
@@ -198,7 +198,7 @@ public class Report extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (itemName.getVisibility() == View.INVISIBLE) {
-                    Toast.makeText(Report.this, "Change switch to assess Category", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(inventory_insights.this, "Change switch to assess Category", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -207,7 +207,7 @@ public class Report extends AppCompatActivity {
 
         catagoryTextInputLayout.setOnClickListener(v -> {
             if (catagory.getVisibility() == View.INVISIBLE) {
-                Toast.makeText(Report.this, "Change switch to assess Product", Toast.LENGTH_SHORT).show();
+                Toast.makeText(inventory_insights.this, "Change switch to assess Product", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -238,7 +238,7 @@ public class Report extends AppCompatActivity {
                                 buffer.append("Category = " + ReportCursor.getString(2) + "\n\n");
                             } while (ReportCursor.moveToNext());
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(inventory_insights.this);
                             builder.setCancelable(true);
                             builder.setTitle("Stock Report");
                             builder.setMessage(buffer.toString());
@@ -263,7 +263,7 @@ public class Report extends AppCompatActivity {
                                 buffer.append("Product = " + ReportCursor.getString(1) + "\n\n");
                             } while (ReportCursor.moveToNext());
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(inventory_insights.this);
                             builder.setCancelable(true);
                             builder.setTitle("Stock Report");
                             builder.setMessage(buffer.toString());
@@ -291,7 +291,7 @@ public class Report extends AppCompatActivity {
                                 } while (ReportCursor.moveToNext());
                             }
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(inventory_insights.this);
                             builder.setCancelable(true);
                             builder.setTitle("Sales Report");
                             builder.setMessage(buffer.toString());
@@ -327,7 +327,7 @@ public class Report extends AppCompatActivity {
                                 }
                             } while (ReportCursor.moveToNext());
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(inventory_insights.this);
                             builder.setCancelable(true);
                             builder.setTitle("Slase Report");
                             builder.setMessage(buffer.toString());
@@ -350,7 +350,7 @@ public class Report extends AppCompatActivity {
         qty_chart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gotoReport = new Intent(Report.this, chart.class);
+                Intent gotoReport = new Intent(inventory_insights.this, chart.class);
                 gotoReport.putExtra("seller", Seller_email);
                 gotoReport.putExtra("intent", "qty_chart");
 

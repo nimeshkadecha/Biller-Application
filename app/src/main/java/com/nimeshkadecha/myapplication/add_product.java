@@ -1,8 +1,6 @@
 package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,15 +13,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.HashMap;
 import java.util.Objects;
 
-public class Additems extends AppCompatActivity {
+public class add_product extends AppCompatActivity {
 
     //    toolbar and navagation drawer starts;
     private ImageView menu;
@@ -40,7 +36,7 @@ public class Additems extends AppCompatActivity {
     String cNametxt, cNumbertxt, datetext, sellertxt, origintxt;
     int billIdtxt;
 
-//    In input Filter
+    //    In input Filter
     private String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
 
     private final InputFilter filter = new InputFilter() {
@@ -116,7 +112,7 @@ public class Additems extends AppCompatActivity {
             products = new String[]{"NO Suggestion Available"};
         }
 
-        productName.setAdapter(new ArrayAdapter<>(Additems.this, android.R.layout.simple_list_item_1, products));
+        productName.setAdapter(new ArrayAdapter<>(add_product.this, android.R.layout.simple_list_item_1, products));
 
         price = findViewById(R.id.price);
 
@@ -129,9 +125,9 @@ public class Additems extends AppCompatActivity {
                     if (getPrice.getCount() > 0) {
                         Log.d("ENimesh", "Price is = " + String.valueOf(getPrice.getInt(2)));
                         price.setText(String.valueOf(getPrice.getInt(2)));
-                        Toast.makeText(Additems.this, "Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Added", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(Additems.this, "Can't find", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Can't find", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -152,23 +148,23 @@ public class Additems extends AppCompatActivity {
                         productName.setError("Enter Item Name here");
                         price.setError("Enter Item Price here");
                         quantity.setError("Enter Quantity here");
-                        Toast.makeText(Additems.this, "Entry details", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Entry details", Toast.LENGTH_SHORT).show();
                     } else if (productName_ST.isEmpty()) {
                         productName.setError("Enter Item Name here");
-                        Toast.makeText(Additems.this, "Product filed is Empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Product filed is Empty", Toast.LENGTH_SHORT).show();
                     } else if (price_ST.isEmpty()) {
                         price.setError("Enter Item Price here");
-                        Toast.makeText(Additems.this, "Price filed is Empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Price filed is Empty", Toast.LENGTH_SHORT).show();
                     } else if (quantity_ST.isEmpty()) {
                         quantity.setError("Enter Quantity here");
-                        Toast.makeText(Additems.this, "Quantity filed is Empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Quantity filed is Empty", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(Additems.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Error", Toast.LENGTH_SHORT).show();
                     }
                 } else {
 
                     if (cNametxt.isEmpty() || cNumbertxt.isEmpty() || datetext.isEmpty()) {
-                        Toast.makeText(Additems.this, "Emptity intent", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Emptity intent", Toast.LENGTH_SHORT).show();
                     } else {
 
                         boolean check = DB.Insert_List(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0);
@@ -176,9 +172,9 @@ public class Additems extends AppCompatActivity {
                             quentity[0] = quentity[0] + Integer.parseInt(quantity_ST);
                             validator[0]++;
                             show.setVisibility(View.VISIBLE);
-                            Toast.makeText(Additems.this, "Inserted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(add_product.this, "Inserted", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(Additems.this, "Not Inserted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(add_product.this, "Not Inserted", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -198,7 +194,7 @@ public class Additems extends AppCompatActivity {
         show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent2 = new Intent(Additems.this, ShowList.class);
+                Intent intent2 = new Intent(add_product.this, show_list.class);
                 //passing customer information and billId
                 intent2.putExtra("seller", sellertxt);
 
@@ -220,21 +216,25 @@ public class Additems extends AppCompatActivity {
     //    Going TO Home With User DATA ON Back Button Press --------------------------------------------
     @Override
     public void onBackPressed() {
-        Intent intent2 = new Intent(Additems.this, home.class);
+        if (!origintxt.equalsIgnoreCase("home")) {
+            Toast.makeText(this, "Please save the bill before exiting", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent2 = new Intent(add_product.this, home.class);
 
-        intent2.putExtra("Email", sellertxt);
-        intent2.putExtra("Origin", "addItem");
+            intent2.putExtra("Email", sellertxt);
+            intent2.putExtra("Origin", "addItem");
 
-        intent2.putExtra("cName", cNametxt);
+            intent2.putExtra("cName", cNametxt);
 
-        intent2.putExtra("cNumber", cNumbertxt);
+            intent2.putExtra("cNumber", cNumbertxt);
 
-        intent2.putExtra("date", datetext);
+            intent2.putExtra("date", datetext);
 
-        intent2.putExtra("billId", billIdtxt);
+            intent2.putExtra("billId", billIdtxt);
 
-        startActivity(intent2);
-        finish();
+            startActivity(intent2);
+            finish();
+        }
     }
 //--------------------------------------------------------------------------------------------------
 }

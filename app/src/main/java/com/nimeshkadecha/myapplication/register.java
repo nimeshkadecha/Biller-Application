@@ -12,18 +12,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
 public class register extends AppCompatActivity {
     private EditText name, email, password, gst, contact, address;
-    private MainActivity MA = new MainActivity();
+    private login_Screen MA = new login_Screen();
     private DBManager DBM;
     private Button show;
     private ImageView menuclick;
@@ -118,7 +116,7 @@ public class register extends AppCompatActivity {
 
     //    Register button ------------------------------------------------------------------------------
     public void register(View view) {
-        Intent login = new Intent(this, MainActivity.class);
+        Intent login = new Intent(this, login_Screen.class);
 
         String nameTXT = name.getText().toString();
         String emailTXT = email.getText().toString();
