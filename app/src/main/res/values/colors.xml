@@ -1,32 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="purple_200">#03A9F4</color>
-    <color name="purple_500">#03A9F4</color>
-    <color name="purple_700">#03A9F4</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="test">#59FF00</color>
 
     <color name="toolbar">#d7d8d8</color>
 
     <color name="day2">#434343</color>
 
     <color name="night_back">#272727</color>
-    <color name="night2">#BA474747</color>
     <color name="day_back">#E5e4e2</color>
 
-    <color name="colorPrimary">#024265</color>
-    <color name="colorPrimaryDark">#024265</color>
-    <color name="colorAccent">#05af9b</color>
-
     <color name="color_one">#fb7268</color>
-    <color name="color_white">#ededf2</color>
-    <color name="color_two">#E3E0E0</color>
 
-    <color name="R">#FFA726</color>
-    <color name="Python">#66BB6A</color>
-    <color name="CPP">#EF5350</color>
-    <color name="Java">#29B6F6</color>
 </resources>

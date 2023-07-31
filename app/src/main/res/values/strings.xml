@@ -21,16 +21,9 @@
     <string name="sprice">Selling Price</string>
     <string name="catagory">Category</string>
     <string name="quantity">Quantity</string>
-    <string name="Biller">Biller_OTP</string>
-    <string name="description">OTP for Biller application</string>
     <string name="add_products">Add Products</string>
     <string name="show_list">Show List</string>
     <string name="add_item">Add Item</string>
-    <string name="show_data">Show Data</string>
-    <string name="savabackup">SavaBackup</string>
-    <string name="download_from_cloud">Download From Cloud</string>
-    <string name="upload_to_cloud">Upload TO Cloud</string>
-    <string name="backup_to_cloud">Backup to Cloud</string>
     <string name="search_by_customer_name">Search Customer</string>
     <string name="customers">Customers</string>
     <string name="search_by_contact_number">Search By Contact Number</string>
@@ -52,9 +45,6 @@
     <string name="back">Back</string>
     <string name="addmore">AddMore</string>
     <string name="create_pdf">Create PDF</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="textview">TextView</string>
     <string name="Menulogo">menu</string>
     <string name="item_price">Item Price :</string>
     <string name="item_quantity">Item quantity :</string>

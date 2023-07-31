@@ -10,16 +10,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class resetPassword extends AppCompatActivity {
@@ -31,8 +23,6 @@ public class resetPassword extends AppCompatActivity {
 
     private Button confirm;
     public static final String SHARED_PREFS = "sharedPrefs";
-
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -104,51 +94,6 @@ public class resetPassword extends AppCompatActivity {
                     startActivity(SucessfullyLogin);
                     finish();
                     Toast.makeText(resetPassword.this, "Password Updated", Toast.LENGTH_SHORT).show();
-                    // After updating Locally Updating it to Cloud
-//                    db.collection(number)
-//                            .document("Seller")
-//                            .get()
-//                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                    Map<String, Object> Reset = new HashMap<>();
-//
-//                                    DocumentSnapshot ds = task.getResult();
-//                                    Reset.put("Name", String.valueOf(ds.get("Name")));
-//                                    Reset.put("Enail", String.valueOf(ds.get("Enail")));
-//                                    Reset.put("Password", confirmPassword.getText().toString());
-//                                    Reset.put("GST", String.valueOf(ds.get("GST")));
-//                                    Reset.put("Contact", String.valueOf(ds.get("Contact")));
-//                                    Reset.put("Address", String.valueOf(ds.get("Address")));
-//
-//                                    db.collection(number)
-//                                            .document("Seller")
-//                                            .set(Reset)
-//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                    if(task.isSuccessful()){
-//                                                        String emailTXT = String.valueOf(Reset.get("Enail"));
-//
-//                                                        // Login in user After Reset
-//                                                        SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-//                                                        SharedPreferences.Editor editor = sp.edit();
-//                                                        editor.putString("Login","true");
-//                                                        editor.putString("UserName",emailTXT);
-//                                                        editor.apply();
-//
-//                                                        Intent SucessfullyLogin = new Intent(resetPassword.this, home.class);
-//                                                        SucessfullyLogin.putExtra("Email", emailTXT);
-//                                                        SucessfullyLogin.putExtra("Origin", "Login");
-//                                                        startActivity(SucessfullyLogin);
-//                                                        finish();
-//                                                        Toast.makeText(resetPassword.this, "Password Updated", Toast.LENGTH_SHORT).show();
-//                                                    }else{
-//                                                        Toast.makeText(resetPassword.this, "Failed to Update Password", Toast.LENGTH_SHORT).show();
-//                                                    }
-//                                                }
-//                                            });}
-//                            });
 
                 } else {
                     Toast.makeText(this, "Password NOT reset Successfully", Toast.LENGTH_SHORT).show();

@@ -41,16 +41,6 @@
             android:name=".Report"
             android:exported="false" />
         <activity
-            android:name=".Firestore_Backup"
-            android:exported="false" />
-        <activity
-            android:name=".Backup"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".Additems"
             android:exported="false">
             <meta-data

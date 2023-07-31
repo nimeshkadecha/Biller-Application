@@ -54,9 +54,4 @@
         <item name="srcCompat">@drawable/back</item>
     </style>
 
-    <style name="logoColor">
-        <item name="android:fillColor">#3c85f2</item>
-        <item name="android:strokeColor">#3c85f2</item>
-    </style>
-
 </resources>

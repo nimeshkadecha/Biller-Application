@@ -22,24 +22,14 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthOptions;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public class home extends AppCompatActivity {
 
@@ -59,11 +49,9 @@ public class home extends AppCompatActivity {
 
     private AutoCompleteTextView name;
 
-    private FirebaseAuth mAuth;
 
     private ProgressBar lodingPB;
 
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
 
 
     @SuppressLint("MissingInflatedId")
@@ -71,7 +59,6 @@ public class home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mAuth = FirebaseAuth.getInstance();
         int billIdtxt[] = new int[5];
 
 
@@ -318,7 +305,6 @@ public class home extends AppCompatActivity {
 //  ================================================================================================
 
 //      Backup Btn =================================================================================
-
         backup = findViewById(R.id.backup);
         backup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,32 +312,6 @@ public class home extends AppCompatActivity {
 
                 Intent localBackup = new Intent(home.this, LocalBackup.class);
                 startActivity(localBackup);
-
-//                FIRESTORE BACKUP PATH ============================================================
-//                AlertDialog.Builder alert = new AlertDialog.Builder(home.this);
-//                alert.setTitle("Backup");
-//                alert.setMessage("This would require OTP to Access ");
-//                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-//                        String username = sharedPreferences.getString("UserName", "");
-//                        getOTP(username);
-//                    }
-//                });
-//                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        dialogInterface.dismiss();
-//                    }
-//                });
-//
-//                alert.show();
-
-// Testing code to bypass OTP
-//                Intent backup = new Intent(home.this, Firestore_Backup.class);
-//                backup.putExtra("user", username);
-//                startActivity(backup);
 //+===============================================================================================
             }
         });
@@ -491,71 +451,6 @@ public class home extends AppCompatActivity {
         });
 //  ================================================================================================
     }
-
-    //    Generating OTP ===============================================================================
-    private void getOTP(String email) {
-
-        lodingPB.setVisibility(View.VISIBLE);
-//        OTP From Firebase
-        Cursor number = DB.Seller_Contact(email);
-
-        number.moveToFirst();
-        String CN = number.getString(0);
-
-        mCAllbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                lodingPB.setVisibility(View.GONE);
-                mAuth.signInWithCredential(phoneAuthCredential)
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                Toast.makeText(home.this, "Verified...", Toast.LENGTH_SHORT).show();
-                                Intent backup = new Intent(home.this, Firestore_Backup.class);
-                                backup.putExtra("user", email);
-                                startActivity(backup);
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(home.this, "Auto sign in Failed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
-
-            @Override
-            public void onVerificationFailed(@NonNull FirebaseException e) {
-                lodingPB.setVisibility(View.GONE);
-                Toast.makeText(home.this, "Failed to send OTP, Try Again after SOme time | " + e, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-
-                Toast.makeText(home.this, "Sending OTP ...", Toast.LENGTH_SHORT).show();
-
-                Intent GETOTP = new Intent(home.this, Backup.class);
-                GETOTP.putExtra("number", CN);
-                GETOTP.putExtra("user", email);
-                GETOTP.putExtra("OTP", s);
-                startActivity(GETOTP);
-                lodingPB.setVisibility(View.GONE);
-
-            }
-        };
-        PhoneAuthOptions options =
-                PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber("+91 " + CN)
-                        .setTimeout(60L, TimeUnit.SECONDS)
-                        .setActivity(this)
-                        .setCallbacks(mCAllbacks)
-                        .build();
-        PhoneAuthProvider.verifyPhoneNumber(options);
-
-//  ================================================================================================
-    }
-
 
     //  Alert dialog box for Exiting Application =======================================================
     @Override

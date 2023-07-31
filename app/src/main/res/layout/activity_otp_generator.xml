@@ -8,7 +8,6 @@
     tools:context=".OTP_Generator">
 
     <include
-        android:id="@+id/include2"
         layout="@layout/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

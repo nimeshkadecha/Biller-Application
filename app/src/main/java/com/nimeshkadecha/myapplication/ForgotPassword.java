@@ -1,7 +1,10 @@
 package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -12,21 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthOptions;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -41,17 +37,28 @@ public class ForgotPassword extends AppCompatActivity {
     private ImageView menuclick;
 
     private View PlodingView;
-    private FirebaseAuth mAuth;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCAllbacks;
 
     private TextView heading;
+
+//    Verifying internet is ON -----------------------------------------------------------------
+    boolean checkConnection() {
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo net = manager.getActiveNetworkInfo();
+
+        if (net == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+//--------------------------------------------------------------------------------------------------
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-        mAuth = FirebaseAuth.getInstance();
 //        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
     //        Removing Suport bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
@@ -95,18 +102,23 @@ public class ForgotPassword extends AppCompatActivity {
 
 //   "Get OTP" button On click -----------------------------------------------------------------------
     public void GetOTP(View view) {
-        boolean NV = EmailValidation(Email.getText().toString().trim());
-        if (NV) {
-            //        finding button
-            Button getOTPButton = findViewById(R.id.button);
+        if(checkConnection()){
+            boolean NV = EmailValidation(Email.getText().toString().trim());
+            if (NV) {
+                //        finding button
+                Button getOTPButton = findViewById(R.id.button);
 
-            getOTPButton.setEnabled(false);
-            GenerateOtpWithEmail(Email.getText().toString().trim());
-            PlodingView.setVisibility(View.VISIBLE);
+                getOTPButton.setEnabled(false);
+                GenerateOtpWithEmail(Email.getText().toString().trim());
+                PlodingView.setVisibility(View.VISIBLE);
 
-        } else {
-            Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @SuppressLint("DefaultLocale")

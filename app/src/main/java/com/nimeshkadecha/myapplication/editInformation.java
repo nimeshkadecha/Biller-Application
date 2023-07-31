@@ -17,20 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class editInformation extends AppCompatActivity {
@@ -41,21 +34,6 @@ public class editInformation extends AppCompatActivity {
     private Button show, update, delete;
     private EditText name, password, gst, contact, address;
     private TextView header;
-
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    //    Verifying internet is ON
-    boolean checkConnection() {
-        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo net = manager.getActiveNetworkInfo();
-
-        if (net == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n", "ResourceType"})
     @Override

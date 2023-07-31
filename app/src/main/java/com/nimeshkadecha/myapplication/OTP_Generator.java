@@ -2,9 +2,12 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -15,31 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -65,20 +48,28 @@ public class OTP_Generator extends AppCompatActivity {
     private static final long TIMER_DURATION = 60000; // 1 minute in milliseconds
     private static final long TIMER_INTERVAL = 1000; // 1 second in milliseconds
 
+    //    Verifying internet is ON -----------------------------------------------------------------
+    boolean checkConnection() {
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo net = manager.getActiveNetworkInfo();
+
+        if (net == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+//--------------------------------------------------------------------------------------------------
+
     //        finding textviews;
     TextView timerTV;
     TextView resendTV ;
 
     //      Getting Verification ID from INTENT --------------------------------------------------------
     String OTP ;
-    String email ;
 //--------------------------------------------------------------------------------------------------
 
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-    private DBManager DB_local = new DBManager(this);
-
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static final String SHARED_PREFS = "sharedPrefs";
 
     @Override
@@ -106,7 +97,6 @@ public class OTP_Generator extends AppCompatActivity {
 
 //      Getting Origin From Intent -----------------------------------------------------------------
         Bundle bundle = getIntent().getExtras();
-        String origin = bundle.getString("Origin");
 //--------------------------------------------------------------------------------------------------
 
 //        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
@@ -150,10 +140,15 @@ public class OTP_Generator extends AppCompatActivity {
         resendTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PlodingView .setVisibility(View.VISIBLE);
-                String otp = getrandom();
-                finalOTP[0] = otp;
-                GenerateOtpWithEmail(finalEmail,otp);
+                if(checkConnection()){
+                    PlodingView .setVisibility(View.VISIBLE);
+                    String otp = getrandom();
+                    finalOTP[0] = otp;
+                    GenerateOtpWithEmail(finalEmail,otp);
+                }else{
+                    Toast.makeText(OTP_Generator.this, "No internet", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -313,7 +308,5 @@ public class OTP_Generator extends AppCompatActivity {
         }
     }
 //--------------------------------------------------------------------------------------------------
-
-
 
 }

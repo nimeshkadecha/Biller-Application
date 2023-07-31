@@ -61,7 +61,6 @@
         app:layout_constraintTop_toBottomOf="@+id/namelayout">
 
         <TextView
-            android:id="@+id/textView12"
             style="@style/textView"
             android:layout_margin="0dp"
             android:layout_width="wrap_content"
@@ -79,7 +78,6 @@
             tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
         <TextView
-            android:id="@+id/textView11"
             android:layout_marginStart="10dp"
             style="@style/textView"
             android:layout_width="wrap_content"
@@ -130,7 +128,6 @@
         app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout">
 
         <TextView
-            android:id="@+id/textView9"
             style="@style/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
