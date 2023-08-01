@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".register">
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-6774391225250306/9234720248"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <include
         android:id="@+id/include4"
         layout="@layout/toolbar"
@@ -30,6 +42,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="wrap_content"
+        style="@style/layoutBackground"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
@@ -42,7 +55,7 @@
             style="@style/TextInputLayout"
             android:layout_width="380dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="15dp"
             android:hint="@string/name"
             app:endIconMode="clear_text"
             app:helperText="Require*"
@@ -147,9 +160,34 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout11"
+            style="@style/TextInputLayout"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/address"
+            app:counterEnabled="true"
+            app:counterMaxLength="200"
+            app:endIconMode="clear_text"
+            app:helperText="Require*"
+            app:helperTextTextColor="#FF002E"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
+            app:startIconDrawable="@drawable/ic_baseline_home_work_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address"
+                style="@style/TextInputEditText"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:maxLength="200"
+                android:textColorHint="#FA0202"
+                tools:ignore="TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout4"
             style="@style/TextInputLayout"
-
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:hint="@string/contact_number"
@@ -159,42 +197,17 @@
             app:helperTextTextColor="#FF002E"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutGST_Number"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout11"
             app:prefixText="+91"
             app:startIconDrawable="@drawable/ic_phone">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/contactNumber"
                 style="@style/TextInputEditText"
-                android:textColorHint="#FA0202"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:maxLength="10"
-                tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/address"
-            app:counterEnabled="true"
-            app:counterMaxLength="200"
-            app:endIconMode="clear_text"
-            app:helperText="Require*"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:helperTextTextColor="#FF002E"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
-            app:startIconDrawable="@drawable/ic_baseline_home_work_24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/address"
-                android:layout_width="380dp"
-                android:layout_height="wrap_content"
-                android:maxLength="200"
-                style="@style/TextInputEditText"
                 android:textColorHint="#FA0202"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -225,17 +238,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         tools:ignore="TextContrastCheck" />
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-6774391225250306/9234720248"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.nimeshkadecha.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,7 +13,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.channels.FileChannel;
 
 public class DBManager extends SQLiteOpenHelper {
@@ -204,42 +204,6 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-    //    Deleteing User's Customer DATA ------[select * from users where email = ?] --------------------------
-    public boolean DeleteUserData(String email) {
-        SQLiteDatabase DB = this.getWritableDatabase();
-
-        Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{email});
-
-        if (cursor.getCount() > 0) {
-            long check1, check2, check3, check4;
-            check1 = DB.delete("display", "seller = ?", new String[]{email});
-            check2 = DB.delete("customer", "seller = ?", new String[]{email});
-            check3 = DB.delete("stock", "seller = ?", new String[]{email});
-            check4 = DB.delete("stockQuentity", "seller = ?", new String[]{email});
-            if (check1 == -1 || check2 == -1 || check3 == -1 || check4 == -1) {
-                return false;
-            } else {
-//                Resetting Auto increment to 0
-                DB.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = ?", new String[]{"display"});
-                DB.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = ?", new String[]{"stock"});
-                return true;
-            }
-        } else {
-            return false;
-        }
-
-    }
-
-    //    Getting Seller COntact NUmber for OTP
-//    getting from EMail
-    public Cursor Seller_Contact(String email) {
-        SQLiteDatabase DB = this.getReadableDatabase();
-
-        Cursor cursor = DB.rawQuery("select contact from users where email =? ", new String[]{email});
-
-        return cursor;
-    }
-
 //------------------------------------- Working on customer tables ---------------------------------
 
     //    ADDING ITEM in list/ in recycilerview / in display TABLE
@@ -261,11 +225,13 @@ public class DBManager extends SQLiteOpenHelper {
 
         boolean check_if_already_added = false;
         int number_of_product = 0;
+        String Index = null;
 
         if (data.getCount() != 0) {
             do {
                 if (data.getString(1).equals(name)) {
                     check_if_already_added = true;
+                    Index = data.getString(0); // geting index
                     number_of_product = data.getInt(3);
                 }
             } while (data.moveToNext());
@@ -275,34 +241,38 @@ public class DBManager extends SQLiteOpenHelper {
             number_of_product += 1;
             subtotal = pricecustom * number_of_product;
 
+            String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+
             contentValues.put("Product", name);
             contentValues.put("price", price);
             contentValues.put("quantity", number_of_product);
             contentValues.put("subtotal", subtotal);
             contentValues.put("customerName", cName);
             contentValues.put("customerNumber", cNumber);
-            contentValues.put("date", date);
+            contentValues.put("date", formattedDate);
             contentValues.put("billId", billId);
             contentValues.put("seller", email);
             contentValues.put("backup", state);
 
             long result;
 
-//            result = DB.insert("display", null, contentValues);
-            result = DB.update("display", contentValues, "billid=?", new String[]{String.valueOf(billId)});
+            result = DB.update("display", contentValues, "indexs=?", new String[]{Index});
             if (result == -1) {
                 return false;
             } else {
                 return true;
             }
         } else {
+
+            String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+
             contentValues.put("Product", name);
             contentValues.put("price", price);
             contentValues.put("quantity", quantity);
             contentValues.put("subtotal", subtotal);
             contentValues.put("customerName", cName);
             contentValues.put("customerNumber", cNumber);
-            contentValues.put("date", date);
+            contentValues.put("date", formattedDate);
             contentValues.put("billId", billId);
             contentValues.put("seller", email);
             contentValues.put("backup", state);
@@ -362,25 +332,16 @@ public class DBManager extends SQLiteOpenHelper {
 
         int total = 0;
         c.moveToFirst();
-        if(c.getCount() == 0){
+        if (c.getCount() == 0) {
             return 0;
         }
 
-        do{
+        do {
             total += c.getInt(4);
-        }while (c.moveToNext());
+        } while (c.moveToNext());
 
         return total;
 
-    }
-
-    //    Bill id is unique every time so no need of email -- [select * from display where seller =?]---
-    public Cursor getAllCustomer(String email) {
-        SQLiteDatabase DB = this.getReadableDatabase();
-
-        Cursor cursor = DB.rawQuery("select * from display where seller =? ", new String[]{email});
-
-        return cursor;
     }
 
     //    Genarating BILL ID -- [select * from customer]------------------------------
@@ -430,9 +391,12 @@ public class DBManager extends SQLiteOpenHelper {
     //    Search Based on single date ---[select * from display where date = ? and seller = ?]----------
 
     public Cursor CustomerDateBill(String date, String email) {
+
+        String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from display where date = ? and seller = ?", new String[]{date, email});
+        Cursor cursor = DB.rawQuery("select * from display where date = ? and seller = ?", new String[]{formattedDate, email});
 
         return cursor;
     }
@@ -481,9 +445,11 @@ public class DBManager extends SQLiteOpenHelper {
 
     //Searching in an range of DATE ---[Select * from display where seller =? AND  date  BETWEEN ? AND ? ]------
     public Cursor rangeSearch(String date, String toDate, String email) {
+        String startDate_formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+        String endDate_formattedDate = date_convertor.convertDateFormat(toDate,"dd/MM/yyyy","yyyy-MM-dd");
         SQLiteDatabase DB = this.getReadableDatabase();
         Cursor cursor;
-        cursor = DB.rawQuery("Select * from display where seller =? AND  date  BETWEEN ? AND ? ", new String[]{email, date, toDate});
+        cursor = DB.rawQuery("Select * from display where seller =? AND  date  BETWEEN ? AND ? ", new String[]{email, startDate_formattedDate, endDate_formattedDate});
 
         return cursor;
     }
@@ -502,12 +468,13 @@ public class DBManager extends SQLiteOpenHelper {
             total += cursor.getInt(4);
         } while (cursor.moveToNext());
 
+        String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("billId", billId);
         contentValues.put("customerName", name);
         contentValues.put("customerNumber", number);
-        contentValues.put("date", date);
+        contentValues.put("date", formattedDate);
         contentValues.put("total", total);
         contentValues.put("seller", email);
         contentValues.put("backup", state);
@@ -534,121 +501,73 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-    public boolean InsertCustomerCloud(int billId, String name, String number, String date, String email, int state, String total) {
-
-//        int ID = Integer.parseInt(billId);
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("billId", billId);
-        contentValues.put("customerName", name);
-        contentValues.put("customerNumber", number);
-        contentValues.put("date", date);
-        contentValues.put("total", total);
-        contentValues.put("seller", email);
-        contentValues.put("backup", state);
-
-        SQLiteDatabase DB = this.getWritableDatabase();
-
-        long check;
-        check = DB.insert("customer", null, contentValues);
-        if (check == -1) {
-            return false;
-        } else {
+    public boolean DeleteBillWithBillID(String billid, String email) {
+        SQLiteDatabase db = getWritableDatabase();
+        long delete_customer, delete_display;
+        delete_customer = db.delete("customer", "billId = ? and seller = ?", new String[]{billid, email});
+        delete_display = db.delete("display", "billId = ? and seller = ?", new String[]{billid, email});
+        if (delete_customer != -1 && delete_display != -1) {
             return true;
-        }
-    }
-
-    //  Updating State of BACKUP ------------------------------------------------------------------------------
-    public boolean UpdateBackup(int billID, int state) {
-        SQLiteDatabase DB = this.getWritableDatabase();
-
-        //        Getting all values in
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("backup", state);
-
-        String id = String.valueOf(billID);
-
-        Cursor cursor = DB.rawQuery("SELECT * From display where billid =?", new String[]{id});
-
-        if (cursor.getCount() > 0) {
-            long check;
-            check = DB.update("display", contentValues, "billid =?", new String[]{id});
-            if (check == -1) {
-                return false;
-            } else {
-                return true;
-            }
         } else {
             return false;
         }
     }
 
-    //  Updating State of BACKUP ------------------------------------------------------------------------------
-    public boolean UpdateBackupcus(int billID, int state) {
-        SQLiteDatabase DB = this.getWritableDatabase();
-
-        //        Getting all values in
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("backup", state);
-
-        String id = String.valueOf(billID);
-
-        Cursor cursor = DB.rawQuery("SELECT * From customer where billid =?", new String[]{id});
-
-        if (cursor.getCount() > 0) {
-            long check;
-            check = DB.update("customer", contentValues, "billid =?", new String[]{id});
-            if (check == -1) {
-                return false;
-            } else {
-                return true;
-            }
+    public boolean DeleteBillWithCustomerNumber(String number, String email) {
+        SQLiteDatabase db = getWritableDatabase();
+        long delete_customer, delete_display;
+        delete_customer = db.delete("customer", "customerNumber = ? and seller = ?", new String[]{number, email});
+        delete_display = db.delete("display", "customerNumber = ? and seller = ?", new String[]{number, email});
+        if (delete_customer != -1 && delete_display != -1) {
+            return true;
         } else {
             return false;
         }
     }
 
-    //  Insert into customer automatically
-    boolean autoInsertCustomer() {
-        SQLiteDatabase DB = this.getWritableDatabase();
+    public boolean DeleteBillWithCustomerName(String name, String email) {
+        SQLiteDatabase db = getWritableDatabase();
+        long delete_customer, delete_display;
+        delete_customer = db.delete("customer", "customerName = ? and seller = ?", new String[]{name, email});
+        delete_display = db.delete("display", "customerName = ? and seller = ?", new String[]{name, email});
+        if (delete_customer != -1 && delete_display != -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        Cursor cursor1 = DB.rawQuery("Select * from display", null);
+    public boolean DeleteBillWithDate(Cursor data, String email) {
+        data.moveToFirst();
 
         boolean check = false;
-        cursor1.moveToFirst();
-//        int bid = cursor1.getInt(8);
-        int bid = -1;
-        String customerBID = null;
-        String customerName = null;
-        String customerNumber = null;
-        String BillDATE = null;
-        String seler = null;
-        int total = 0;
         do {
-            if (bid == Integer.parseInt(cursor1.getString(8))) {
-                continue;
+            boolean check_in_loop = DeleteBillWithBillID(data.getString(8), email);
+            if (!check_in_loop) {
+
+                return false;
             } else {
-                customerBID = cursor1.getString(8);
-                customerName = cursor1.getString(5);
-                customerNumber = cursor1.getString(6);
-                BillDATE = cursor1.getString(7);
-                seler = cursor1.getString(9);
-                total += cursor1.getInt(4);
-
-                boolean Insert = InsertCustomer(Integer.parseInt(customerBID), customerName, customerNumber, BillDATE, seler, 1);
-                if (Insert) {
-                    check = true;
-                } else {
-                    check = false;
-                }
+                check = true;
             }
-        } while (cursor1.moveToNext());
+        } while (data.moveToNext());
 
-        if (check) {
-            return true;
-        } else {
-            return false;
-        }
+        return check;
+    }
+
+    public boolean DeletCustomerWithRangeDate(Cursor data, String email) {
+        data.moveToFirst();
+
+        boolean check = false;
+        do {
+            boolean check_in_loop = DeleteBillWithBillID(data.getString(8), email);
+            if (!check_in_loop) {
+                return false;
+            } else {
+                check = true;
+            }
+        } while (data.moveToNext());
+
+        return check;
     }
 
 //    ----------------------------------- Managing Stock -------------------------------------------
@@ -669,68 +588,9 @@ public class DBManager extends SQLiteOpenHelper {
         DB.execSQL("Create TABLE IF NOT EXISTS stockQuentity(productName TEXT ," +
                 "quentity TEXT," +
                 "price TEXT," +
-                "seller TEXT primary key," +
-                "backup Integer)");
-    }
-
-    public boolean updatestatus(String name, String seller) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        Cursor getdata = getProductQuentity(name, seller);
-
-        getdata.moveToFirst();
-        if (getdata.getCount() > 0) {
-            do {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("productName", getdata.getString(0));
-                contentValues.put("quentity", getdata.getString(1));
-                contentValues.put("price", getdata.getString(2));
-                contentValues.put("seller", getdata.getString(3));
-                contentValues.put("backup", 1);
-
-                long result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
-                if (result == -1) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } while (getdata.moveToNext());
-        } else {
-            return false;
-        }
-    }
-
-    public boolean updateStockStatus(int id, String seller) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        Cursor data = viewStockhistory(seller);
-
-        data.moveToFirst();
-
-        if (data.getCount() > 0) {
-            do {
-                ContentValues contentValues = new ContentValues();
-//                 contentValues.put("productID", data.getString(0));
-                contentValues.put("productName", data.getString(1));
-                contentValues.put("catagory", data.getString(2));
-                contentValues.put("purchesPrice", data.getString(3));
-                contentValues.put("sellingPrice", data.getString(4));
-                contentValues.put("date", data.getString(5));
-                contentValues.put("quentity", data.getString(6));
-                contentValues.put("seller", data.getString(7));
-                contentValues.put("backup", 1);
-
-                long result = db.update("stock", contentValues, "seller = ? and productID = ? ", new String[]{seller, String.valueOf(id)});
-                if (result == -1) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } while (data.moveToNext());
-        } else {
-            return false;
-        }
-
+                "seller TEXT ," +
+                "backup Integer," +
+                "stickTrackId Integer primary key autoincrement)");
     }
 
     public Cursor getProductQuentity(String name, String seller) {
@@ -799,18 +659,30 @@ public class DBManager extends SQLiteOpenHelper {
 
                 result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
             } else {
+                Log.d("ENimesh", "In else in remove selse");
                 int Sell_qty = -1 * (Integer.parseInt(quentity));
+                Log.d("ENimesh", "Quentity = " + Sell_qty);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("productName", name);
-                contentValues.put("quentity", Sell_qty);
-                contentValues.put("price", Integer.parseInt(c.getString(2)));
+                contentValues.put("quentity", String.valueOf(Sell_qty));
+                contentValues.put("price", String.valueOf(Integer.parseInt(c.getString(2))));
                 contentValues.put("seller", seller);
                 contentValues.put("backup", 0);
 
-                result = db.insert("stockQuentity", null, contentValues);
-                if (result == -1) {
+
+                Log.d("ENimesh", "CV = " + contentValues);
+                try {
+                    result = db.insert("stockQuentity", null, contentValues);
+                    Log.d("ENimesh", "result = " + result);
+                    if (result == -1) {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("ENimesh", "exception = " + e);
                     return false;
                 }
+
             }
 
         } while (c.moveToNext());
@@ -826,12 +698,14 @@ public class DBManager extends SQLiteOpenHelper {
         createTable();
         SQLiteDatabase db = this.getWritableDatabase();
 
+        String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+
         ContentValues cv = new ContentValues();
         cv.put("productName", name);
         cv.put("catagory", catagory);
         cv.put("purchesPrice", pPrice);
         cv.put("sellingPrice", sPrice);
-        cv.put("date", date);
+        cv.put("date", formattedDate);
         cv.put("quentity", quentity);
         cv.put("seller", seller);
         cv.put("backup", 0);
@@ -900,15 +774,6 @@ public class DBManager extends SQLiteOpenHelper {
         return c;
     }
 
-    public Cursor viewStockhistory(String seller) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor c = db.rawQuery("Select * from stock where seller =?", new String[]{seller});
-
-        return c;
-    }
-
     public Cursor viewProductHistory(String seller, String product) {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -943,54 +808,6 @@ public class DBManager extends SQLiteOpenHelper {
         return c;
     }
 
-    public boolean addStockQty(String name, String quentity, String sPrice, String seller) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("productName", name);
-        contentValues.put("quentity", quentity);
-        contentValues.put("price", sPrice);
-        contentValues.put("seller", seller);
-        contentValues.put("backup", 1);
-        long result;
-
-        result = db.insert("stockQuentity", null, contentValues);
-
-        if (result == -1) {
-            Log.d("ENimesh", "Failed to insert in stock table");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public boolean downloadStock(String name, String catagory, String pPrice, String sPrice, String date, String quentity, String seller) {
-        createTable();
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues cv = new ContentValues();
-        cv.put("productName", name);
-        cv.put("catagory", catagory);
-        cv.put("purchesPrice", pPrice);
-        cv.put("sellingPrice", sPrice);
-        cv.put("date", date);
-        cv.put("quentity", quentity);
-        cv.put("seller", seller);
-        cv.put("backup", 1);
-
-        long check;
-
-        check = db.insert("stock", null, cv);
-
-        if (check == -1) {
-            return false;
-        } else {
-            return true;
-        }
-
-    }
-
     public String downloadBackup(Context context) {
         try {
             // Step 1: Get the path to the app's internal database
@@ -1022,11 +839,12 @@ public class DBManager extends SQLiteOpenHelper {
 
             return backupDatabasePath; // Backup successful
         } catch (IOException e) {
-            Log.d("ENimesh","ERROR Is: "+ e.toString());
+            Log.d("ENimesh", "ERROR Is: " + e.toString());
             e.printStackTrace();
             return "Error";
         }
     }
+
     public Boolean AutoLocalBackup(Context context) {
         try {
             // Step 1: Get the path to the app's internal database
@@ -1058,13 +876,13 @@ public class DBManager extends SQLiteOpenHelper {
 
             return true; // Backup successful
         } catch (IOException e) {
-            Log.d("ENimesh","ERROR Is: "+ e.toString());
+            Log.d("ENimesh", "ERROR Is: " + e);
             e.printStackTrace();
             return false;
         }
     }
 
-    public String  UploadLocalBackup(Context context,File selectedFile){
+    public String UploadLocalBackup(Context context, File selectedFile) {
         File dbFile = context.getDatabasePath("Biller");
         try (FileChannel src = new FileInputStream(selectedFile).getChannel();
              FileChannel dst = new FileOutputStream(dbFile).getChannel()) {

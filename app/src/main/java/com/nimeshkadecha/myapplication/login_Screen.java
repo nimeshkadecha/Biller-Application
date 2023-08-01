@@ -186,7 +186,7 @@ public class login_Screen extends AppCompatActivity {
 
     private void selectBackupFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*"); // Set the MIME type to all files
+        intent.setType("application/octet-stream"); // Set the MIME type to all files
         startActivityForResult(intent, 101);
     }
     @Override
@@ -217,7 +217,7 @@ public class login_Screen extends AppCompatActivity {
                     // Handle the error here
                 }
             } else {
-                Toast.makeText(this, "selectedFileUri == Null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please select a valid .db file", Toast.LENGTH_SHORT).show();
             }
 
         }

@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -174,7 +175,7 @@ public class backup_management extends AppCompatActivity {
 
     private void selectBackupFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*"); // Set the MIME type to all files
+        intent.setType("application/octet-stream"); // Set the MIME type to all files
         startActivityForResult(intent, 101);
     }
 
@@ -191,10 +192,30 @@ public class backup_management extends AppCompatActivity {
                     SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("Last Upload", formattedDate);
+                    editor.putString("Login", "false");
+                    editor.putString("bioLock", "false");
+                    editor.putString("UserName", "");
                     editor.apply();
 
                     uploadDate.setText(formattedDate);
+
                     Toast.makeText(this, "Application Data is updated", Toast.LENGTH_SHORT).show();
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(backup_management.this);
+                    alert.setTitle("Security Note:");
+                    alert.setCancelable(false);
+                    alert.setMessage("For security reasons, you have been logged out.\nKindly use your previous email and password to log back in.");
+                    alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finishAffinity();
+
+                            Intent logOUT = new Intent(backup_management.this, login_Screen.class);
+                            startActivity(logOUT);
+                        }
+                    });
+                    alert.show();
+
                     // Now you have the File object, and you can use it as needed
                     // For example, you can copy, move, or read the contents of the file
                 } catch (IOException e) {
@@ -203,7 +224,7 @@ public class backup_management extends AppCompatActivity {
                     // Handle the error here
                 }
             } else {
-                Toast.makeText(this, "selectedFileUri == Null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please select a valid .db file", Toast.LENGTH_SHORT).show();
             }
 
         }

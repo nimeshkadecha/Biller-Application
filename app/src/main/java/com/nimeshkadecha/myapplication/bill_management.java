@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.ColorSpace;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,11 +28,14 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.color.utilities.ColorUtils;
 import com.google.android.material.textfield.TextInputLayout;
+import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -191,7 +196,7 @@ public class bill_management extends AppCompatActivity {
                 NUmber[j] = numberSugg[j];
             }
         } else {
-            NUmber = new String[]{"No DAta"};
+            NUmber = new String[]{"No Data"};
             numberSugg = new String[]{"No Data for Suggestion"};
         }
 
@@ -215,7 +220,6 @@ public class bill_management extends AppCompatActivity {
 
 //        Calculating And Formatting DATE ==========================================================
         Date c = Calendar.getInstance().getTime();
-        System.out.println("Current time => " + c);
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = df.format(c);
@@ -344,14 +348,11 @@ public class bill_management extends AppCompatActivity {
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nametxt, datetxt, billIDtxt, contactTXT, ToDate;
+                String nametxt, datetxt, contactTXT, ToDate, what_to_delete = null;
 
                 nametxt = nameedt.getText().toString();
                 datetxt = dateedt.getText().toString();
-                billIDtxt = billidedt.getText().toString();
-                contactTXT = contactedt.getText().toString();
                 ToDate = todateedt.getText().toString();
-
 
                 if (nametxt.isEmpty() && datetxt.isEmpty() && ToDate.isEmpty()) {
                     Toast.makeText(bill_management.this, "Fill at least one information to search", Toast.LENGTH_SHORT).show();
@@ -371,32 +372,37 @@ public class bill_management extends AppCompatActivity {
                                 NumberOfDigits++;
                             }
                         }
-                        if (contain_digit) {
+                        if (contain_digit && NumberOfDigits == nametxt.length()) {
                             if (NumberOfDigits == 10) {
                                 contactTXT = nametxt;
-                                contactedt.setText(contactTXT);
+                                what_to_delete = "contact";
                                 res = DB.Customernumberbill(contactTXT, sellertxt);
                             } else {
                                 Integer billID;
                                 billID = Integer.parseInt(nametxt);
-//                                billidedt.setText(billID);
+                                what_to_delete = "billid";
                                 res = DB.CustomerBillID(billID, sellertxt);
                             }
                         } else {
+                            what_to_delete = "name";
                             res = DB.CustomerNameBill(nametxt, sellertxt);
                         }
                     } else if (!datetxt.isEmpty()) {
                         if (!ToDate.isEmpty()) {
+                            what_to_delete = "rangDate";
                             res = DB.rangeSearch(datetxt, ToDate, sellertxt);
                         } else {
+                            what_to_delete = "date";
                             res = DB.CustomerDateBill(datetxt, sellertxt);
                         }
                     } else {
+                        what_to_delete = "error";
                         res = DB.cusInfo(sellertxt);
                         Toast.makeText(bill_management.this, "Error", Toast.LENGTH_SHORT).show();
                     }
 
                     if (res.getCount() == 0) {
+                        what_to_delete = "error";
                         Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -404,11 +410,12 @@ public class bill_management extends AppCompatActivity {
                     int total = 0;
                     StringBuffer buffer = new StringBuffer();
                     while (res.moveToNext()) {
+                        String formattedDate = date_convertor.convertDateFormat_REVERSE(res.getString(7));
 //                    DATE | name | number | Total |
                         buffer.append("Bill ID = " + res.getString(8) + "\n");
                         buffer.append("Customer Name = " + res.getString(5) + "\n");
                         buffer.append("Customer Number = " + res.getString(6) + "\n");
-                        buffer.append("Date = " + res.getString(7) + "\n");
+                        buffer.append("Date = " + formattedDate + "\n");
                         buffer.append("Product Name = " + res.getString(1) + "\n");
                         buffer.append("Price = " + res.getString(2) + "\n");
                         buffer.append("Quantity = " + res.getString(3) + "\n");
@@ -433,14 +440,116 @@ public class bill_management extends AppCompatActivity {
                         }
                     });
 
+                    String finalWhat_to_delete = what_to_delete;
+                    Cursor finalRes = res;
                     builder.setNegativeButton("Delete Listing", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(bill_management.this);
+                            alert.setTitle("Delete listing !");
+                            switch (finalWhat_to_delete) {
+                                case "contact":
+                                    alert.setMessage("Delete all data of the contact : "+nametxt);
+                                    break;
 
+                                case "billid":
+                                    alert.setMessage("Delete data of the billid : "+String.valueOf(Integer.parseInt(nametxt)));
+                                    break;
+
+                                case "name":
+                                    alert.setMessage("Delete all data of the customer : "+nametxt);
+                                    break;
+
+                                case "rangDate":
+                                    alert.setMessage("Delete all data from date: "+datetxt+" to : "+ToDate);
+                                    break;
+
+                                case "date":
+                                    alert.setMessage("Delete all data of the date: "+datetxt);
+                                    break;
+
+                                default:
+                                    alert.setMessage("Error, try again!");
+                            }
+
+                            alert.setPositiveButton("Yes, Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    switch (finalWhat_to_delete) {
+                                        case "contact":
+                                            boolean confirmDelete = DB.DeleteBillWithCustomerNumber(nametxt, sellertxt);
+                                            if (confirmDelete) {
+                                                Toast.makeText(bill_management.this, "all data of that contact number is deleted successfully", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
+                                            }
+                                            Log.d("ENimesh", "deelte test: contact");
+                                            break;
+
+                                        case "billid":
+                                            confirmDelete = false;
+                                            String billID;
+                                            billID = String.valueOf(Integer.parseInt(nametxt));
+                                            confirmDelete = DB.DeleteBillWithBillID(billID, sellertxt);
+                                            if (confirmDelete) {
+                                                Toast.makeText(bill_management.this, "Bill was deleted successfully", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
+                                            }
+                                            Log.d("ENimesh", "deelte test: billid");
+                                            break;
+
+                                        case "name":
+                                            confirmDelete = false;
+                                            confirmDelete = DB.DeleteBillWithCustomerName(nametxt, sellertxt);
+                                            if (confirmDelete) {
+                                                Toast.makeText(bill_management.this, "all data of that customer is deleted successfully", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
+                                            }
+                                            break;
+
+                                        case "rangDate":
+                                            confirmDelete = false;
+                                            confirmDelete = DB.DeletCustomerWithRangeDate(finalRes, sellertxt);
+                                            if (confirmDelete) {
+                                                Toast.makeText(bill_management.this, "bills from that range is deleted successfully", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
+                                            }
+                                            Log.d("ENimesh", "deelte test: range");
+                                            break;
+
+                                        case "date":
+                                            confirmDelete = false;
+                                            confirmDelete = DB.DeleteBillWithDate(finalRes, sellertxt);
+                                            if (confirmDelete) {
+                                                Toast.makeText(bill_management.this, "bills from that range is deleted successfully", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
+                                            }
+                                            Log.d("ENimesh", "deelte test: date");
+                                            break;
+
+                                        default:
+                                            Toast.makeText(bill_management.this, "Error while deleting", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+                            });
+                            alert.setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Toast.makeText(bill_management.this, "Cancel", Toast.LENGTH_SHORT).show();
+                                    dialogInterface.dismiss();
+                                }
+                            });
+
+                            alert.show();
                         }
                     });
                     builder.show();
-
                 }
             }
 
@@ -491,27 +600,27 @@ public class bill_management extends AppCompatActivity {
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0)+"").setFontSize(32)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
 // =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("Address: "+selerDATA.getString(5)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("E=mail: "+selerDATA.getString(1)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("E=mail: " + selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
-                            table1.addCell(new Cell().add(new Paragraph("Mo: "+selerDATA.getString(4)+"").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // =================================================================================================
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
-                            if(!selerDATA.getString(3).equals("no")) {
+                            if (!selerDATA.getString(3).equals("no")) {
                                 table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
 // =================================================================================================
@@ -535,6 +644,7 @@ public class bill_management extends AppCompatActivity {
 
                     float cWidth6[] = {560};
                     Table END = new Table(cWidth6);
+                    Table END_Border = new Table(cWidth6);
 
 
                     Cursor customerDetail;
@@ -556,11 +666,11 @@ public class bill_management extends AppCompatActivity {
                             if (NumberOfDigits == 10) {
                                 checker = 2;
                                 contactTXT = nametxt;
-                                Log.d("ENimesh" , "Contact = "+ contactTXT);
+                                Log.d("ENimesh", "Contact = " + contactTXT);
 //                                contactedt.setText(contactTXT);
                                 customerDetail = DB.Customernumberbill(contactTXT, sellertxt);
                                 list = DB.Customernumberbill(contactTXT, sellertxt);
-                                Log.d("ENimesh" , "Contact length = "+ list.getCount());
+                                Log.d("ENimesh", "Contact length = " + list.getCount());
                             } else {
                                 checker = 5;
                                 Integer billID;
@@ -604,7 +714,7 @@ public class bill_management extends AppCompatActivity {
                         Toast.makeText(bill_management.this, "Error", Toast.LENGTH_SHORT).show();
                     }
 
-                    Log.d("ENimesh","checker = " + checker);
+                    Log.d("ENimesh", "checker = " + checker);
 
 
                     /*
@@ -632,7 +742,7 @@ public class bill_management extends AppCompatActivity {
                                 table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 
                                 table5.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table5.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
 
@@ -675,6 +785,8 @@ public class bill_management extends AppCompatActivity {
                                 table5.addCell(new Cell().add(new Paragraph(total + "")));
                                 table5.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
 
+                                table5.addCell(new Cell(2,4).setBorder(Border.NO_BORDER));// adding space
+                                table5.addCell(new Cell(0,4).setBold());// adding line
                             } while (customerDetail.moveToNext());
 // -----------------------------------------------------------------------------------------------------------------------
                         } else if (checker == 1 || checker == 2) {
@@ -686,7 +798,7 @@ public class bill_management extends AppCompatActivity {
                                 table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 
                                 table5.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table5.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
 
@@ -730,7 +842,8 @@ public class bill_management extends AppCompatActivity {
                                 table5.addCell(new Cell(1, 3).add(new Paragraph("Total")));
                                 table5.addCell(new Cell().add(new Paragraph(total + "")));
                                 table5.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
-
+                                table5.addCell(new Cell(2,4).setBorder(Border.NO_BORDER)); // adding space
+                                table5.addCell(new Cell(0,4).setBold());// adding line
                             } while (customerDetail.moveToNext());
                         }
 //                        _----------------------------------------------------------------------------
@@ -744,13 +857,13 @@ public class bill_management extends AppCompatActivity {
 
                             if (!ToDate.isEmpty() && !datetxt.isEmpty()) {
                                 table3.addCell(new Cell().add(new Paragraph("From Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table3.addCell(new Cell().add(new Paragraph("To Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table3.addCell(new Cell().add(new Paragraph(ToDate + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(ToDate,"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 
                             } else {
                                 table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(7) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
 
                             table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
@@ -783,6 +896,10 @@ public class bill_management extends AppCompatActivity {
                             table2.addCell(new Cell().add(new Paragraph(total + "")));
 
                         }
+
+//                        Adding border at the end of each bill !
+                        END_Border.addCell(new Cell());
+
 //                        Adding SIgnature ---------------------------------------------
                         END.addCell(new Cell().add(new Paragraph("Signature: ")).setBorder(Border.NO_BORDER));
 //                        ---------------------------Working------------------------------------------
@@ -794,8 +911,11 @@ public class bill_management extends AppCompatActivity {
                             document.add(table3);
                             document.add(new Paragraph("\n"));
                             document.add(table2);
+                            document.add(new Paragraph("\n"));
+                            document.add(END_Border);
                         }
                         document.add(new Paragraph("\n"));
+
                         document.add(END);
                         document.close();
                         Toast.makeText(bill_management.this, "PDF Created", Toast.LENGTH_SHORT).show();
@@ -839,11 +959,12 @@ public class bill_management extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
+                    String formattedDate = date_convertor.convertDateFormat(res.getString(3),"yyyy-MM-dd","dd/MM/yyyy");
 //                    DATE | name | number | Total |
                     buffer.append("Bill ID = " + res.getString(0) + "\n");
                     buffer.append("Customer Name = " + res.getString(1) + "\n");
                     buffer.append("Customer Number = " + res.getString(2) + "\n");
-                    buffer.append("Date = " + res.getString(3) + "\n");
+                    buffer.append("Date = " + formattedDate + "\n");
                     buffer.append("Total = " + res.getString(4) + "\n\n");
                 }
 
@@ -869,7 +990,7 @@ public class bill_management extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);
@@ -887,7 +1008,7 @@ public class bill_management extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);
@@ -897,7 +1018,7 @@ public class bill_management extends AppCompatActivity {
         }
     }
 
-//  ================================================================================================
+    //  ================================================================================================
     @Override
     public void onBackPressed() {
         finish();

@@ -360,6 +360,9 @@ public class show_list extends AppCompatActivity {
                     table2.addCell(new Cell().add(new Paragraph(total + "")));
 
 //                    Adding signature
+//                    END.addCell(new Cell(2,4).setBorder(Border.NO_BORDER)); // adding space
+                    END.addCell(new Cell());// adding line
+                    END.addCell(new Cell().setBorder(Border.NO_BORDER));// adding line
                     END.addCell(new Cell().add(new Paragraph("Signature: ")).setBorder(Border.NO_BORDER));
 
 //                Displaying data
