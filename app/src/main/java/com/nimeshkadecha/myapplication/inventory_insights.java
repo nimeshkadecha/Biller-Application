@@ -61,7 +61,7 @@ public class inventory_insights extends AppCompatActivity {
         //        Removing Suport bar / top line containing name--------------------------------------------
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        Cursor getinfo = dbLocal.getInventory(Seller_email);
+        Cursor getinfo = dbLocal.GetInventory(Seller_email);
 
         if (getinfo.getCount() <= 0) {
             Toast.makeText(this, "You don't have any stock available", Toast.LENGTH_SHORT).show();
@@ -79,7 +79,7 @@ public class inventory_insights extends AppCompatActivity {
 //        Adding Suggestion [Autocomplete textview]
         String[] products;
 
-        Cursor productsC = dbLocal.getInventory(Seller_email);
+        Cursor productsC = dbLocal.GetInventory(Seller_email);
 
         productsC.moveToFirst();
         if (productsC.getCount() > 0) {
@@ -102,7 +102,7 @@ public class inventory_insights extends AppCompatActivity {
         String[] NameSuggestion;
         String[] Names;
 
-        Cursor Name_Sugg = dbLocal.getCategory(Seller_email);
+        Cursor Name_Sugg = dbLocal.GetCategory(Seller_email);
         Name_Sugg.moveToFirst();
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
@@ -231,7 +231,7 @@ public class inventory_insights extends AppCompatActivity {
                 if (heading.getText().toString().equals("Stock Record")) {
                     buffer = new StringBuffer();
                     if (!itemName.getText().toString().trim().equals("")) {
-                        Cursor ReportCursor = dbLocal.viewProductHistory(Seller_email, itemName.getText().toString());
+                        Cursor ReportCursor = dbLocal.ViewProductHistory(Seller_email, itemName.getText().toString());
 
                         if (ReportCursor.getCount() <= 0) {
                             Toast.makeText(this, "You haven't managed '" + itemName.getText().toString() + "' product's stocks.", Toast.LENGTH_SHORT).show();
@@ -240,7 +240,7 @@ public class inventory_insights extends AppCompatActivity {
 
                             buffer.append("Product = " + itemName.getText().toString() + "\n\n");
                             do {
-                                buffer.append("Date = " + ReportCursor.getString(5) + "\n");
+                                buffer.append("Date = " + date_convertor.convertDateFormat(ReportCursor.getString(5), "yyyy-MM-dd", "dd/MM/yyyy") + "\n");
                                 buffer.append("Buy Price = " + ReportCursor.getString(3) + "\n");
                                 buffer.append("Sell Price = " + ReportCursor.getString(4) + "\n");
                                 buffer.append("Quantity = " + ReportCursor.getString(6) + "\n");
@@ -256,7 +256,7 @@ public class inventory_insights extends AppCompatActivity {
                     } else if (!catagory.getText().toString().equals("")) {
                         buffer = new StringBuffer();
 
-                        Cursor ReportCursor = dbLocal.viewCategoryHistory(Seller_email, catagory.getText().toString());
+                        Cursor ReportCursor = dbLocal.ViewCategoryHistory(Seller_email, catagory.getText().toString());
 
                         if (ReportCursor.getCount() <= 0) {
                             Toast.makeText(this, "You haven't managed " + catagory.getText().toString() + " categories stocks.", Toast.LENGTH_SHORT).show();
@@ -265,7 +265,7 @@ public class inventory_insights extends AppCompatActivity {
 
                             buffer.append("Category = " + catagory.getText().toString() + "\n\n");
                             do {
-                                buffer.append("Date = " + ReportCursor.getString(5) + "\n");
+                                buffer.append("Date = " + date_convertor.convertDateFormat(ReportCursor.getString(5), "yyyy-MM-dd", "dd/MM/yyyy") + "\n");
                                 buffer.append("Buy Price = " + ReportCursor.getString(3) + "\n");
                                 buffer.append("Sell Price = " + ReportCursor.getString(4) + "\n");
                                 buffer.append("Quantity = " + ReportCursor.getString(6) + "\n");
@@ -282,7 +282,7 @@ public class inventory_insights extends AppCompatActivity {
                 } else if (heading.getText().toString().equals("Sales Record")) {
                     buffer = new StringBuffer();
                     if (!itemName.getText().toString().trim().equals("")) {
-                        Cursor ReportCursor = dbLocal.viewSlaseProductHistory(Seller_email, itemName.getText().toString());
+                        Cursor ReportCursor = dbLocal.ViewSaleProductHistory(Seller_email, itemName.getText().toString());
 
                         if (ReportCursor.getCount() <= 0) {
                             Toast.makeText(this, "You haven't managed '" + itemName.getText().toString() + "' product's stocks.", Toast.LENGTH_SHORT).show();
@@ -309,7 +309,7 @@ public class inventory_insights extends AppCompatActivity {
                     } else if (!catagory.getText().toString().equals("")) {
                         buffer = new StringBuffer();
 
-                        Cursor ReportCursor = dbLocal.viewSlaseCategoryHistory(Seller_email, catagory.getText().toString());
+                        Cursor ReportCursor = dbLocal.ViewSaleCategoryHistory(Seller_email, catagory.getText().toString());
 
                         if (ReportCursor.getCount() <= 0) {
                             Toast.makeText(this, "You haven't managed " + catagory.getText().toString() + " categories stocks.", Toast.LENGTH_SHORT).show();
@@ -317,7 +317,7 @@ public class inventory_insights extends AppCompatActivity {
                             ReportCursor.moveToFirst();
                             buffer.append("Category = " + catagory.getText().toString() + "\n\n");
                             do {
-                                Cursor productCursor = dbLocal.viewSlaseProductHistory(Seller_email, ReportCursor.getString(0));
+                                Cursor productCursor = dbLocal.ViewSaleProductHistory(Seller_email, ReportCursor.getString(0));
 
                                 if (productCursor.getCount() <= 0) {
                                     Toast.makeText(this, "You haven't managed '" + ReportCursor.getString(0) + "' product's stocks.", Toast.LENGTH_SHORT).show();

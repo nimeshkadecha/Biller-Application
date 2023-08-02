@@ -117,7 +117,7 @@ public class home extends AppCompatActivity {
         String[] NameSuggestion;
         String[] Names;
 
-        Cursor Name_Sugg = DB.cusInfo(email);
+        Cursor Name_Sugg = DB.CustomerInformation(email);
         Name_Sugg.moveToFirst();
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
@@ -175,7 +175,7 @@ public class home extends AppCompatActivity {
                     product.setVisibility(View.VISIBLE);
                 }
                 if (number.getText().toString().equals("")) {
-                    Cursor numberC = DB.individualCustomerInfo(email, name.getText().toString());
+                    Cursor numberC = DB.ParticularCustomerInformation(email, name.getText().toString());
                     numberC.moveToFirst();
                     if (numberC.getCount() > 0) {
                         number.setText(numberC.getString(2));
@@ -410,7 +410,7 @@ public class home extends AppCompatActivity {
         product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DB.createTable();
+                DB.CreateTable();
                 Intent intent = new Intent(home.this, add_product.class);
 
                 String nametxt, numbertxt, datetxt;
@@ -443,7 +443,7 @@ public class home extends AppCompatActivity {
                         datetxt = date.getText().toString();
 
                         if (finalBillIdtxt[0] == 0) {
-                            finalBillIdtxt[0] = DB.getbillid();
+                            finalBillIdtxt[0] = DB.GetBillId();
                         }
 
                         intent.putExtra("cName", nametxt);

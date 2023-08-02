@@ -80,7 +80,7 @@ public class show_list extends AppCompatActivity {
         //    Back button;
         back = findViewById(R.id.Back);
         back.setVisibility(View.INVISIBLE);
-        checkPrice = findViewById(R.id.checkTotalBtn);
+        checkPrice = findViewById(R.id.CheckTotalBtn);
 //--------------------------------------------------------------------------------------------------
 
 //        Getting all data -------------------------------------------------------------------------
@@ -123,7 +123,7 @@ public class show_list extends AppCompatActivity {
 
                         Boolean update;
 
-                        update = DB.removeSell(billId, sellertxt);
+                        update = DB.RemoveSell(billId, sellertxt);
 
                         if (update) {
                             save.setVisibility(View.INVISIBLE);
@@ -182,7 +182,7 @@ public class show_list extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Cursor res = DB.billTotal(billId);
+                Cursor res = DB.BillTotal(billId);
                 if (res.getCount() == 0) {
                     Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     return;
@@ -214,7 +214,7 @@ public class show_list extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                int total = DB.checkTotal(billId);
+                int total = DB.CheckTotal(billId);
                 AlertDialog.Builder builder = new AlertDialog.Builder(show_list.this);
                 builder.setCancelable(true);
                 builder.setTitle("Quick Total");
@@ -312,7 +312,7 @@ public class show_list extends AppCompatActivity {
 
                     int total = 0;
 
-                    Cursor customerDetail = DB.billTotal(billId);
+                    Cursor customerDetail = DB.BillTotal(billId);
                     if (customerDetail.getCount() == 0) {
                         Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
@@ -359,7 +359,7 @@ public class show_list extends AppCompatActivity {
 
                     float TotalGST = 0f;
 
-                    Cursor list = DB.displayList(billId);
+                    Cursor list = DB.DisplayList(billId);
                     if (list.getCount() == 0) {
                         Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
@@ -455,7 +455,7 @@ public class show_list extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(show_list.this));
 
-        Cursor cursor = DB.displayList(billId);
+        Cursor cursor = DB.DisplayList(billId);
         cursor.moveToFirst();
         if (cursor.getCount() == 0) {
             Toast.makeText(show_list.this, "No Entry Exists", Toast.LENGTH_SHORT).show();

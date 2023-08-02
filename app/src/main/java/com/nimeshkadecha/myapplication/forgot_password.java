@@ -184,7 +184,6 @@ public class forgot_password extends AppCompatActivity {
                     if (response.isSuccessful()) {
 
                         String responseData = response.body().string();
-                        Log.d("ENimesh","Response !! = " +responseData);
                         // Extract the JSON response part from the overall response data
                         String jsonResponseString = responseData.substring(responseData.indexOf("{"), responseData.lastIndexOf("}") + 1);
                         try {

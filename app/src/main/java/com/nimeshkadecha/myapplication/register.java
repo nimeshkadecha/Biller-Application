@@ -162,7 +162,7 @@ public class register extends AppCompatActivity {
                 boolean CheckOperation;
 
                 if (validEmail && validPassword) {
-                    CheckOperation = DBM.registerUser(nameTXT, emailTXT, passwordTXT, gstTXT, contactTXT, addressTXT);
+                    CheckOperation = DBM.RegisterUser(nameTXT, emailTXT, passwordTXT, gstTXT, contactTXT, addressTXT);
                     if (CheckOperation) {
                         Toast.makeText(this, "User Register Successfully", Toast.LENGTH_SHORT).show();
                         startActivity(login);

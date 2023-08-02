@@ -73,7 +73,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 float tax = ((TempPrice * TempQuantity) * (TempGST / 100f));
                 TempSubtotal = (TempPrice * TempQuantity) + tax;
 
-                boolean updateData = DBlocal.updateQuentity(TempQuantity,TempSubtotal,Integer.parseInt(String.valueOf(index.get(position))));
+                boolean updateData = DBlocal.UpdateQuantity(TempQuantity,TempSubtotal,Integer.parseInt(String.valueOf(index.get(position))));
 
                 if(updateData){
                     item.remove(position);
@@ -102,7 +102,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         @Override
                         public boolean onLongClick(View view) {
                             DBlocal = new DBManager(context);
-                            Cursor b = DBlocal.removeItem(String.valueOf(index.get(position)));
+                            Cursor b = DBlocal.RemoveItem(String.valueOf(index.get(position)));
                             if(b.getCount()<0){
                                 Toast.makeText(context, "Failed to Removed", Toast.LENGTH_SHORT).show();
                                 return false;
@@ -130,7 +130,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     float tax = ((TempPrice * TempQuantity) * (TempGST / 100f));
                     TempSubtotal = (TempPrice * TempQuantity) + tax;
 
-                    boolean updateData = DBlocal.updateQuentity(TempQuantity,TempSubtotal,Integer.parseInt(String.valueOf(index.get(position))));
+                    boolean updateData = DBlocal.UpdateQuantity(TempQuantity,TempSubtotal,Integer.parseInt(String.valueOf(index.get(position))));
 
                     if(updateData) {
                         item.remove(position);
@@ -159,7 +159,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             @Override
             public boolean onLongClick(View v) {
                 DBlocal = new DBManager(context);
-                Cursor b = DBlocal.removeItem(String.valueOf(index.get(position)));
+                Cursor b = DBlocal.RemoveItem(String.valueOf(index.get(position)));
                 if(b.getCount()<0){
                     Toast.makeText(context, "Failed to Removed", Toast.LENGTH_SHORT).show();
                     return false;

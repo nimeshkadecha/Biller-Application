@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -28,7 +27,7 @@ public class add_product extends AppCompatActivity {
     //    toolbar and navagation drawer starts;
     private ImageView menu;
     private Button Add;
-//    toolbar and navagation drawer ends;
+    //    toolbar and navagation drawer ends;
 
     //    for insert operation and outher stuf
     Button show;
@@ -40,7 +39,7 @@ public class add_product extends AppCompatActivity {
     String cNametxt, cNumbertxt, datetext, sellertxt, origintxt;
     int billIdtxt;
 
-    //    In input Filter
+    //    In input Filter ==========================================================================
     private String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
 
     private final InputFilter filter = new InputFilter() {
@@ -61,29 +60,28 @@ public class add_product extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_product);
 
-//        Google ads code --------------------------------------------------------------------------
+        //        Google ads code ==================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
 
-//        Finding buttons
+        //        Finding buttons ==================================================================
         Add = findViewById(R.id.button3);
         show = findViewById(R.id.show);
 
-//        Working with TOOLBAR STARTS --------------------------------------------------------------
+        //        Working with TOOLBAR STARTS ======================================================
 
-        //        Removing Suport bar / top line containing name
+        //        Removing Support bar / top line containing name ===================================
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        //        FINDING menu
+        //        FINDING menu =====================================================================
         menu = findViewById(R.id.Menu);
         menu.setVisibility(View.INVISIBLE); // remove visibility
 
-//--------------------------------------------------------------------------------------------------
 
-//  INSERT OPERATION IN DISPLAY TABLE --------------------------------------------------------------
+
+//  INSERT OPERATION IN DISPLAY TABLE ==============================================================
 
         //        Getting INTENT data
         Bundle bundle = getIntent().getExtras();
@@ -96,17 +94,17 @@ public class add_product extends AppCompatActivity {
 
 //        GST filed visibility =====================================================================
         TextInputLayout gst = findViewById(R.id.layoutitemGST);
-        boolean needGST =false;
-        if(DB.checkGstAvailability(sellertxt)){
+        boolean needGST = false;
+        if (DB.CheckGstAvailability(sellertxt)) {
             gst.setVisibility(View.VISIBLE);
-            needGST=true;
-        }else{
+            needGST = true;
+        } else {
             gst.setVisibility(View.GONE);
         }
 
         final int[] validator = {0}; //  to change visibility of show button and add button
 
-//  Add Item Button --------------------------------------------------------------------------------
+//  Add Item Button ================================================================================
         quantity = findViewById(R.id.quantity);
         if (quantity.getText().toString().equals("")) {
             quantity.setText("1");
@@ -115,10 +113,10 @@ public class add_product extends AppCompatActivity {
         productName = findViewById(R.id.productname);
         productName.setFilters(new InputFilter[]{filter}); // Adding Filter
 
-//        Adding Suggestion [Autocomplete textview]
+        //        Adding Suggestion [Autocomplete textview]
         String[] products;
 
-        Cursor productsC = DB.getInventory(sellertxt);
+        Cursor productsC = DB.GetInventory(sellertxt);
 
         productsC.moveToFirst();
         if (productsC.getCount() > 0) {
@@ -135,6 +133,9 @@ public class add_product extends AppCompatActivity {
 
         productName.setAdapter(new ArrayAdapter<>(add_product.this, android.R.layout.simple_list_item_1, products));
 
+
+        // Price edittext clickListener ============================================================
+        // this will listen if price edittext is clicked the it add price and GST to its box if available
         price = findViewById(R.id.price);
 
         EditText GstPersentageEDT = findViewById(R.id.GstPersentage);
@@ -144,12 +145,11 @@ public class add_product extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (price.getText().toString().equals("") && !productName.getText().toString().equals("")) {
-                    Cursor getPrice = DB.getProductQuentity(productName.getText().toString(), sellertxt);
+                    Cursor getPrice = DB.GetProductQuantity(productName.getText().toString(), sellertxt);
                     getPrice.moveToFirst();
                     if (getPrice.getCount() > 0) {
-                        Log.d("ENimesh", "Price is = " + String.valueOf(getPrice.getInt(2)));
                         price.setText(String.valueOf(getPrice.getInt(2)));
-                        if(finalNeedGST1){
+                        if (finalNeedGST1) {
                             GstPersentageEDT.setText(String.valueOf(getPrice.getInt(6)));
                         }
 
@@ -162,13 +162,16 @@ public class add_product extends AppCompatActivity {
             }
         });
 
+        
+        // Add item button =========================================================================
+        // this will insert data in to display table OR update quantity if it's already in list
         final int[] quentity = {0};
 
         boolean finalNeedGST = needGST;
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String productName_ST, price_ST, quantity_ST,GstPersentageString;
+                String productName_ST, price_ST, quantity_ST, GstPersentageString;
                 productName_ST = productName.getText().toString();
                 price_ST = price.getText().toString();
                 quantity_ST = quantity.getText().toString();
@@ -189,19 +192,19 @@ public class add_product extends AppCompatActivity {
                     } else if (quantity_ST.isEmpty()) {
                         quantity.setError("Enter Quantity here");
                         Toast.makeText(add_product.this, "Quantity filed is Empty", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         Toast.makeText(add_product.this, "Error", Toast.LENGTH_SHORT).show();
                     }
                 } else {
 
                     if (cNametxt.isEmpty() || cNumbertxt.isEmpty() || datetext.isEmpty()) {
                         Toast.makeText(add_product.this, "Emptity intent", Toast.LENGTH_SHORT).show();
-                    } else if (finalNeedGST && GstPersentageString.isEmpty() ) {
+                    } else if (finalNeedGST && GstPersentageString.isEmpty()) {
                         Toast.makeText(add_product.this, "GST filed is empty", Toast.LENGTH_SHORT).show();
                         GstPersentageEDT.setError("Enter how much gst is applicable enter 0 if there is not any");
                     } else {
 
-                        boolean check = DB.Insert_List(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0,GstPersentageString);
+                        boolean check = DB.InsertList(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0, GstPersentageString);
                         if (check) {
                             quentity[0] = quentity[0] + Integer.parseInt(quantity_ST);
                             validator[0]++;
@@ -214,7 +217,7 @@ public class add_product extends AppCompatActivity {
                 }
             }
         });
-//--------------------------------------------------------------------------------------------------
+
 
         if (validator[0] == 0) {
             show.setVisibility(View.GONE);
@@ -224,7 +227,8 @@ public class add_product extends AppCompatActivity {
             show.setVisibility(View.VISIBLE);
         }
 
-// Show List Button --------------------------------------------------------------------------------
+    // Show List Button ============================================================================
+        // this will take to show list page 
         show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,13 +248,14 @@ public class add_product extends AppCompatActivity {
                 finish();
             }
         });
-//--------------------------------------------------------------------------------------------------
     }
 
-    //    Going TO Home With User DATA ON Back Button Press --------------------------------------------
+    //    Going TO Home With User DATA ON Back Button Press ========================================
+    //    if user click back then goto home with all the data 
     @Override
     public void onBackPressed() {
         if (!origintxt.equalsIgnoreCase("home")) {
+            // if origin is not home then we are here from show list so first user must save the bill 
             Toast.makeText(this, "Please save the bill before exiting", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent2 = new Intent(add_product.this, home.class);
@@ -270,40 +275,38 @@ public class add_product extends AppCompatActivity {
             finish();
         }
     }
-//--------------------------------------------------------------------------------------------------
 
+
+    // for google ads ==============================================================================
 
     @Override
     protected void onStart() {
         super.onStart();
-        //        Google ads code --------------------------------------------------------------------------
+        //        Google ads code ==================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-//        Google ads code --------------------------------------------------------------------------
+        //        Google ads code ==================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        Google ads code --------------------------------------------------------------------------
+        //        Google ads code ==================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
     }
 
 }

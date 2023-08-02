@@ -96,7 +96,7 @@
             tools:ignore="TextContrastCheck,TextContrastCheck" />
 
         <Button
-            android:id="@+id/checkTotalBtn"
+            android:id="@+id/CheckTotalBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Check Total"

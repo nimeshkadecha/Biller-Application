@@ -72,7 +72,7 @@ public class chart extends AppCompatActivity {
                 Stock_list.setAdapter(S_L_adapter);
                 Stock_list.setLayoutManager(new LinearLayoutManager(chart.this));
 
-                Cursor get_Qty = local_db.getInventory(Seller_email);
+                Cursor get_Qty = local_db.GetInventory(Seller_email);
 
                 get_Qty.moveToFirst();
                 Random rnd = new Random();

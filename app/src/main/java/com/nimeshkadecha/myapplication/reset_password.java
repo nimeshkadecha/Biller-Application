@@ -89,7 +89,7 @@ public class reset_password extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 String Email = bundle.getString("Email");
                 boolean check;
-                check = DBM.resetPassword(Email, confirmPassword.getText().toString().trim());
+                check = DBM.ResetPassword(Email, confirmPassword.getText().toString().trim());
 
                 if (check) {
                     // Login in user After Reset

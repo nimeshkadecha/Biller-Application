@@ -83,7 +83,7 @@ public class stock_control extends AppCompatActivity {
         Boolean GST_availability = false;
 
         TextInputLayout gst = findViewById(R.id.layoutitemGST);
-        if (DB.checkGstAvailability(seller)) {
+        if (DB.CheckGstAvailability(seller)) {
             GST_availability = true;
             gst.setVisibility(View.VISIBLE);
 
@@ -98,7 +98,7 @@ public class stock_control extends AppCompatActivity {
 //        Adding Suggestion [Autocomplete textview]
         String[] products;
 
-        Cursor productsC = DB.getInventory(sellertxt);
+        Cursor productsC = DB.GetInventory(sellertxt);
 
         productsC.moveToFirst();
         if (productsC.getCount() > 0) {
@@ -121,7 +121,7 @@ public class stock_control extends AppCompatActivity {
         String[] NameSuggestion;
         String[] Names;
 
-        Cursor Name_Sugg = DB.getCategory(sellertxt);
+        Cursor Name_Sugg = DB.GetCategory(sellertxt);
         Name_Sugg.moveToFirst();
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
@@ -244,7 +244,7 @@ public class stock_control extends AppCompatActivity {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Cursor data = DB.viewStock(seller);
+                Cursor data = DB.ViewStock(seller);
 
                 if (data.getCount() > 0) {
                     StringBuffer buffer = new StringBuffer();

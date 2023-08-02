@@ -144,7 +144,7 @@ public class backup_management extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String check = dbManager.downloadBackup(backup_management.this);
+                String check = dbManager.DownloadBackup(backup_management.this);
                 if (!check.equals("false")) {
                     SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
@@ -219,7 +219,6 @@ public class backup_management extends AppCompatActivity {
                     // Now you have the File object, and you can use it as needed
                     // For example, you can copy, move, or read the contents of the file
                 } catch (IOException e) {
-                    Log.d("ENimesh", "catch =" + e.toString());
                     e.printStackTrace();
                     // Handle the error here
                 }

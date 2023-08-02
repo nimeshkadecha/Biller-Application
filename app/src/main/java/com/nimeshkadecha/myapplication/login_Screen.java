@@ -144,7 +144,7 @@ public class login_Screen extends AppCompatActivity {
                 boolean EV = EmailValidation(email.getText().toString());
 
                 if (EV) {
-                    boolean verify = DBM.validateUser(email.getText().toString());
+                    boolean verify = DBM.ValidateUser(email.getText().toString());
                     if (verify) {
                         Intent FingerprintVerification = new Intent(login_Screen.this, fingerprint_lock.class);
 
@@ -212,7 +212,6 @@ public class login_Screen extends AppCompatActivity {
                     // Now you have the File object, and you can use it as needed
                     // For example, you can copy, move, or read the contents of the file
                 } catch (IOException e) {
-                    Log.d("ENimesh", "catch =" + e.toString());
                     e.printStackTrace();
                     // Handle the error here
                 }
@@ -333,7 +332,7 @@ public class login_Screen extends AppCompatActivity {
             boolean verify;
             String emailTXT = email.getText().toString();
             String passwordTXT = password.getText().toString();
-            verify = DBM.loginUser(emailTXT, passwordTXT);
+            verify = DBM.LoginUser(emailTXT, passwordTXT);
             if (verify) {
                 SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();

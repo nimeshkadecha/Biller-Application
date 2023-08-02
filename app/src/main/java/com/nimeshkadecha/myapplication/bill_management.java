@@ -128,12 +128,11 @@ public class bill_management extends AppCompatActivity {
 //        Adding Autocomplete Text view LIST
         String[] NameSuggestion;
         String[] Names;
-        Cursor Name_Sugg = DB.cusInfo(sellertxt);
+        Cursor Name_Sugg = DB.CustomerInformation(sellertxt);
         Name_Sugg.moveToFirst();
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
             boolean insert = true;
-            Log.d("ENimesh", "Count = " + Name_Sugg.getCount());
             NameSuggestion = new String[Name_Sugg.getCount()];
             do {
                 if (i != 0) {
@@ -169,7 +168,7 @@ public class bill_management extends AppCompatActivity {
         //        Adding Autocomplete Text view LIST
         String[] numberSugg;
         String[] NUmber;
-        Cursor Num_Sugg = DB.cusInfo(sellertxt);
+        Cursor Num_Sugg = DB.CustomerInformation(sellertxt);
         Num_Sugg.moveToFirst();
         if (Num_Sugg.getCount() > 0) {
             int i = 0;
@@ -360,7 +359,7 @@ public class bill_management extends AppCompatActivity {
                     Toast.makeText(bill_management.this, "Enter Starting Date", Toast.LENGTH_SHORT).show();
                 } else {
                     Cursor res;
-                    res = DB.cusInfo(sellertxt);
+                    res = DB.CustomerInformation(sellertxt);
                     if (!nametxt.isEmpty()) {
 //                        Toast.makeText(customer_Info.this, "Search by name", Toast.LENGTH_SHORT).show();
                         char c[] = nametxt.toCharArray();
@@ -376,7 +375,7 @@ public class bill_management extends AppCompatActivity {
                             if (NumberOfDigits == 10) {
                                 contactTXT = nametxt;
                                 what_to_delete = "contact";
-                                res = DB.Customernumberbill(contactTXT, sellertxt);
+                                res = DB.CustomerNumberBill(contactTXT, sellertxt);
                             } else {
                                 Integer billID;
                                 billID = Integer.parseInt(nametxt);
@@ -390,14 +389,14 @@ public class bill_management extends AppCompatActivity {
                     } else if (!datetxt.isEmpty()) {
                         if (!ToDate.isEmpty()) {
                             what_to_delete = "rangDate";
-                            res = DB.rangeSearch(datetxt, ToDate, sellertxt);
+                            res = DB.RangeSearch(datetxt, ToDate, sellertxt);
                         } else {
                             what_to_delete = "date";
                             res = DB.CustomerDateBill(datetxt, sellertxt);
                         }
                     } else {
                         what_to_delete = "error";
-                        res = DB.cusInfo(sellertxt);
+                        res = DB.CustomerInformation(sellertxt);
                         Toast.makeText(bill_management.this, "Error", Toast.LENGTH_SHORT).show();
                     }
 
@@ -410,7 +409,7 @@ public class bill_management extends AppCompatActivity {
                     int total = 0;
                     StringBuffer buffer = new StringBuffer();
                     while (res.moveToNext()) {
-                        String formattedDate = date_convertor.convertDateFormat_REVERSE(res.getString(7));
+                        String formattedDate = date_convertor.convertDateFormat(res.getString(7), "yyyy-MM-dd", "dd/MM/yyyy");
 //                    DATE | name | number | Total |
                         buffer.append("Bill ID = " + res.getString(8) + "\n");
                         buffer.append("Customer Name = " + res.getString(5) + "\n");
@@ -420,7 +419,7 @@ public class bill_management extends AppCompatActivity {
                         buffer.append("Price = " + res.getString(2) + "\n");
                         buffer.append("Quantity = " + res.getString(3) + "\n");
                         buffer.append("Sub Total = " + res.getString(4) + "\n\n");
-                        total += Integer.parseInt(res.getString(4));
+                        total += Float.parseFloat(res.getString(4));
                     }
 
                     buffer.append("Total = " + total);
@@ -484,7 +483,6 @@ public class bill_management extends AppCompatActivity {
                                             } else {
                                                 Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
                                             }
-                                            Log.d("ENimesh", "deelte test: contact");
                                             break;
 
                                         case "billid":
@@ -497,7 +495,6 @@ public class bill_management extends AppCompatActivity {
                                             } else {
                                                 Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
                                             }
-                                            Log.d("ENimesh", "deelte test: billid");
                                             break;
 
                                         case "name":
@@ -512,13 +509,12 @@ public class bill_management extends AppCompatActivity {
 
                                         case "rangDate":
                                             confirmDelete = false;
-                                            confirmDelete = DB.DeletCustomerWithRangeDate(finalRes, sellertxt);
+                                            confirmDelete = DB.DeleteCustomerWithRangeDate(finalRes, sellertxt);
                                             if (confirmDelete) {
                                                 Toast.makeText(bill_management.this, "bills from that range is deleted successfully", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
                                             }
-                                            Log.d("ENimesh", "deelte test: range");
                                             break;
 
                                         case "date":
@@ -529,7 +525,6 @@ public class bill_management extends AppCompatActivity {
                                             } else {
                                                 Toast.makeText(bill_management.this, "Error while deleting bill", Toast.LENGTH_SHORT).show();
                                             }
-                                            Log.d("ENimesh", "deelte test: date");
                                             break;
 
                                         default:
@@ -624,7 +619,7 @@ public class bill_management extends AppCompatActivity {
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
                             if (!selerDATA.getString(3).equals("no")) {
                                 haveGST = true;
-                                table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
 // =================================================================================================
                             table1.addCell(new Cell());
@@ -656,7 +651,7 @@ public class bill_management extends AppCompatActivity {
 
                     Cursor customerDetail;
                     Cursor list;
-                    customerDetail = DB.cusInfo(sellertxt);
+                    customerDetail = DB.CustomerInformation(sellertxt);
                     int checker = 0;
 
                     if (!nametxt.isEmpty()) {
@@ -673,16 +668,12 @@ public class bill_management extends AppCompatActivity {
                             if (NumberOfDigits == 10) {
                                 checker = 2;
                                 contactTXT = nametxt;
-                                Log.d("ENimesh", "Contact = " + contactTXT);
-//                                contactedt.setText(contactTXT);
-                                customerDetail = DB.Customernumberbill(contactTXT, sellertxt);
-                                list = DB.Customernumberbill(contactTXT, sellertxt);
-                                Log.d("ENimesh", "Contact length = " + list.getCount());
+                                customerDetail = DB.CustomerNumberBill(contactTXT, sellertxt);
+                                list = DB.CustomerNumberBill(contactTXT, sellertxt);
                             } else {
                                 checker = 5;
                                 Integer billID;
                                 billID = Integer.parseInt(nametxt);
-//                                billidedt.setText(billID);
                                 customerDetail = DB.CustomerBillID(billID, sellertxt);
                                 list = DB.CustomerBillID(billID, sellertxt);
                             }
@@ -692,18 +683,15 @@ public class bill_management extends AppCompatActivity {
                             list = DB.CustomerNameBill(nametxt, sellertxt);
                         }
 
-
-//                        customerDetail = DB.CustomerNameBill(nametxt, sellertxt);
-//                        list = DB.CustomerNameBill(nametxt, sellertxt);
                     } else if (!contactTXT.isEmpty()) {
                         checker = 2;
-                        customerDetail = DB.Customernumberbill(contactTXT, sellertxt);
-                        list = DB.Customernumberbill(contactTXT, sellertxt);
+                        customerDetail = DB.CustomerNumberBill(contactTXT, sellertxt);
+                        list = DB.CustomerNumberBill(contactTXT, sellertxt);
                     } else if (!datetxt.isEmpty()) {
                         if (!ToDate.isEmpty()) {
                             checker = 4;
-                            customerDetail = DB.rangeSearch(datetxt, ToDate, sellertxt);
-                            list = DB.rangeSearch(datetxt, ToDate, sellertxt);
+                            customerDetail = DB.RangeSearch(datetxt, ToDate, sellertxt);
+                            list = DB.RangeSearch(datetxt, ToDate, sellertxt);
                         } else {
                             checker = 3;
                             customerDetail = DB.CustomerDateBill(datetxt, sellertxt);
@@ -716,13 +704,10 @@ public class bill_management extends AppCompatActivity {
                         customerDetail = DB.CustomerBillID(billID, sellertxt);
                         list = DB.CustomerBillID(billID, sellertxt);
                     } else {
-                        customerDetail = DB.cusInfo(sellertxt);
-                        list = DB.cusInfo(sellertxt);
+                        customerDetail = DB.CustomerInformation(sellertxt);
+                        list = DB.CustomerInformation(sellertxt);
                         Toast.makeText(bill_management.this, "Error", Toast.LENGTH_SHORT).show();
                     }
-
-                    Log.d("ENimesh", "checker = " + checker);
-
 
                     /*
                     CHECKERS
@@ -968,7 +953,7 @@ public class bill_management extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Cursor res = DB.cusInfo(sellertxt);
+                Cursor res = DB.CustomerInformation(sellertxt);
                 if (res.getCount() == 0) {
                     Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     return;

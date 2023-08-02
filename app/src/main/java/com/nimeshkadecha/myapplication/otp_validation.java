@@ -212,7 +212,6 @@ public class otp_validation extends AppCompatActivity {
                     if (response.isSuccessful()) {
 
                         String responseData = response.body().string();
-                        Log.d("ENimesh","Response !! = " +responseData);
                         // Extract the JSON response part from the overall response data
                         String jsonResponseString = responseData.substring(responseData.indexOf("{"), responseData.lastIndexOf("}") + 1);
                         try {
@@ -229,7 +228,6 @@ public class otp_validation extends AppCompatActivity {
                                         Toast.makeText(otp_validation.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                                Log.d("ENimesh","String = " + message);
                             }else{
                                 otp_validation.this.runOnUiThread(new Runnable() {
                                     @Override
@@ -262,7 +260,6 @@ public class otp_validation extends AppCompatActivity {
                                 Toast.makeText(otp_validation.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
                             }
                         });
-                        Log.d("ENimesh","Failed");
                         // Handle the error if the request was not successful
                         // For example, you can get the error message using response.message()
                     }
@@ -274,8 +271,6 @@ public class otp_validation extends AppCompatActivity {
                         }
                     });
                     e.printStackTrace();
-                    Log.d("ENimesh","catched " + e.toString());
-                    // Handle any exceptions that occurred during the request
                 }
             }
         }).start();
