@@ -76,6 +76,31 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutitemGST"
+        style="@style/TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="GST percentage"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="10dp"
+        app:endIconMode="clear_text"
+        android:visibility="visible"
+        app:helperTextTextColor="#FF002E"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
+        app:startIconDrawable="@drawable/taxlogo">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/GstPersentage"
+            style="@style/TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColorHint="#FA0202"
+            tools:ignore="TextContrastCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutQuantity"
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
@@ -87,7 +112,7 @@
         app:helperTextTextColor="#FF002E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
+        app:layout_constraintTop_toBottomOf="@+id/layoutitemGST"
         app:startIconDrawable="@drawable/baseline_warehouse_24">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -100,7 +125,6 @@
             android:inputType="number"
             />
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <Button
         android:id="@+id/button3"

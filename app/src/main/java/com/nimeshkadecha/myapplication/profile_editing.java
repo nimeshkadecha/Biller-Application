@@ -70,7 +70,11 @@ public class profile_editing extends AppCompatActivity {
             do {
                 name.setText(getuserinfo.getString(0));
                 password.setText(getuserinfo.getString(2));
-                gst.setText(getuserinfo.getString(3));
+                if(getuserinfo.getString(3).equals("no")){
+                    gst.setText("");
+                }else{
+                    gst.setText(getuserinfo.getString(3));
+                }
                 contact.setText(getuserinfo.getString(4));
                 address.setText(getuserinfo.getString(5));
             } while (getuserinfo.moveToNext());
@@ -128,6 +132,10 @@ public class profile_editing extends AppCompatActivity {
                 String nameTXT = name.getText().toString();
                 String passwordTXT = password.getText().toString();
                 String gstTXT = gst.getText().toString();
+                if(gstTXT.isEmpty()){
+                    gst.setText("no");
+                    gstTXT = gst.getText().toString();
+                }
                 String contactNumberTXT = contact.getText().toString();
                 String addressTXT = address.getText().toString();
 
@@ -145,7 +153,7 @@ public class profile_editing extends AppCompatActivity {
                     passwordTXT = name.getText().toString();
                 }
                 if (nameTXT.isEmpty() || passwordTXT.isEmpty() || gstTXT.isEmpty() || contactNumberTXT.isEmpty() || addressTXT.isEmpty()) {
-                    Toast.makeText(profile_editing.this, "Fill Up complete Form", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(profile_editing.this, "Fill up complete Form", Toast.LENGTH_SHORT).show();
                 } else {
                     if (PasswordChecking == 1) {
                         boolean check;

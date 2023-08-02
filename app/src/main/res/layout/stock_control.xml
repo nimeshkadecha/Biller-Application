@@ -12,197 +12,6 @@
 
     </include>
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/stock"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layoutitemname"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/item_name"
-
-        app:endIconMode="clear_text"
-        app:helperTextTextColor="#FF002E"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:prefixTextColor="@color/white"
-        app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/itemNameedt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TextInputEditText"
-            android:textColorHint="#FA0202"
-            tools:ignore="TextContrastCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/catagoryLay"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/catagory"
-
-        app:helperTextTextColor="#FF002E"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutitemname"
-        app:prefixTextColor="@color/white"
-        app:endIconMode="clear_text"
-        app:startIconDrawable="@drawable/baseline_category_24">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/categoryedt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            style="@style/TextInputEditText"
-            android:textColorHint="#FA0202" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout7"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/bprice"
-
-        app:helperTextTextColor="#FF002E"
-        android:maxLength="5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/catagoryLay"
-        app:prefixTextColor="@color/white"
-        app:startIconDrawable="@drawable/baseline_currency_rupee_24">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/porchesPriceEdt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="5"
-            style="@style/TextInputEditText"
-            android:textColorHint="#FA0202" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/sP"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/sprice"
-
-        app:helperTextTextColor="#FF002E"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
-
-        app:counterMaxLength="5"
-        app:startIconDrawable="@drawable/baseline_sell_24">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/sellPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="5"
-            style="@style/TextInputEditText"
-            android:textColorHint="#FA0202" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout8"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/date"
-
-        app:endIconMode="clear_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sP"
-        app:startIconDrawable="@drawable/date"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/PurchesDate"
-            style="@style/TextInputEditText"
-            android:textColorHint="#FA0202"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="date"
-            android:maxLength="10"
-            android:text=""
-            tools:ignore="TextContrastCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layoutQuantity"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/quantity"
-
-        app:helperTextTextColor="#FF002E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
-        app:prefixTextColor="@color/white"
-        app:counterMaxLength="5"
-        app:startIconDrawable="@drawable/baseline_warehouse_24">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/quantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            style="@style/TextInputEditText"
-            android:textColorHint="#FA0202" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <Button
-        android:id="@+id/VStock"
-        android:layout_marginTop="25dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/viewS"
-        app:layout_constraintStart_toStartOf="@+id/layoutQuantity"
-        app:layout_constraintTop_toBottomOf="@+id/layoutQuantity" />
-
-    <Button
-        android:id="@+id/AItem"
-        android:layout_marginTop="25dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addS"
-        app:layout_constraintEnd_toEndOf="@+id/layoutQuantity"
-        app:layout_constraintTop_toBottomOf="@+id/layoutQuantity" />
-
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
@@ -214,5 +23,229 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/stock"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/layoutBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutitemname"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/item_name"
+            app:endIconMode="clear_text"
+            app:helperTextTextColor="#FF002E"
+            app:layout_constraintTop_toTopOf="parent"
+            app:prefixTextColor="@color/white"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24"
+            >
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/itemNameedt"
+                style="@style/TextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#FA0202"
+                tools:ignore="TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/catagoryLay"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/catagory"
+
+            app:helperTextTextColor="#FF002E"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutitemname"
+            app:prefixTextColor="@color/white"
+            app:endIconMode="clear_text"
+            app:startIconDrawable="@drawable/baseline_category_24">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/categoryedt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                style="@style/TextInputEditText"
+                android:textColorHint="#FA0202" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout7"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/bprice"
+
+            app:helperTextTextColor="#FF002E"
+            android:maxLength="5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/catagoryLay"
+            app:prefixTextColor="@color/white"
+            app:startIconDrawable="@drawable/baseline_currency_rupee_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/porchesPriceEdt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="5"
+                style="@style/TextInputEditText"
+                android:textColorHint="#FA0202" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/sP"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/sprice"
+            app:helperTextTextColor="#FF002E"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
+            app:counterMaxLength="5"
+            app:startIconDrawable="@drawable/baseline_sell_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sellPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="5"
+                style="@style/TextInputEditText"
+                android:textColorHint="#FA0202" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutitemGST"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:hint="GST percentage"
+            android:visibility="gone"
+            app:endIconMode="clear_text"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            app:helperTextTextColor="#FF002E"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sP"
+            app:startIconDrawable="@drawable/taxlogo">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/GSTPersentage"
+                style="@style/TextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColorHint="#FA0202"
+                tools:ignore="TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout8"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/date"
+
+            app:endIconMode="clear_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutitemGST"
+            app:startIconDrawable="@drawable/date"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/PurchesDate"
+                style="@style/TextInputEditText"
+                android:textColorHint="#FA0202"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:maxLength="10"
+                android:text=""
+                tools:ignore="TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutQuantity"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/quantity"
+
+            app:helperTextTextColor="#FF002E"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
+            app:prefixTextColor="@color/white"
+            app:counterMaxLength="5"
+            app:startIconDrawable="@drawable/baseline_warehouse_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                style="@style/TextInputEditText"
+                android:textColorHint="#FA0202" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/VStock"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/viewS"
+            app:layout_constraintStart_toStartOf="@+id/layoutQuantity"
+            app:layout_constraintTop_toBottomOf="@+id/layoutQuantity" />
+
+        <Button
+            android:id="@+id/AItem"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/addS"
+            app:layout_constraintEnd_toEndOf="@+id/layoutQuantity"
+            app:layout_constraintTop_toBottomOf="@+id/layoutQuantity" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

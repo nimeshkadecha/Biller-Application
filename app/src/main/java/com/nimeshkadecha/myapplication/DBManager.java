@@ -36,13 +36,14 @@ public class DBManager extends SQLiteOpenHelper {
                 "product TEXT ," + //1
                 "price TEXT," + //2
                 "quantity TEXT," + //3
-                "subtotal Integer," +//4
+                "subtotal Float," +//4
                 "customerName TEXT," +//5
                 "customerNumber TEXT," +//6
                 "date Date," +//7
                 "billId Integer ," +//8
                 "seller TEXT," +//9
-                "backup Integer)");//10
+                "backup Integer," +//10
+                "Gst Integer)"); //11
 //        Customer table
         DB.execSQL("Create TABLE customer(billId Integer primary key," +
                 "customerName TEXT," +
@@ -207,12 +208,18 @@ public class DBManager extends SQLiteOpenHelper {
 //------------------------------------- Working on customer tables ---------------------------------
 
     //    ADDING ITEM in list/ in recycilerview / in display TABLE
-    public boolean Insert_List(String name, String price, String quantity, String cName, String cNumber, String date, int billId, String email, int state) {
+    public boolean Insert_List(String name, String price, String quantity, String cName, String cNumber, String date, int billId, String email, int state,String Gst) {
         int pricecustom = Integer.parseInt(price);
 
         int quentityCustom = Integer.parseInt(quantity);
+        if(Gst.equals("")){
+            Gst = "0";
+        }
+        float tax =  (pricecustom * quentityCustom) * (Integer.parseInt(Gst) / 100f);
+        Log.d("ENimesh","tax = "+tax);
 
-        int subtotal = pricecustom * quentityCustom;
+        float subtotal =  ((pricecustom * quentityCustom) + tax);
+        Log.d("ENimesh","tax + subtotal = "+subtotal);
 
         SQLiteDatabase DB = this.getWritableDatabase();
 
@@ -239,9 +246,10 @@ public class DBManager extends SQLiteOpenHelper {
 
         if (check_if_already_added) {
             number_of_product += 1;
-            subtotal = pricecustom * number_of_product;
+            float taxUpdate =  (pricecustom *  number_of_product) * (Integer.parseInt(Gst) / 100f);
+            subtotal = ((pricecustom * number_of_product) + taxUpdate );
 
-            String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+            String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
 
             contentValues.put("Product", name);
             contentValues.put("price", price);
@@ -253,6 +261,7 @@ public class DBManager extends SQLiteOpenHelper {
             contentValues.put("billId", billId);
             contentValues.put("seller", email);
             contentValues.put("backup", state);
+            contentValues.put("Gst", Gst);
 
             long result;
 
@@ -264,7 +273,7 @@ public class DBManager extends SQLiteOpenHelper {
             }
         } else {
 
-            String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+            String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
 
             contentValues.put("Product", name);
             contentValues.put("price", price);
@@ -276,6 +285,7 @@ public class DBManager extends SQLiteOpenHelper {
             contentValues.put("billId", billId);
             contentValues.put("seller", email);
             contentValues.put("backup", state);
+            contentValues.put("Gst", Gst);
 
             long result;
 
@@ -306,7 +316,7 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     //    Remove from list -- [Update Quantity in display where index =? ]---
-    public boolean updateQuentity(int quentity, int subtotal, int index) {
+    public boolean updateQuentity(int quentity, float subtotal, int index) {
 
         SQLiteDatabase DB = this.getWritableDatabase();
 
@@ -392,7 +402,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     public Cursor CustomerDateBill(String date, String email) {
 
-        String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+        String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
 
         SQLiteDatabase DB = this.getReadableDatabase();
 
@@ -445,8 +455,8 @@ public class DBManager extends SQLiteOpenHelper {
 
     //Searching in an range of DATE ---[Select * from display where seller =? AND  date  BETWEEN ? AND ? ]------
     public Cursor rangeSearch(String date, String toDate, String email) {
-        String startDate_formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
-        String endDate_formattedDate = date_convertor.convertDateFormat(toDate,"dd/MM/yyyy","yyyy-MM-dd");
+        String startDate_formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
+        String endDate_formattedDate = date_convertor.convertDateFormat(toDate, "dd/MM/yyyy", "yyyy-MM-dd");
         SQLiteDatabase DB = this.getReadableDatabase();
         Cursor cursor;
         cursor = DB.rawQuery("Select * from display where seller =? AND  date  BETWEEN ? AND ? ", new String[]{email, startDate_formattedDate, endDate_formattedDate});
@@ -468,7 +478,7 @@ public class DBManager extends SQLiteOpenHelper {
             total += cursor.getInt(4);
         } while (cursor.moveToNext());
 
-        String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+        String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("billId", billId);
@@ -583,26 +593,35 @@ public class DBManager extends SQLiteOpenHelper {
                 "date Date," +
                 "quentity TEXT," +
                 "seller TEXT," +
-                "backup Integer)");
+                "backup Integer," +
+                "Gst Integer)");
 
         DB.execSQL("Create TABLE IF NOT EXISTS stockQuentity(productName TEXT ," +
                 "quentity TEXT," +
                 "price TEXT," +
                 "seller TEXT ," +
                 "backup Integer," +
-                "stickTrackId Integer primary key autoincrement)");
+                "stickTrackId Integer primary key autoincrement," +
+                "Gst Integer)");
     }
 
     public Cursor getProductQuentity(String name, String seller) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Log.d("ENimesh", "getProductQuentity name = " + name);
-        Log.d("ENimesh", "getProductQuentity seller = " + seller);
-
         Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? AND productName = ?", new String[]{seller, name});
 
         return c;
+    }
+
+    public Boolean checkGstAvailability(String email) {
+        Cursor c = GetUser(email);
+        c.moveToFirst();
+        if (c.getString(3).equals("no")) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public Cursor getInventory(String seller) {
@@ -625,6 +644,10 @@ public class DBManager extends SQLiteOpenHelper {
         return c;
     }
 
+    public String getGstOfProduct(String productName,String seller){
+        Cursor data = getProductQuentity(productName,seller);
+        return data.getString(6);
+    }
     public Boolean removeSell(int id, String seller) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -656,6 +679,7 @@ public class DBManager extends SQLiteOpenHelper {
                 contentValues.put("price", cursor.getString(2));
                 contentValues.put("seller", seller);
                 contentValues.put("backup", 0);
+                contentValues.put("Gst", c.getString(11));
 
                 result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
             } else {
@@ -668,6 +692,7 @@ public class DBManager extends SQLiteOpenHelper {
                 contentValues.put("price", String.valueOf(Integer.parseInt(c.getString(2))));
                 contentValues.put("seller", seller);
                 contentValues.put("backup", 0);
+                contentValues.put("Gst", c.getString(11));
 
 
                 Log.d("ENimesh", "CV = " + contentValues);
@@ -694,11 +719,11 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
-    public boolean AddStock(String name, String catagory, String pPrice, String sPrice, String date, String quentity, String seller) {
+    public boolean AddStock(String name, String catagory, String pPrice, String sPrice, String date, String quentity, String seller,String gst) {
         createTable();
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String formattedDate = date_convertor.convertDateFormat(date,"dd/MM/yyyy","yyyy-MM-dd");
+        String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
 
         ContentValues cv = new ContentValues();
         cv.put("productName", name);
@@ -709,6 +734,7 @@ public class DBManager extends SQLiteOpenHelper {
         cv.put("quentity", quentity);
         cv.put("seller", seller);
         cv.put("backup", 0);
+        cv.put("Gst", gst);
 
         long check;
 
@@ -731,6 +757,7 @@ public class DBManager extends SQLiteOpenHelper {
                 contentValues.put("price", sPrice);
                 contentValues.put("seller", seller);
                 contentValues.put("backup", 0);
+                contentValues.put("Gst", gst);
 
                 long result;
                 result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
@@ -751,6 +778,7 @@ public class DBManager extends SQLiteOpenHelper {
                 contentValues.put("price", sPrice);
                 contentValues.put("seller", seller);
                 contentValues.put("backup", 0);
+                contentValues.put("Gst", gst);
                 long result;
 
                 result = db.insert("stockQuentity", null, contentValues);

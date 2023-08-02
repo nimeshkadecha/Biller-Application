@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
@@ -93,6 +94,16 @@ public class add_product extends AppCompatActivity {
         sellertxt = bundle.getString("seller");
         origintxt = bundle.getString("origin");
 
+//        GST filed visibility =====================================================================
+        TextInputLayout gst = findViewById(R.id.layoutitemGST);
+        boolean needGST =false;
+        if(DB.checkGstAvailability(sellertxt)){
+            gst.setVisibility(View.VISIBLE);
+            needGST=true;
+        }else{
+            gst.setVisibility(View.GONE);
+        }
+
         final int[] validator = {0}; //  to change visibility of show button and add button
 
 //  Add Item Button --------------------------------------------------------------------------------
@@ -126,6 +137,9 @@ public class add_product extends AppCompatActivity {
 
         price = findViewById(R.id.price);
 
+        EditText GstPersentageEDT = findViewById(R.id.GstPersentage);
+
+        boolean finalNeedGST1 = needGST;
         price.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +149,10 @@ public class add_product extends AppCompatActivity {
                     if (getPrice.getCount() > 0) {
                         Log.d("ENimesh", "Price is = " + String.valueOf(getPrice.getInt(2)));
                         price.setText(String.valueOf(getPrice.getInt(2)));
+                        if(finalNeedGST1){
+                            GstPersentageEDT.setText(String.valueOf(getPrice.getInt(6)));
+                        }
+
                         Toast.makeText(add_product.this, "Added", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(add_product.this, "Can't find", Toast.LENGTH_SHORT).show();
@@ -146,13 +164,16 @@ public class add_product extends AppCompatActivity {
 
         final int[] quentity = {0};
 
+        boolean finalNeedGST = needGST;
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String productName_ST, price_ST, quantity_ST;
+                String productName_ST, price_ST, quantity_ST,GstPersentageString;
                 productName_ST = productName.getText().toString();
                 price_ST = price.getText().toString();
                 quantity_ST = quantity.getText().toString();
+
+                GstPersentageString = GstPersentageEDT.getText().toString();
                 if (productName_ST.isEmpty() || price_ST.isEmpty() || quantity_ST.isEmpty()) {
                     if (productName_ST.isEmpty() && price_ST.isEmpty() && quantity_ST.isEmpty()) {
                         productName.setError("Enter Item Name here");
@@ -168,16 +189,19 @@ public class add_product extends AppCompatActivity {
                     } else if (quantity_ST.isEmpty()) {
                         quantity.setError("Enter Quantity here");
                         Toast.makeText(add_product.this, "Quantity filed is Empty", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }else {
                         Toast.makeText(add_product.this, "Error", Toast.LENGTH_SHORT).show();
                     }
                 } else {
 
                     if (cNametxt.isEmpty() || cNumbertxt.isEmpty() || datetext.isEmpty()) {
                         Toast.makeText(add_product.this, "Emptity intent", Toast.LENGTH_SHORT).show();
+                    } else if (finalNeedGST && GstPersentageString.isEmpty() ) {
+                        Toast.makeText(add_product.this, "GST filed is empty", Toast.LENGTH_SHORT).show();
+                        GstPersentageEDT.setError("Enter how much gst is applicable enter 0 if there is not any");
                     } else {
 
-                        boolean check = DB.Insert_List(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0);
+                        boolean check = DB.Insert_List(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0,GstPersentageString);
                         if (check) {
                             quentity[0] = quentity[0] + Integer.parseInt(quantity_ST);
                             validator[0]++;

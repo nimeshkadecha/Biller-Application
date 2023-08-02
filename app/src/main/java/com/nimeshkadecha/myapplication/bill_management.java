@@ -449,23 +449,23 @@ public class bill_management extends AppCompatActivity {
                             alert.setTitle("Delete listing !");
                             switch (finalWhat_to_delete) {
                                 case "contact":
-                                    alert.setMessage("Delete all data of the contact : "+nametxt);
+                                    alert.setMessage("Delete all data of the contact : " + nametxt);
                                     break;
 
                                 case "billid":
-                                    alert.setMessage("Delete data of the billid : "+String.valueOf(Integer.parseInt(nametxt)));
+                                    alert.setMessage("Delete data of the billid : " + String.valueOf(Integer.parseInt(nametxt)));
                                     break;
 
                                 case "name":
-                                    alert.setMessage("Delete all data of the customer : "+nametxt);
+                                    alert.setMessage("Delete all data of the customer : " + nametxt);
                                     break;
 
                                 case "rangDate":
-                                    alert.setMessage("Delete all data from date: "+datetxt+" to : "+ToDate);
+                                    alert.setMessage("Delete all data from date: " + datetxt + " to : " + ToDate);
                                     break;
 
                                 case "date":
-                                    alert.setMessage("Delete all data of the date: "+datetxt);
+                                    alert.setMessage("Delete all data of the date: " + datetxt);
                                     break;
 
                                 default:
@@ -562,6 +562,8 @@ public class bill_management extends AppCompatActivity {
             private void createPDF() throws FileNotFoundException {
                 String nametxt, datetxt, billIDtxt, contactTXT, ToDate;
 
+                boolean haveGST = false;
+
                 nametxt = nameedt.getText().toString();
                 datetxt = dateedt.getText().toString();
                 billIDtxt = nameedt.getText().toString();
@@ -621,6 +623,7 @@ public class bill_management extends AppCompatActivity {
 //                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 //                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
                             if (!selerDATA.getString(3).equals("no")) {
+                                haveGST = true;
                                 table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
 // =================================================================================================
@@ -636,11 +639,15 @@ public class bill_management extends AppCompatActivity {
                     float cWidth3[] = {142, 142, 142, 142};
                     Table table3 = new Table(cWidth3);
 
-                    float cWidth5[] = {142, 142, 142, 142};
-                    Table table5 = new Table(cWidth5);
+                    Table table2;
+                    if (haveGST) {
+                        float cWidth2[] = {120, 90, 110, 80, 80, 90};
+                        table2 = new Table(cWidth2);
 
-                    float cWidth2[] = {270, 100, 100, 100};
-                    Table table2 = new Table(cWidth2);
+                    } else {
+                        float cWidth2[] = {270, 100, 100, 100};
+                        table2 = new Table(cWidth2);
+                    }
 
                     float cWidth6[] = {560};
                     Table END = new Table(cWidth6);
@@ -732,17 +739,20 @@ public class bill_management extends AppCompatActivity {
                     if (customerDetail.getCount() == 0) {
                         Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                     } else {
-                        if (checker == 3 || checker == 4) {
-//                            Date & range search
+                        if (checker == 3 || checker == 4 || checker == 1 || checker == 2) {
+                            document.add(table1);
                             customerDetail.moveToFirst();
                             do {
+                                float cWidth5[] = {142, 142, 142, 142};
+                                Table table5 = new Table(cWidth5);
+
                                 table5.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 
                                 table5.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table5.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7), "yyyy-MM-dd", "dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
 
@@ -750,103 +760,90 @@ public class bill_management extends AppCompatActivity {
                                 table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(8) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-
+                                document.add(table5);
+                                table5.flushContent();
 //Just Printing headings -----------------------------------------------------------------------
-                                table5.addCell(new Cell().add(new Paragraph("Product Name")));
-                                table5.addCell(new Cell().add(new Paragraph("Product Price")));
-                                table5.addCell(new Cell().add(new Paragraph("Product Quantity")));
-                                table5.addCell(new Cell().add(new Paragraph("Sub Total")));
+                                if (haveGST) {
+                                    float cWidth2[] = {120, 90, 110, 80, 80, 90};
+                                    table2 = new Table(cWidth2);
 
-//                                this index help to privent repit table printing
+                                } else {
+                                    float cWidth2[] = {270, 100, 100, 100};
+                                    table2 = new Table(cWidth2);
+                                }
+
                                 int index = 0;
+
+                                table2.addCell(new Cell().add(new Paragraph("Product Name")));
+                                table2.addCell(new Cell().add(new Paragraph("Product Price")));
+                                table2.addCell(new Cell().add(new Paragraph("Product Quantity")));
+                                if (haveGST) {
+                                    table2.addCell(new Cell().add(new Paragraph("CGST")));
+                                    table2.addCell(new Cell().add(new Paragraph("SGST")));
+                                }
+                                table2.addCell(new Cell().add(new Paragraph("Sub Total")));
+
+                                float TotalGST = 0f;
+
                                 int total = 0;
+
                                 if (list.getCount() == 0) {
                                     Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                                     return;
                                 } else {
                                     list.moveToFirst();
                                     do {
-//                                        Index 8 is bill ID
                                         if (customerDetail.getString(8).equals(list.getString(8))) {
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
-                                            total += list.getInt(4);
+                                            if (haveGST) {
+                                                String gst;
+                                                if (list.getString(11).equals("")) {
+                                                    gst = "0";
+                                                } else {
+                                                    gst = list.getString(11);
+                                                }
+                                                float tax = ((Integer.parseInt(String.valueOf(list.getString(2))) * Integer.parseInt(String.valueOf(list.getString(3))) * (Integer.parseInt(String.valueOf(gst)) / 100f)));
+                                                TotalGST += tax;
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                                            } else {
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
+                                                table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                                            }
                                             index++;
+                                            total += list.getInt(4);
                                         }
                                     } while (list.moveToNext());
                                 }
 
-                                int ix = customerDetail.getPosition() + index - 1;
-                                customerDetail.moveToPosition(ix);
-
-                                table5.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-                                table5.addCell(new Cell().add(new Paragraph(total + "")));
-                                table5.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
-
-                                table5.addCell(new Cell(2,4).setBorder(Border.NO_BORDER));// adding space
-                                table5.addCell(new Cell(0,4).setBold());// adding line
-                            } while (customerDetail.moveToNext());
-// -----------------------------------------------------------------------------------------------------------------------
-                        } else if (checker == 1 || checker == 2) {
-                            customerDetail.moveToFirst();
-                            do {
-                                table5.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-
-                                table5.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-
-                                table5.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(8) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell().setBorder(Border.NO_BORDER));
-
-//Just Printing headings -----------------------------------------------------------------------
-                                table5.addCell(new Cell().add(new Paragraph("Product Name")));
-                                table5.addCell(new Cell().add(new Paragraph("Product Price")));
-                                table5.addCell(new Cell().add(new Paragraph("Product Quantity")));
-                                table5.addCell(new Cell().add(new Paragraph("Sub Total")));
-
-//                                customerDetail.moveToFirst();
-
-//                                this index help to privent repit table printing
-                                int index = 0;
-                                int total = 0;
-                                if (list.getCount() == 0) {
-                                    Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
-                                    return;
+                                if (haveGST) {
+                                    table2.addCell(new Cell(1, 4).add(new Paragraph("Total")));
+                                    table2.addCell(new Cell().add(new Paragraph(TotalGST + "")));
+                                    table2.addCell(new Cell().add(new Paragraph(total + "")));
+                                    table2.addCell(new Cell(2, 6).setBorder(Border.NO_BORDER)); // adding space
+                                    table2.addCell(new Cell(0, 6).setBold());// adding line
                                 } else {
-                                    list.moveToFirst();
-
-                                    do {
-                                        if (customerDetail.getString(8).equals(list.getString(8))) {
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-                                            table5.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
-                                            total += list.getInt(4);
-                                            index++;
-                                        }
-                                    } while (list.moveToNext());
+                                    table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
+                                    table2.addCell(new Cell().add(new Paragraph(total + "")));
+                                    table2.addCell(new Cell(2, 4).setBorder(Border.NO_BORDER)); // adding space
+                                    table2.addCell(new Cell(0, 4).setBold());// adding line
                                 }
 
                                 int ix = customerDetail.getPosition() + index - 1;
+
                                 customerDetail.moveToPosition(ix);
 
-                                table5.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-                                table5.addCell(new Cell().add(new Paragraph(total + "")));
-                                table5.addCell(new Cell(1, 4).setBorder(Border.NO_BORDER));
-                                table5.addCell(new Cell(2,4).setBorder(Border.NO_BORDER)); // adding space
-                                table5.addCell(new Cell(0,4).setBold());// adding line
+                                document.add(table2);
+                                table2.flushContent();
+
                             } while (customerDetail.moveToNext());
                         }
-//                        _----------------------------------------------------------------------------
+//                        --------------------------------------------------------------------------
                         else {
                             customerDetail.moveToFirst();
 
@@ -855,16 +852,8 @@ public class bill_management extends AppCompatActivity {
                             table3.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(6) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 
-                            if (!ToDate.isEmpty() && !datetxt.isEmpty()) {
-                                table3.addCell(new Cell().add(new Paragraph("From Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table3.addCell(new Cell().add(new Paragraph("To Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(ToDate,"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-
-                            } else {
-                                table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                                table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            }
+                            table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(7), "yyyy-MM-dd", "dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 
                             table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(8) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
@@ -872,7 +861,13 @@ public class bill_management extends AppCompatActivity {
                             table2.addCell(new Cell().add(new Paragraph("Product Name")));
                             table2.addCell(new Cell().add(new Paragraph("Product Price")));
                             table2.addCell(new Cell().add(new Paragraph("Product Quantity")));
+                            if (haveGST) {
+                                table2.addCell(new Cell().add(new Paragraph("CGST")));
+                                table2.addCell(new Cell().add(new Paragraph("SGST")));
+                            }
                             table2.addCell(new Cell().add(new Paragraph("Sub Total")));
+
+                            float TotalGST = 0f;
 
                             customerDetail.moveToFirst();
 
@@ -884,16 +879,39 @@ public class bill_management extends AppCompatActivity {
                             } else {
                                 list.moveToFirst();
                                 do {
-                                    table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-                                    table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-                                    table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-                                    table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                                    if (haveGST) {
+                                        String gst;
+                                        if (list.getString(11).equals("")) {
+                                            gst = "0";
+                                        } else {
+                                            gst = list.getString(11);
+                                        }
+                                        float tax = ((Integer.parseInt(String.valueOf(list.getString(2))) * Integer.parseInt(String.valueOf(list.getString(3))) * (Integer.parseInt(String.valueOf(gst)) / 100f)));
+                                        TotalGST += tax;
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                                    } else {
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
+                                        table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                                    }
                                     total += list.getInt(4);
                                 } while (list.moveToNext());
                             }
 
-                            table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-                            table2.addCell(new Cell().add(new Paragraph(total + "")));
+                            if (haveGST) {
+                                table2.addCell(new Cell(1, 4).add(new Paragraph("Total")));
+                                table2.addCell(new Cell().add(new Paragraph(TotalGST + "")));
+                                table2.addCell(new Cell().add(new Paragraph(total + "")));
+                            } else {
+                                table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
+                                table2.addCell(new Cell().add(new Paragraph(total + "")));
+                            }
 
                         }
 
@@ -904,10 +922,9 @@ public class bill_management extends AppCompatActivity {
                         END.addCell(new Cell().add(new Paragraph("Signature: ")).setBorder(Border.NO_BORDER));
 //                        ---------------------------Working------------------------------------------
 //                Displaying data
-                        document.add(table1);
-                        if (checker <= 4) {
-                            document.add(table5);
-                        } else {
+
+                        if (checker == 5) {
+                            document.add(table1);
                             document.add(table3);
                             document.add(new Paragraph("\n"));
                             document.add(table2);
@@ -959,7 +976,7 @@ public class bill_management extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
-                    String formattedDate = date_convertor.convertDateFormat(res.getString(3),"yyyy-MM-dd","dd/MM/yyyy");
+                    String formattedDate = date_convertor.convertDateFormat(res.getString(3), "yyyy-MM-dd", "dd/MM/yyyy");
 //                    DATE | name | number | Total |
                     buffer.append("Bill ID = " + res.getString(0) + "\n");
                     buffer.append("Customer Name = " + res.getString(1) + "\n");

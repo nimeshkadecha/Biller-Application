@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -76,6 +77,19 @@ public class stock_control extends AppCompatActivity {
         String seller;
         Bundle name = getIntent().getExtras();
         seller = name.getString("Email");
+        EditText GSTEdt = findViewById(R.id.GSTPersentage); ;
+
+//        GST filed visibility =====================================================================
+        Boolean GST_availability = false;
+
+        TextInputLayout gst = findViewById(R.id.layoutitemGST);
+        if (DB.checkGstAvailability(seller)) {
+            GST_availability = true;
+            gst.setVisibility(View.VISIBLE);
+
+        } else {
+            gst.setVisibility(View.GONE);
+        }
 
 //        Finding edittext product name
         AutoCompleteTextView itemName = findViewById(R.id.itemNameedt);
@@ -119,7 +133,7 @@ public class stock_control extends AppCompatActivity {
                         if (NameSuggestion[j].equals(Name_Sugg.getString(2))) {
                             insert = false;
                             break;
-                        }else{
+                        } else {
                             insert = true;
                         }
                     }
@@ -169,7 +183,8 @@ public class stock_control extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         PurchesDate.setText(" ");
                         PurchesDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                    }}, year, month, day);
+                    }
+                }, year, month, day);
                 datePickerDialog.show();
                 return true;
             }
@@ -180,10 +195,12 @@ public class stock_control extends AppCompatActivity {
 
         Button AItem = findViewById(R.id.AItem);
 
+        Boolean finalGST_availability = GST_availability;
         AItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nametxt, catagorytxt, pPricetxt, sPricetxt, qtytxt, datetxt;
+                String nametxt, catagorytxt, pPricetxt, sPricetxt, qtytxt, datetxt,gstPersentage;
+                gstPersentage = GSTEdt.getText().toString();
                 if (itemName.getText().toString().trim().equals("") && catagory.getText().toString().trim().equals("") &&
                         porchesPriceEdt.getText().toString().trim().equals("") && sellPrice.getText().toString().trim().equals("") && PurchesDate.getText().toString().trim().equals("") && quantity.getText().toString().trim().equals("")) {
                     Toast.makeText(stock_control.this, "Fill Above Detail add Inventory", Toast.LENGTH_SHORT).show();
@@ -199,6 +216,9 @@ public class stock_control extends AppCompatActivity {
                     PurchesDate.setError("Enter date of your porches");
                 } else if (quantity.getText().toString().trim().equals("")) {
                     quantity.setError("Enter number of your Product you have");
+                } else if (finalGST_availability && gstPersentage.isEmpty() ) {
+                    Toast.makeText(stock_control.this, "GST filed is empty", Toast.LENGTH_SHORT).show();
+                    GSTEdt.setError("Enter how much gst is applicable");
                 } else {
 
                     nametxt = itemName.getText().toString();
@@ -207,7 +227,7 @@ public class stock_control extends AppCompatActivity {
                     sPricetxt = sellPrice.getText().toString();
                     qtytxt = quantity.getText().toString();
                     datetxt = PurchesDate.getText().toString();
-                    boolean insert = DB.AddStock(nametxt, catagorytxt, pPricetxt, sPricetxt, datetxt, qtytxt, seller);
+                    boolean insert = DB.AddStock(nametxt, catagorytxt, pPricetxt, sPricetxt, datetxt, qtytxt, seller, gstPersentage);
                     if (insert) {
                         Toast.makeText(stock_control.this, "Product Added", Toast.LENGTH_SHORT).show();
                     } else {
@@ -257,7 +277,7 @@ public class stock_control extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);
@@ -275,7 +295,7 @@ public class stock_control extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         DBManager dbManager = new DBManager(getApplicationContext());
         boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-        if(check){
+        if (check) {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
             String formattedDate = df.format(c);

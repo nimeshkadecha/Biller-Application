@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Random;
 
 public class show_list extends AppCompatActivity {
-    private ArrayList<String> ainput, aprice, aquantity, asubtotal, aindex;
+    private ArrayList<String> ainput, aprice, aquantity, asubtotal, aindex,aGST;
     private RecyclerView recyclerView;
     private MyAdapter adapter;
     private DBManager DB = new DBManager(this);
@@ -256,6 +256,8 @@ public class show_list extends AppCompatActivity {
             class createPDF extends Thread {
                 createPDF() throws FileNotFoundException {
 
+                    boolean haveGST = false;
+
                     String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
 //                File name
                     String id = String.valueOf(billId);
@@ -294,7 +296,8 @@ public class show_list extends AppCompatActivity {
                             table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
                             if(!selerDATA.getString(3).equals("no")){
-                                table1.addCell(new Cell().add(new Paragraph("GST: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                haveGST = true;
+                                table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell());
@@ -332,15 +335,29 @@ public class show_list extends AppCompatActivity {
 //        Table 3 do this
 //        Want display |||||| product=1 price=2 quantity=3 subtotal=4 TOTAL
 
-                    float cWidth2[] = {270, 100, 100, 100};
-                    Table table2 = new Table(cWidth2);
+                    Table table2 ;
+                    if(haveGST){
+                        float cWidth2[] = {120, 90, 100, 85, 85, 90};
+                        table2 = new Table(cWidth2);
+
+                    }else{
+                        float cWidth2[] = {270, 100, 100, 100};
+                        table2 = new Table(cWidth2);
+                    }
+
                     float cWidth6[] = {560};
                     Table END = new Table(cWidth6);
 
                     table2.addCell(new Cell().add(new Paragraph("Product Name")));
                     table2.addCell(new Cell().add(new Paragraph("Product Price")));
                     table2.addCell(new Cell().add(new Paragraph("Product Quantity")));
+                    if(haveGST){
+                        table2.addCell(new Cell().add(new Paragraph("CGST")));
+                        table2.addCell(new Cell().add(new Paragraph("SGST")));
+                    }
                     table2.addCell(new Cell().add(new Paragraph("Sub Total")));
+
+                    float TotalGST = 0f;
 
                     Cursor list = DB.displayList(billId);
                     if (list.getCount() == 0) {
@@ -349,15 +366,39 @@ public class show_list extends AppCompatActivity {
                     } else {
                         list.moveToFirst();
                         do {
-                            table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-                            table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-                            table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-                            table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                            if(haveGST){
+                                String  gst;
+                                if(list.getString(11).equals("")){
+                                    gst = "0";
+                                }else{
+                                    gst = list.getString(11);
+                                }
+                                float tax = ((Integer.parseInt(String.valueOf(list.getString(2))) * Integer.parseInt(String.valueOf(list.getString(3))) * (Integer.parseInt(String.valueOf(gst))/100f)));
+                                TotalGST += tax;
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(tax/2 + "")));
+                                table2.addCell(new Cell().add(new Paragraph(tax/2 + "")));
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                            }else{
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                            }
                         } while (list.moveToNext());
                     }
 
-                    table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-                    table2.addCell(new Cell().add(new Paragraph(total + "")));
+                    if(haveGST){
+                        table2.addCell(new Cell(1, 4).add(new Paragraph("Total")));
+                        table2.addCell(new Cell().add(new Paragraph(TotalGST + "")));
+                        table2.addCell(new Cell().add(new Paragraph(total + "")));
+                    }else{
+                        table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
+                        table2.addCell(new Cell().add(new Paragraph(total + "")));
+                    }
+
 
 //                    Adding signature
 //                    END.addCell(new Cell(2,4).setBorder(Border.NO_BORDER)); // adding space
@@ -407,8 +448,9 @@ public class show_list extends AppCompatActivity {
         aprice = new ArrayList<>();
         aquantity = new ArrayList<>();
         asubtotal = new ArrayList<>();
+        aGST = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview);
-        adapter = new MyAdapter(show_list.this, ainput, aprice, aquantity, asubtotal, aindex);
+        adapter = new MyAdapter(show_list.this, ainput, aprice, aquantity, asubtotal, aindex,aGST);
         recyclerView.setAdapter(adapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(show_list.this));
@@ -424,6 +466,12 @@ public class show_list extends AppCompatActivity {
                 aprice.add(cursor.getString(2));
                 aquantity.add(cursor.getString(3));
                 asubtotal.add(cursor.getString(4));
+                if(cursor.getString(11).equals("null")){
+                    aGST.add("0");
+                }else{
+                    aGST.add(cursor.getString(11));
+                }
+
             } while (cursor.moveToNext());
         }
     }
