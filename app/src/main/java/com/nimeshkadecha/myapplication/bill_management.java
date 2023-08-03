@@ -78,7 +78,6 @@ public class bill_management extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
 
 //        Finding Layout for Spinner (DropDown MEnu) ===============================================
         cl = findViewById(R.id.contactlayout);
@@ -86,7 +85,7 @@ public class bill_management extends AppCompatActivity {
         edl = findViewById(R.id.rangedate);
         bl = findViewById(R.id.billIDlayout);
         CN = findViewById(R.id.namelayout);
-// =================================================================================================
+
 
 //        CLick Listener to inform user to select Respective Layout ================================
         cl.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +106,6 @@ public class bill_management extends AppCompatActivity {
                 Toast.makeText(bill_management.this, "Select date from dropdown menu", Toast.LENGTH_SHORT).show();
             }
         });
-// =================================================================================================
 
 //        Getting User from INTENT =================================================================
         Bundle seller = getIntent().getExtras();
@@ -121,7 +119,7 @@ public class bill_management extends AppCompatActivity {
         menuclick = findViewById(R.id.Menu);
 //          Keeping MENUE Invisible
         menuclick.setVisibility(View.INVISIBLE);
-// =================================================================================================
+
 
 //        Finding Edittext =========================================================================
         nameedt = findViewById(R.id.name);
@@ -215,14 +213,14 @@ public class bill_management extends AppCompatActivity {
         nameedt.setAdapter(new ArrayAdapter<>(bill_management.this, android.R.layout.simple_list_item_1, mergedString));
 
         todateedt = findViewById(R.id.rangeDatetEDT);
-// =================================================================================================
+
 
 //        Calculating And Formatting DATE ==========================================================
         Date c = Calendar.getInstance().getTime();
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = df.format(c);
-// =================================================================================================
+
 
 //        Adding current date On click of edit text ================================================
         dateedt.setOnClickListener(new View.OnClickListener() {
@@ -237,6 +235,7 @@ public class bill_management extends AppCompatActivity {
             }
         });
 
+        // Opening calendar on long press ==========================================================
         dateedt.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -260,6 +259,7 @@ public class bill_management extends AppCompatActivity {
                 return true;
             }
         });
+        // displaying toast to long press and set current date is date is not set ==================
         todateedt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,6 +272,7 @@ public class bill_management extends AppCompatActivity {
             }
         });
 
+        // Opening calendar on long press ==========================================================
         todateedt.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -295,7 +296,7 @@ public class bill_management extends AppCompatActivity {
                 return true;
             }
         });
-// =================================================================================================
+
 
         searchbtn = findViewById(R.id.searchbtn);
 
@@ -341,7 +342,7 @@ public class bill_management extends AppCompatActivity {
                 Toast.makeText(bill_management.this, "Select which type of search you want", Toast.LENGTH_SHORT).show();
             }
         });
-// =================================================================================================
+
 
 //      Search Button ==============================================================================
         searchbtn.setOnClickListener(new View.OnClickListener() {
@@ -361,7 +362,6 @@ public class bill_management extends AppCompatActivity {
                     Cursor res;
                     res = DB.CustomerInformation(sellertxt);
                     if (!nametxt.isEmpty()) {
-//                        Toast.makeText(customer_Info.this, "Search by name", Toast.LENGTH_SHORT).show();
                         char c[] = nametxt.toCharArray();
                         boolean contain_digit = false;
                         int NumberOfDigits = 0;
@@ -570,7 +570,6 @@ public class bill_management extends AppCompatActivity {
                 } else {
                     String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
 //                File name
-//                    String id = String.valueOf(billId);
 //                Create file object
                     String s = getrandom();
                     File file = new File(pdfPath, "Renewed BILL" + s + ".pdf");
@@ -594,34 +593,19 @@ public class bill_management extends AppCompatActivity {
                     } else {
                         selerDATA.moveToFirst();
                         do {
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Name").setFontSize(14)));
                             table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
-// =================================================================================================
-//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Address").setFontSize(14)));
+
                             table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-// =================================================================================================
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Email").setFontSize(14)));
+
                             table1.addCell(new Cell().add(new Paragraph("E=mail: " + selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-// =================================================================================================
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller Number").setFontSize(14)));
+
                             table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-// =================================================================================================
-//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-//                            table1.addCell(new Cell().add(new Paragraph("Seller GST").setFontSize(14)));
+
                             if (!selerDATA.getString(3).equals("no")) {
                                 haveGST = true;
                                 table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
-// =================================================================================================
+
                             table1.addCell(new Cell());
 
                         } while (selerDATA.moveToNext());
@@ -710,14 +694,13 @@ public class bill_management extends AppCompatActivity {
                     }
 
                     /*
+
                     CHECKERS
                     1 = name
                     2 = contact
                     3 = date
                     4 = toDate
                     5 = billid
-
-
 
                      */
 
@@ -728,6 +711,7 @@ public class bill_management extends AppCompatActivity {
                             document.add(table1);
                             customerDetail.moveToFirst();
                             do {
+                                //  Printing bill heading ==========================================
                                 float cWidth5[] = {142, 142, 142, 142};
                                 Table table5 = new Table(cWidth5);
 
@@ -747,7 +731,7 @@ public class bill_management extends AppCompatActivity {
                                 table5.addCell(new Cell().setBorder(Border.NO_BORDER));
                                 document.add(table5);
                                 table5.flushContent();
-//Just Printing headings -----------------------------------------------------------------------
+                                //  printing bill details ==========================================
                                 if (haveGST) {
                                     float cWidth2[] = {120, 90, 110, 80, 80, 90};
                                     table2 = new Table(cWidth2);
@@ -828,8 +812,9 @@ public class bill_management extends AppCompatActivity {
 
                             } while (customerDetail.moveToNext());
                         }
-//                        --------------------------------------------------------------------------
+                        //  printing bills in different format CHECKER = 5 =========================
                         else {
+                            //  Printing headings ==================================================
                             customerDetail.moveToFirst();
 
                             table3.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
@@ -842,7 +827,7 @@ public class bill_management extends AppCompatActivity {
 
                             table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(8) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-////Just Printing headings -----------------------------------------------------------------------
+                            //  Printing bill details ==============================================
                             table2.addCell(new Cell().add(new Paragraph("Product Name")));
                             table2.addCell(new Cell().add(new Paragraph("Product Price")));
                             table2.addCell(new Cell().add(new Paragraph("Product Quantity")));
@@ -903,9 +888,9 @@ public class bill_management extends AppCompatActivity {
 //                        Adding border at the end of each bill !
                         END_Border.addCell(new Cell());
 
-//                        Adding SIgnature ---------------------------------------------
+//                        Adding Signature =========================================================
                         END.addCell(new Cell().add(new Paragraph("Signature: ")).setBorder(Border.NO_BORDER));
-//                        ---------------------------Working------------------------------------------
+//                        ---------------------------Working----------------------------------------
 //                Displaying data
 
                         if (checker == 5) {
@@ -922,7 +907,7 @@ public class bill_management extends AppCompatActivity {
                         document.close();
                         Toast.makeText(bill_management.this, "PDF Created", Toast.LENGTH_SHORT).show();
 
-//                Opening PDf ---------------------------------
+                        //  Opening PDf ============================================================
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                             if (file.exists()) {
                                 Uri uri = FileProvider.getUriForFile(bill_management.this, getApplicationContext().getPackageName() + ".provider", file);
@@ -933,19 +918,16 @@ public class bill_management extends AppCompatActivity {
                             } else {
                                 Toast.makeText(bill_management.this, "File can't be created", Toast.LENGTH_SHORT).show();
                             }
-
                         }
                     }
-
                 }
             }
         });
-// =================================================================================================
 
 //      PDF Button =================================================================================
         pdf = findViewById(R.id.pdfC);
         pdf.setVisibility(View.GONE);
-// =================================================================================================
+
 //        Show ALl Customer Button =================================================================
         showbtn = findViewById(R.id.showallData);
 
@@ -980,7 +962,6 @@ public class bill_management extends AppCompatActivity {
         });
     }
 
-// =================================================================================================
 
 //  AUTO BACKUP ====================================================================================
 
@@ -1020,7 +1001,7 @@ public class bill_management extends AppCompatActivity {
         }
     }
 
-    //  ================================================================================================
+
     @Override
     public void onBackPressed() {
         finish();
@@ -1035,7 +1016,7 @@ public class bill_management extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
+
     }
 
     @Override
@@ -1046,7 +1027,7 @@ public class bill_management extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
+
     }
 
     @Override
@@ -1057,7 +1038,7 @@ public class bill_management extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
+
     }
 
 }

@@ -198,7 +198,7 @@ public class inventory_insights extends AppCompatActivity {
             }
         });
 
-//        notifying user to change switchs
+//        notifying user to change switch
 
         TextInputLayout namelayout = findViewById(R.id.namelayout);
 

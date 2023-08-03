@@ -2,6 +2,7 @@ package com.nimeshkadecha.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -39,6 +40,7 @@ public class backup_management extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
 
     Button showPathAuto;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch AutoUploadSwitch;
 
     private TextView uploadDate, Download, AutoUpdateLabel, AutoUpdateDate;
@@ -48,36 +50,36 @@ public class backup_management extends AppCompatActivity {
 
     SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     String formattedDate = df.format(c);
-//--------------------------------------------------------------------------------------------------
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.backup_management);
 
-//        Google ads code --------------------------------------------------------------------------
+//        Google ads code ==========================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
 
-//        Using Shared Preference to store Last Date -----------------------------------------------
+
+//        Using Shared Preference to store Last Date ===============================================
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String UploadDate = sharedPreferences.getString("Last Upload", "Not Uploaded");
         String DownloadDate = sharedPreferences.getString("Last Download", "Not Downloaded");
         String AutoUpload = sharedPreferences.getString("AutoUpload", "Not Uploaded");
-//--------------------------------------------------------------------------------------------------
 
-        //Upload Date
+
+        //Upload Date ==============================================================================
         uploadDate = findViewById(R.id.uploadDate);
         uploadDate.setText(UploadDate);
 
-        // Download Date
+        // Download Date ===========================================================================
         Download = findViewById(R.id.Download);
         Download.setText(DownloadDate);
 
-        //butotn
+        //button ===================================================================================
         showPathAuto = findViewById(R.id.showPathAuto);
         showPathAuto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +92,7 @@ public class backup_management extends AppCompatActivity {
             }
         });
 
+        // AutoDownload switch =====================================================================
         AutoUpdateLabel = findViewById(R.id.AutoUpdateLable);
 
         AutoUpdateDate = findViewById(R.id.autouploadDate);
@@ -131,15 +134,14 @@ public class backup_management extends AppCompatActivity {
 
         String checkAutoBackup = sharedPreferences.getString("AutoBackup", "");
         if (checkAutoBackup.equals("true")) {
-
             AutoUploadSwitch.setChecked(true);
             AutoUpdateLabel.setVisibility(View.VISIBLE);
             AutoUpdateDate.setVisibility(View.VISIBLE);
             AutoUpdateDate.setText(AutoUpload);
         }
 
+        // Download backup button ==================================================================
         Button DownloadBTN = findViewById(R.id.Downloadbtn);
-
         DownloadBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,6 +166,8 @@ public class backup_management extends AppCompatActivity {
                 }
             }
         });
+
+        // upload backup button ====================================================================
         Button uploadBTN = findViewById(R.id.LocaluploadDatabtn);
         uploadBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,12 +177,14 @@ public class backup_management extends AppCompatActivity {
         });
     }
 
+    // selecting .db file ==========================================================================
     private void selectBackupFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("application/octet-stream"); // Set the MIME type to all files
         startActivityForResult(intent, 101);
     }
 
+    // getting url of file =========================================================================
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -229,6 +235,7 @@ public class backup_management extends AppCompatActivity {
         }
     }
 
+    // getting file from URL =======================================================================
     public static File convertUriToFile(Context context, Uri uri) throws IOException {
         InputStream input = null;
         OutputStream output = null;
@@ -266,34 +273,31 @@ public class backup_management extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //        Google ads code --------------------------------------------------------------------------
+        //        Google ads code ==================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-//        Google ads code --------------------------------------------------------------------------
+        //        Google ads code ==================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        Google ads code --------------------------------------------------------------------------
+        //        Google ads code ==================================================================
         AdView mAdView;
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
     }
 
 }

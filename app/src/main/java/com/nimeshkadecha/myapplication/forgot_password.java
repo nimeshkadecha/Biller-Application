@@ -43,7 +43,7 @@ public class forgot_password extends AppCompatActivity {
 
     private TextView heading;
 
-//    Verifying internet is ON -----------------------------------------------------------------
+//    Verifying internet is ON =====================================================================
     boolean checkConnection() {
         ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -68,16 +68,16 @@ public class forgot_password extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//  ================================================================================================
 
-//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
-    //        Removing Suport bar / top line containing name
+
+//        WORKING WITH TOOLBAR Starts ==============================================================
+    //        Removing Support bar / top line containing name
         Objects.requireNonNull(getSupportActionBar()).hide();
 
     //        FINDING menu
         menuclick = findViewById(R.id.Menu);
 
-    //        Keeping MENUE Invisible
+    //        Keeping menu Invisible
         menuclick.setVisibility(View.INVISIBLE);
 //        WORKING WITH TOOLBAR Ends-----------------------------------------------------------------
 

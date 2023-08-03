@@ -40,7 +40,7 @@ public class add_product extends AppCompatActivity {
     int billIdtxt;
 
     //    In input Filter ==========================================================================
-    private String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
+    String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
 
     private final InputFilter filter = new InputFilter() {
 
@@ -81,7 +81,7 @@ public class add_product extends AppCompatActivity {
 
 
 
-//  INSERT OPERATION IN DISPLAY TABLE ==============================================================
+        //  INSERT OPERATION IN DISPLAY TABLE ======================================================
 
         //        Getting INTENT data
         Bundle bundle = getIntent().getExtras();
@@ -92,7 +92,7 @@ public class add_product extends AppCompatActivity {
         sellertxt = bundle.getString("seller");
         origintxt = bundle.getString("origin");
 
-//        GST filed visibility =====================================================================
+        //  GST filed visibility ===================================================================
         TextInputLayout gst = findViewById(R.id.layoutitemGST);
         boolean needGST = false;
         if (DB.CheckGstAvailability(sellertxt)) {
@@ -104,7 +104,7 @@ public class add_product extends AppCompatActivity {
 
         final int[] validator = {0}; //  to change visibility of show button and add button
 
-//  Add Item Button ================================================================================
+        //  Add Item Button ========================================================================
         quantity = findViewById(R.id.quantity);
         if (quantity.getText().toString().equals("")) {
             quantity.setText("1");
@@ -203,7 +203,7 @@ public class add_product extends AppCompatActivity {
                         Toast.makeText(add_product.this, "GST filed is empty", Toast.LENGTH_SHORT).show();
                         GstPersentageEDT.setError("Enter how much gst is applicable enter 0 if there is not any");
                     } else {
-
+                        // calling insert function
                         boolean check = DB.InsertList(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0, GstPersentageString);
                         if (check) {
                             quentity[0] = quentity[0] + Integer.parseInt(quantity_ST);
@@ -218,7 +218,7 @@ public class add_product extends AppCompatActivity {
             }
         });
 
-
+        // if screen is visible after show list page is displayed then making show button visible and if it's after home then making it invisible
         if (validator[0] == 0) {
             show.setVisibility(View.GONE);
         }

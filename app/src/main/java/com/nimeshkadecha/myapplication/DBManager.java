@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,11 +84,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         result = DB.insert("users", null, contentValues);
 
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result != -1;
 
     }
 
@@ -98,37 +93,27 @@ public class DBManager extends SQLiteOpenHelper {
 //        SQLiteDatabase DB = this.getReadableDatabase();
 //        Creating a cursor to check password;
         SQLiteDatabase DB = this.getReadableDatabase();
-        Cursor cursor = DB.rawQuery("select * from users where email =? AND password = ?", new String[]{email, password});
-        if (cursor.getCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        @SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email =? AND password = ?", new String[]{email, password});
+        return cursor.getCount() > 0;
     }
 
     //    Validate user ========================================[select * from users where email =?]
     public boolean ValidateUser(String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
-        Cursor cursor = DB.rawQuery("select * from users where email =?", new String[]{email});
-        if (cursor.getCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        @SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email =?", new String[]{email});
+        return cursor.getCount() > 0;
     }
 
     //    Getting user info for texting purposes in register ==================[select * from users]
     public Cursor getdata() {
         SQLiteDatabase DB = this.getReadableDatabase();
-        Cursor cursor = DB.rawQuery("select * from users", null);
-        return cursor;
+        return DB.rawQuery("select * from users", null);
     }
 
     //    Getting specific user all DATA ========================[select * from users where email=?]
     public Cursor GetUser(String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
-        Cursor cursor = DB.rawQuery("select * from users where email=?", new String[]{email});
-        return cursor;
+        return DB.rawQuery("select * from users where email=?", new String[]{email});
     }
 
     //    Reset Password! ===================================[select * from users where contact = ?]
@@ -138,17 +123,13 @@ public class DBManager extends SQLiteOpenHelper {
 
         contentValues.put("password", password);
 
-        Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{Email});
+        @SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{Email});
 
         if (cursor.getCount() > 0) {
             long result;
 
             result = DB.update("users", contentValues, "email =?", new String[]{Email});
-            if (result == -1) {
-                return false;
-            } else {
-                return true;
-            }
+            return result != -1;
         } else {
             return false;
         }
@@ -167,16 +148,12 @@ public class DBManager extends SQLiteOpenHelper {
         contentValues.put("contact", contact);
         contentValues.put("address", address);
 
-        Cursor cursor = DB.rawQuery("SELECT * From users where email =?", new String[]{email});
+        @SuppressLint("Recycle") Cursor cursor = DB.rawQuery("SELECT * From users where email =?", new String[]{email});
 
         if (cursor.getCount() > 0) {
             long check;
             check = DB.update("users", contentValues, "email =?", new String[]{email});
-            if (check == -1) {
-                return false;
-            } else {
-                return true;
-            }
+            return check != -1;
         } else {
             return false;
         }
@@ -187,18 +164,14 @@ public class DBManager extends SQLiteOpenHelper {
     public boolean DeleteUser(String email) {
         SQLiteDatabase DB = this.getWritableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{email});
+        @SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{email});
 
         if (cursor.getCount() > 0) {
             long check, check1, check2;
             check = DB.delete("users", "email = ?", new String[]{email});
             check1 = DB.delete("display", "seller = ?", new String[]{email});
             check2 = DB.delete("customer", "seller = ?", new String[]{email});
-            if (check == -1 || check1 == -1 || check2 == -1) {
-                return false;
-            } else {
-                return true;
-            }
+            return check != -1 && check1 != -1 && check2 != -1;
         } else {
             return false;
         }
@@ -264,11 +237,7 @@ public class DBManager extends SQLiteOpenHelper {
             long result;
 
             result = DB.update("display", contentValues, "indexs=?", new String[]{Index});
-            if (result == -1) {
-                return false;
-            } else {
-                return true;
-            }
+            return result != -1;
         } else {
 
             String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
@@ -288,11 +257,7 @@ public class DBManager extends SQLiteOpenHelper {
             long result;
 
             result = DB.insert("display", null, contentValues);
-            if (result == -1) {
-                return false;
-            } else {
-                return true;
-            }
+            return result != -1;
         }
     }
 
@@ -300,17 +265,14 @@ public class DBManager extends SQLiteOpenHelper {
     public Cursor DisplayList(int billId) {
         SQLiteDatabase DB = this.getReadableDatabase();
         String bID = String.valueOf(billId);
-        Cursor cursor = DB.rawQuery("select * from display where billId =? ", new String[]{bID});
-        return cursor;
+        return DB.rawQuery("select * from display where billId =? ", new String[]{bID});
     }
 
     //    Remove from list ====================================[delete from display where index =? ]
     public Cursor RemoveItem(String id) {
         SQLiteDatabase DB = this.getWritableDatabase();
 
-        Cursor c = DB.rawQuery("delete from display where indexs = ?", new String[]{id});
-
-        return c;
+        return DB.rawQuery("delete from display where indexs = ?", new String[]{id});
     }
 
     //    Remove from list =============================[Update Quantity in display where index =? ]
@@ -325,11 +287,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         long check;
         check = DB.update("display", contentValues, "indexs =?", new String[]{String.valueOf(index)});
-        if (check == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return check != -1;
     }
 
     // Checking Total without saving ===============================================================
@@ -352,7 +310,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         int id = 0;
         try {
-            Cursor cursor = DB.rawQuery("select * from customer ORDER BY billId ASC", null);
+            @SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from customer ORDER BY billId ASC", null);
             if (cursor.getCount() > 0) {
                 cursor.moveToLast();
                 id = Integer.parseInt(cursor.getString(0));
@@ -368,27 +326,21 @@ public class DBManager extends SQLiteOpenHelper {
     public Cursor CustomerInformation(String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from customer where seller =?", new String[]{email});
-
-        return cursor;
+        return DB.rawQuery("select * from customer where seller =?", new String[]{email});
     }
 
     // Fetching single customer =======[select * from customer where seller =? and customerName = ?]
     public Cursor ParticularCustomerInformation(String email, String name) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from customer where seller =? and customerName = ? ", new String[]{email, name});
-
-        return cursor;
+        return DB.rawQuery("select * from customer where seller =? and customerName = ? ", new String[]{email, name});
     }
 
     //    search based on customer name =[select * from display where customerName = ? and seller=?]
     public Cursor CustomerNameBill(String Name, String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from display where customerName = ? and seller=?", new String[]{Name, email});
-
-        return cursor;
+        return DB.rawQuery("select * from display where customerName = ? and seller=?", new String[]{Name, email});
     }
 
     //    Search Based on single date =========[select * from display where date = ? and seller = ?]
@@ -398,18 +350,14 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from display where date = ? and seller = ?", new String[]{formattedDate, email});
-
-        return cursor;
+        return DB.rawQuery("select * from display where date = ? and seller = ?", new String[]{formattedDate, email});
     }
 
     //    Search Based on number =====[select * from display where customerNumber = ? and seller=? ]
     public Cursor CustomerNumberBill(String Number, String email) {
         SQLiteDatabase DB = this.getReadableDatabase();
 
-        Cursor cursor = DB.rawQuery("select * from display where customerNumber = ? and seller=? ", new String[]{Number, email});
-
-        return cursor;
+        return DB.rawQuery("select * from display where customerNumber = ? and seller=? ", new String[]{Number, email});
     }
 
     //    Search based on billID ===========[select * from display where billId = ? and seller = ? ]
@@ -418,9 +366,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         String billId = String.valueOf(billID);
 
-        Cursor cursor = DB.rawQuery("select * from display where billId = ? and seller = ? ", new String[]{billId, email});
-
-        return cursor;
+        return DB.rawQuery("select * from display where billId = ? and seller = ? ", new String[]{billId, email});
     }
 
     //    Getting Bill TOTAL ==============================[select * from customer where billid = ?]
@@ -429,9 +375,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         String billId = String.valueOf(billID);
 
-        Cursor cursor = DB.rawQuery("select * from customer where billId = ? ", new String[]{billId});
-
-        return cursor;
+        return DB.rawQuery("select * from customer where billId = ? ", new String[]{billId});
     }
 
     //    Getting sub total from billID ==================[ select * from display where billId = ? ]
@@ -440,9 +384,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         String billId = String.valueOf(billID);
 
-        Cursor cursor = DB.rawQuery("select * from display where billId = ? ", new String[]{billId});
-
-        return cursor;
+        return DB.rawQuery("select * from display where billId = ? ", new String[]{billId});
     }
 
     //Searching in Date Range == [Select * from display where seller =? AND  date  BETWEEN ? AND ? ]
@@ -485,22 +427,14 @@ public class DBManager extends SQLiteOpenHelper {
 
         long check;
         check = DB.insert("customer", null, contentValues);
-        if (check == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return check != -1;
     }
 
     // confirming that data is entered =============================================================
     public boolean ConfirmSale(int billId) {
         Cursor cursor = GetSubTotal(billId);
 
-        if (cursor.getCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return cursor.getCount() > 0;
     }
 
     // Deleting bills with bill id =================================================================
@@ -509,11 +443,7 @@ public class DBManager extends SQLiteOpenHelper {
         long delete_customer, delete_display;
         delete_customer = db.delete("customer", "billId = ? and seller = ?", new String[]{billid, email});
         delete_display = db.delete("display", "billId = ? and seller = ?", new String[]{billid, email});
-        if (delete_customer != -1 && delete_display != -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return delete_customer != -1 && delete_display != -1;
     }
 
     // Delete Bill With Customer Number ============================================================
@@ -522,11 +452,7 @@ public class DBManager extends SQLiteOpenHelper {
         long delete_customer, delete_display;
         delete_customer = db.delete("customer", "customerNumber = ? and seller = ?", new String[]{number, email});
         delete_display = db.delete("display", "customerNumber = ? and seller = ?", new String[]{number, email});
-        if (delete_customer != -1 && delete_display != -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return delete_customer != -1 && delete_display != -1;
     }
 
     // Deleting bills with Customer Name ===========================================================
@@ -535,46 +461,21 @@ public class DBManager extends SQLiteOpenHelper {
         long delete_customer, delete_display;
         delete_customer = db.delete("customer", "customerName = ? and seller = ?", new String[]{name, email});
         delete_display = db.delete("display", "customerName = ? and seller = ?", new String[]{name, email});
-        if (delete_customer != -1 && delete_display != -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return delete_customer != -1 && delete_display != -1;
     }
 
     // Deleting bills with Date ====================================================================
     public boolean DeleteBillWithDate(Cursor data, String email) {
         data.moveToFirst();
 
-        boolean check = false;
-        do {
-            boolean check_in_loop = DeleteBillWithBillID(data.getString(8), email);
-            if (!check_in_loop) {
+        return DeleteBillWithBillID(data.getString(8), email);
 
-                return false;
-            } else {
-                check = true;
-            }
-        } while (data.moveToNext());
-
-        return check;
     }
 
     // Deleting bills with Date range ==============================================================
     public boolean DeleteCustomerWithRangeDate(Cursor data, String email) {
         data.moveToFirst();
-
-        boolean check = false;
-        do {
-            boolean check_in_loop = DeleteBillWithBillID(data.getString(8), email);
-            if (!check_in_loop) {
-                return false;
-            } else {
-                check = true;
-            }
-        } while (data.moveToNext());
-
-        return check;
+        return DeleteBillWithBillID(data.getString(8), email);
     }
 
 //    ----------------------------------- Managing Stock -------------------------------------------
@@ -608,20 +509,14 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ? AND productName = ?", new String[]{seller, name});
-
-        return c;
+        return db.rawQuery("Select * from stockQuentity where seller = ? AND productName = ?", new String[]{seller, name});
     }
 
     // checking if GST is available or not =========================================================
     public Boolean CheckGstAvailability(String email) {
         Cursor c = GetUser(email);
         c.moveToFirst();
-        if (c.getString(3).equals("no")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !c.getString(3).equals("no");
     }
 
     // getting current stock quantity ================[Select * from stockQuentity where seller = ?]
@@ -631,9 +526,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stockQuentity where seller = ?", new String[]{seller});
-
-        return c;
+        return db.rawQuery("Select * from stockQuentity where seller = ?", new String[]{seller});
     }
 
     // getting the cursor of Category ========================[Select * from stock where seller = ?]
@@ -641,9 +534,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller = ?", new String[]{seller});
-
-        return c;
+        return db.rawQuery("Select * from stock where seller = ?", new String[]{seller});
     }
 
     // removing the sold product Quantity ==========================================================
@@ -706,11 +597,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         } while (c.moveToNext());
 
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result != -1;
     }
 
     // Adding Stock to stock table =================================================================
@@ -756,11 +643,7 @@ public class DBManager extends SQLiteOpenHelper {
                 long result;
                 result = db.update("stockQuentity", contentValues, "seller = ? and productName = ? ", new String[]{seller, name});
 
-                if (result == -1) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return result != -1;
 
 
             } else {
@@ -775,11 +658,7 @@ public class DBManager extends SQLiteOpenHelper {
 
                 result = db.insert("stockQuentity", null, contentValues);
 
-                if (result == -1) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return result != -1;
             }
         }
     }
@@ -789,9 +668,7 @@ public class DBManager extends SQLiteOpenHelper {
         CreateTable();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stockQuentity where seller =?", new String[]{seller});
-
-        return c;
+        return db.rawQuery("Select * from stockQuentity where seller =?", new String[]{seller});
     }
 
     // view when stock is entered in table ==[Select * from stock where seller =? AND productName=?]
@@ -799,9 +676,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller =? AND productName=? ", new String[]{seller, product});
-
-        return c;
+        return db.rawQuery("Select * from stock where seller =? AND productName=? ", new String[]{seller, product});
     }
 
     // view stock history but category wise ====[Select * from stock where seller =? AND catagory=?]
@@ -809,9 +684,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select * from stock where seller =? AND catagory=? ", new String[]{seller, catagory});
-
-        return c;
+        return db.rawQuery("Select * from stock where seller =? AND catagory=? ", new String[]{seller, catagory});
     }
 
     // Salse data of a perticular product
@@ -819,19 +692,16 @@ public class DBManager extends SQLiteOpenHelper {
     public Cursor ViewSaleProductHistory(String seller, String product) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND seller = ?", new String[]{product, seller});
-        return c;
+        return db.rawQuery("Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND seller = ?", new String[]{product, seller});
     }
 
-    // Salse data of a perticular category
-    //[Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND catagory = ?]
-    public Cursor ViewSaleCategoryHistory(String seller, String catagory) {
+    // Sales data of a particular category
+    //[Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND category = ?]
+    public Cursor ViewSaleCategoryHistory(String seller, String category) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery("Select DISTINCT productName from stock where seller =? AND catagory=? ", new String[]{seller, catagory});
-
-        return c;
+        return db.rawQuery("Select DISTINCT productName from stock where seller =? AND catagory=? ", new String[]{seller, category});
     }
 
     // Download backup =============================================================================

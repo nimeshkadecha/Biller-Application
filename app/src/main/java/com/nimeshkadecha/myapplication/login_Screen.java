@@ -169,16 +169,6 @@ public class login_Screen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectBackupFile();
-//                Intent i = new Intent(MainActivity.this,LocalBackup.class);
-//                startActivity(i);
-//                if (checkConnection()) {
-//                    Intent forgotpassword = new Intent(MainActivity.this, ForgotPassword.class);
-//                    forgotpassword.putExtra("Origin", "Cloud");
-//                    startActivity(forgotpassword);
-//
-//                } else {
-//                    Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
-//                }
             }
         });
 //--------------------------------------------------------------------------------------------------
