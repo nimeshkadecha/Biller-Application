@@ -324,7 +324,7 @@ public class show_list extends AppCompatActivity {
                             table3.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(2) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(3),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             total = customerDetail.getInt(4);
                             table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph(billId + "").setFontSize(14)).setBorder(Border.NO_BORDER));
