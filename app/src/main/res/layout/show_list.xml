@@ -12,7 +12,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-6774391225250306/9234720248"
+        app:adUnitId="ca-app-pub-6774391225250306/5183271503"
         app:layout_constraintBottom_toTopOf="@+id/recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
