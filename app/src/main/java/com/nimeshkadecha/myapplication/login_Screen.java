@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -117,10 +118,20 @@ public class login_Screen extends AppCompatActivity {
             permisions.setVisibility(View.VISIBLE);
         }
 
+        final int[] times_clicked = {0};
         permisions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestStoragePermissions();
+                if(times_clicked[0] == 0) {
+                    requestStoragePermissions();
+                    times_clicked[0]++;
+                }else{
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -254,7 +265,7 @@ public class login_Screen extends AppCompatActivity {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(login_Screen.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, StoragePermisionCode);
+                            ActivityCompat.requestPermissions(login_Screen.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, StoragePermisionCode);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -277,6 +288,7 @@ public class login_Screen extends AppCompatActivity {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
                 permisions.setVisibility(View.INVISIBLE);
             } else {
+
                 Toast.makeText(this, "Permission not Granted, Allow it to create PDF", Toast.LENGTH_SHORT).show();
             }
         }

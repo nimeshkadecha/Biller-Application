@@ -277,6 +277,7 @@ public class add_product extends AppCompatActivity {
     }
 
 
+
     // for google ads ==============================================================================
 
     @Override

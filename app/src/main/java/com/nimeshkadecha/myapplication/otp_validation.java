@@ -170,7 +170,7 @@ public class otp_validation extends AppCompatActivity {
 
     private void GenerateOtpWithEmail(String email,String otp) {
         // Replace "your_api_url" with the actual URL of the API endpoint you want to call
-        String apiUrl = "https://solution-tech-nimesh.000webhostapp.com/OTP_Service/sendOTP.php";
+        String apiUrl = "https://solution-nimesh.000webhostapp.com/otp.php";
 
         // Create a JSON object with the four parameters
         JSONObject jsonData = new JSONObject();
