@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ public class show_list extends AppCompatActivity {
 
     final int[] save_CLicked = {0};
 
-    @SuppressLint({"MissingInflatedId", "WrongViewCast", "SuspiciousIndentation"})
+    @SuppressLint({"MissingInflatedId", "WrongViewCast", "SuspiciousIndentation", "Range"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,11 +192,11 @@ public class show_list extends AppCompatActivity {
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
                     //                    DATE | name | number | Total |
-                    buffer.append("Bill ID = " + res.getString(0) + "\n");
-                    buffer.append("Customer Name = " + res.getString(1) + "\n");
-                    buffer.append("Customer Number = " + res.getString(2) + "\n");
-                    buffer.append("Date = " + res.getString(3) + "\n");
-                    buffer.append("Total = " + res.getString(4) + "\n\n");
+                    buffer.append("Bill ID = " + res.getString(res.getColumnIndex("billId")) + "\n");
+                    buffer.append("Customer Name = " + res.getString(res.getColumnIndex("customerName")) + "\n");
+                    buffer.append("Customer Number = " + res.getString(res.getColumnIndex("CustomerNumber")) + "\n");
+                    buffer.append("Date = " + res.getString(res.getColumnIndex("date")) + "\n");
+                    buffer.append("Total = " + res.getString(res.getColumnIndex("total")) + "\n\n");
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(show_list.this);
@@ -254,6 +255,7 @@ public class show_list extends AppCompatActivity {
 //         Creating PDF ----------------------------------------------------------------------------
 
             class createPDF extends Thread {
+                @SuppressLint("Range")
                 createPDF() throws FileNotFoundException {
 
                     boolean haveGST = false;
@@ -287,17 +289,17 @@ public class show_list extends AppCompatActivity {
                     } else {
                         selerDATA.moveToFirst();
                         do {
-                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(0) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(selerDATA.getColumnIndex("name")) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-                            table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(5) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(selerDATA.getColumnIndex("address")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-                            table1.addCell(new Cell().add(new Paragraph("E-mail: " + selerDATA.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("E-mail: " + selerDATA.getString(selerDATA.getColumnIndex("email")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-                            table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(4) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(selerDATA.getColumnIndex("contact")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
                             if(!selerDATA.getString(3).equals("no")){
                                 haveGST = true;
-                                table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(3) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                                table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(selerDATA.getColumnIndex("gst")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell());
@@ -320,12 +322,12 @@ public class show_list extends AppCompatActivity {
                         customerDetail.moveToFirst();
                         do {
                             table3.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(1) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerName")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(2) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerNumber")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell  (new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(3),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
-                            total = customerDetail.getInt(4);
+                            table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(customerDetail.getColumnIndex("date")),"yyyy-MM-dd","dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+                            total = customerDetail.getInt(customerDetail.getColumnIndex("total"));
                             table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
                             table3.addCell(new Cell().add(new Paragraph(billId + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                         } while (customerDetail.moveToNext());
@@ -359,35 +361,35 @@ public class show_list extends AppCompatActivity {
 
                     float TotalGST = 0f;
 
-                    Cursor list = DB.DisplayList(billId);
-                    if (list.getCount() == 0) {
+                    Cursor displayListCursor = DB.DisplayList(billId);
+                    if (displayListCursor.getCount() == 0) {
                         Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
-                        list.moveToFirst();
+                        displayListCursor.moveToFirst();
                         do {
                             if(haveGST){
                                 String  gst;
-                                if(list.getString(11).equals("")){
+                                if(displayListCursor.getString(displayListCursor.getColumnIndex("Gst")).equals("")){
                                     gst = "0";
                                 }else{
-                                    gst = list.getString(11);
+                                    gst = displayListCursor.getString(displayListCursor.getColumnIndex("Gst"));
                                 }
-                                float tax = ((Integer.parseInt(String.valueOf(list.getString(2))) * Integer.parseInt(String.valueOf(list.getString(3))) * (Integer.parseInt(String.valueOf(gst))/100f)));
+                                float tax = ((Integer.parseInt(String.valueOf(displayListCursor.getString(displayListCursor.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(displayListCursor.getString(displayListCursor.getColumnIndex("quantity")))) * (Integer.parseInt(String.valueOf(gst))/100f)));
                                 TotalGST += tax;
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("product")) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("price")) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("quantity")) + "")));
                                 table2.addCell(new Cell().add(new Paragraph(tax/2 + "")));
                                 table2.addCell(new Cell().add(new Paragraph(tax/2 + "")));
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("subtotal")) + "")));
                             }else{
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(1) + "")));
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(2) + "")));
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(3) + "")));
-                                table2.addCell(new Cell().add(new Paragraph(list.getString(4) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("product")) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("price")) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("quantity")) + "")));
+                                table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("subtotal")) + "")));
                             }
-                        } while (list.moveToNext());
+                        } while (displayListCursor.moveToNext());
                     }
 
                     if(haveGST){
@@ -455,24 +457,24 @@ public class show_list extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(show_list.this));
 
-        Cursor cursor = DB.DisplayList(billId);
-        cursor.moveToFirst();
-        if (cursor.getCount() == 0) {
+        Cursor displayCursorRV = DB.DisplayList(billId);
+        displayCursorRV.moveToFirst();
+        if (displayCursorRV.getCount() == 0) {
             Toast.makeText(show_list.this, "No Entry Exists", Toast.LENGTH_SHORT).show();
         } else {
             do {
-                aindex.add(cursor.getString(0));
-                ainput.add(cursor.getString(1));
-                aprice.add(cursor.getString(2));
-                aquantity.add(cursor.getString(3));
-                asubtotal.add(cursor.getString(4));
-                if(cursor.getString(11).equals("null")){
+                aindex.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("indexs")));
+                ainput.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("product")));
+                aprice.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("price")));
+                aquantity.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("quantity")));
+                asubtotal.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("subtotal")));
+                if(displayCursorRV.getString(displayCursorRV.getColumnIndex("Gst")).equals("null")){
                     aGST.add("0");
                 }else{
-                    aGST.add(cursor.getString(11));
+                    aGST.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("Gst")));
                 }
 
-            } while (cursor.moveToNext());
+            } while (displayCursorRV.moveToNext());
         }
     }
 //--------------------------------------------------------------------------------------------------
@@ -480,6 +482,7 @@ public class show_list extends AppCompatActivity {
     //     Making Sure User Saved Data Before Going Back -----------------------------------------------
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         if (save_CLicked[0] == 0) {
             Toast.makeText(this, "Click on Save and Then Press Back", Toast.LENGTH_SHORT).show();
         } else {

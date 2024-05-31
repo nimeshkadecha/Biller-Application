@@ -12,6 +12,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         app:adSize="BANNER"
+        android:visibility="gone"
         app:adUnitId="ca-app-pub-6774391225250306/5183271503"
         app:layout_constraintBottom_toTopOf="@+id/recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +21,6 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
-        android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="50dp"

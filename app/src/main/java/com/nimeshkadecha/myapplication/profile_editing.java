@@ -68,15 +68,15 @@ public class profile_editing extends AppCompatActivity {
         if (getuserinfo.getCount() > 0) {
             getuserinfo.moveToFirst();
             do {
-                name.setText(getuserinfo.getString(0));
-                password.setText(getuserinfo.getString(2));
+                name.setText(getuserinfo.getString(getuserinfo.getColumnIndex("name")));
+                password.setText(getuserinfo.getString(getuserinfo.getColumnIndex("password")));
                 if(getuserinfo.getString(3).equals("no")){
                     gst.setText("");
                 }else{
-                    gst.setText(getuserinfo.getString(3));
+                    gst.setText(getuserinfo.getString(getuserinfo.getColumnIndex("gst")));
                 }
-                contact.setText(getuserinfo.getString(4));
-                address.setText(getuserinfo.getString(5));
+                contact.setText(getuserinfo.getString(getuserinfo.getColumnIndex("contact")));
+                address.setText(getuserinfo.getString(getuserinfo.getColumnIndex("address")));
             } while (getuserinfo.moveToNext());
         }
 
@@ -105,12 +105,12 @@ public class profile_editing extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
-                    buffer.append("E-mail: " + res.getString(0) + "\n");
-                    buffer.append("Name: " + res.getString(1) + "\n");
-                    buffer.append("Password: " + res.getString(2) + "\n");
-                    buffer.append("gst: " + res.getString(3) + "\n");
-                    buffer.append("Contact: " + res.getString(4) + "\n");
-                    buffer.append("Address: " + res.getString(5) + "\n\n");
+                    buffer.append("E-mail: " + res.getString(res.getColumnIndex("email")) + "\n");
+                    buffer.append("Name: " + res.getString(res.getColumnIndex("name")) + "\n");
+                    buffer.append("Password: " + res.getString(res.getColumnIndex("password")) + "\n");
+                    buffer.append("gst: " + res.getString(res.getColumnIndex("gst")) + "\n");
+                    buffer.append("Contact: " + res.getString(res.getColumnIndex("contact")) + "\n");
+                    buffer.append("Address: " + res.getString(res.getColumnIndex("address")) + "\n\n");
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(profile_editing.this);

@@ -95,6 +95,7 @@ public class register extends AppCompatActivity {
 
 //        Display all information of users but it's hidden it is for testing purposes --------------
         show.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("Range")
             @Override
             public void onClick(View v) {
                 Cursor res = DBM.getdata();
@@ -105,12 +106,12 @@ public class register extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
-                    buffer.append("E-mail: " + res.getString(0) + "\n");
-                    buffer.append("Name: " + res.getString(1) + "\n");
-                    buffer.append("Password: " + res.getString(2) + "\n");
-                    buffer.append("gst: " + res.getString(3) + "\n");
-                    buffer.append("Contact: " + res.getString(4) + "\n");
-                    buffer.append("Address: " + res.getString(5) + "\n\n");
+                    buffer.append("E-mail: " + res.getString(res.getColumnIndex("email")) + "\n");
+                    buffer.append("Name: " + res.getString(res.getColumnIndex("name")) + "\n");
+                    buffer.append("Password: " + res.getString(res.getColumnIndex("password")) + "\n");
+                    buffer.append("gst: " + res.getString(res.getColumnIndex("gst")) + "\n");
+                    buffer.append("Contact: " + res.getString(res.getColumnIndex("contact")) + "\n");
+                    buffer.append("Address: " + res.getString(res.getColumnIndex("address")) + "\n\n");
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(register.this);

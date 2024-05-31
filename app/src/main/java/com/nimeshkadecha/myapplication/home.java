@@ -56,7 +56,7 @@ public class home extends AppCompatActivity {
     private ProgressBar lodingPB;
 
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "Range"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +128,7 @@ public class home extends AppCompatActivity {
                 if (i != 0) {
                     for (int j = 0; j < i; j++) {
 
-                        if (NameSuggestion[j].equals(Name_Sugg.getString(1))) {
+                        if (NameSuggestion[j].equals(Name_Sugg.getString(Name_Sugg.getColumnIndex("customerName")))) {
                             insert = false;
                             break;
                         } else {
@@ -138,7 +138,7 @@ public class home extends AppCompatActivity {
                 }
 
                 if (insert) {
-                    NameSuggestion[i] = Name_Sugg.getString(1);
+                    NameSuggestion[i] = Name_Sugg.getString(Name_Sugg.getColumnIndex("customerName"));
 
                     i++;
                 }
@@ -174,11 +174,11 @@ public class home extends AppCompatActivity {
                     navagationDrawer.setVisibility(View.INVISIBLE);
                     product.setVisibility(View.VISIBLE);
                 }
-                if (number.getText().toString().equals("")) {
+                if (number.getText().toString().isEmpty()) {
                     Cursor numberC = DB.ParticularCustomerInformation(email, name.getText().toString());
                     numberC.moveToFirst();
                     if (numberC.getCount() > 0) {
-                        number.setText(numberC.getString(2));
+                        number.setText(numberC.getString(numberC.getColumnIndex("customerNumber")));
                     } else {
                         Toast.makeText(home.this, "New Customer", Toast.LENGTH_SHORT).show();
                     }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -30,6 +31,7 @@ public class chart extends AppCompatActivity {
 
     DBManager local_db = new DBManager(this);
 
+    @SuppressLint("Range")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,21 +85,21 @@ public class chart extends AppCompatActivity {
                     int g =rnd.nextInt(256);
                     int b=rnd.nextInt(256);
 
-                    ainput.add(get_Qty.getString(0));
-                    aquantity.add(get_Qty.getString(1));
+                    ainput.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
+                    aquantity.add(get_Qty.getString(get_Qty.getColumnIndex("quentity")));
 
                     Ar.add(String.valueOf(r));
                     Ag.add(String.valueOf(g));
                     Ab.add(String.valueOf(b));
-                    ANAME.add(get_Qty.getString(0));
+                    ANAME.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
 
-                    int qty = Integer.parseInt(get_Qty.getString(1));
+                    int qty = Integer.parseInt(get_Qty.getString(get_Qty.getColumnIndex("quentity")));
                     if(qty<0){
                         qty *= -1;
                     }
                     pieChart.addPieSlice(
                             new PieModel(
-                                    get_Qty.getString(0),
+                                    get_Qty.getString(get_Qty.getColumnIndex("productName")),
                                     qty,
                                     Color.argb(255,r,g,b)));
                 }while (get_Qty.moveToNext());

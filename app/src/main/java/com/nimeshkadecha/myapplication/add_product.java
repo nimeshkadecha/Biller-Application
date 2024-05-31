@@ -54,7 +54,7 @@ public class add_product extends AppCompatActivity {
         }
     };
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "Range"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +123,7 @@ public class add_product extends AppCompatActivity {
             products = new String[productsC.getCount()];
             int i = 0;
             do {
-                products[i] = productsC.getString(0);
+                products[i] = productsC.getString(productsC.getColumnIndex("productName"));
                 i++;
 
             } while (productsC.moveToNext());
@@ -142,15 +142,16 @@ public class add_product extends AppCompatActivity {
 
         boolean finalNeedGST1 = needGST;
         price.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("Range")
             @Override
             public void onClick(View v) {
                 if (price.getText().toString().equals("") && !productName.getText().toString().equals("")) {
                     Cursor getPrice = DB.GetProductQuantity(productName.getText().toString(), sellertxt);
                     getPrice.moveToFirst();
                     if (getPrice.getCount() > 0) {
-                        price.setText(String.valueOf(getPrice.getInt(2)));
+                        price.setText(String.valueOf(getPrice.getInt(getPrice.getColumnIndex("price"))));
                         if (finalNeedGST1) {
-                            GstPersentageEDT.setText(String.valueOf(getPrice.getInt(6)));
+                            GstPersentageEDT.setText(String.valueOf(getPrice.getInt(getPrice.getColumnIndex("Gst"))));
                         }
 
                         Toast.makeText(add_product.this, "Added", Toast.LENGTH_SHORT).show();
