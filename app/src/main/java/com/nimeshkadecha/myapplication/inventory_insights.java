@@ -1,7 +1,5 @@
 package com.nimeshkadecha.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,8 +19,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
@@ -31,7 +29,7 @@ public class inventory_insights extends AppCompatActivity {
 
 	DBManager dbLocal = new DBManager(this);
 
-	private String blockCharacterSet = " (){}[]:;'//.,-<>?+₹`@~#^|$%&*!=";
+	private final String blockCharacterSet = " (){}[]:;'//.,-<>?+₹`@~#^|$%&*!=";
 
 	private final InputFilter filter = new InputFilter() {
 
@@ -52,10 +50,10 @@ public class inventory_insights extends AppCompatActivity {
 		setContentView(R.layout.inventory_insights);
 
 //        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
 //  ================================================================================================
 
 		Bundle bundle = getIntent().getExtras();
@@ -128,9 +126,7 @@ public class inventory_insights extends AppCompatActivity {
 				}
 			} while (categoryNameSuggestionCursor.moveToNext());
 			Names = new String[i];
-			for (int j = 0; j < i; j++) {
-				Names[j] = NameSuggestion[j];
-			}
+			System.arraycopy(NameSuggestion, 0, Names, 0, i);
 		} else {
 			Names = new String[]{"No Data"};
 		}
@@ -236,7 +232,7 @@ public class inventory_insights extends AppCompatActivity {
 					if (!itemName.getText().toString().trim().equals("")) {
 						Cursor ReportCursor = dbLocal.ViewProductHistory(Seller_email, itemName.getText().toString());
 
-						Log.d("ENimesh","Count = " +ReportCursor.getCount());
+						Log.d("ENimesh", "Count = " + ReportCursor.getCount());
 
 						if (ReportCursor.getCount() <= 0) {
 							Toast.makeText(this, "You haven't managed '" + itemName.getText().toString() + "' product's stocks.", Toast.LENGTH_SHORT).show();
@@ -374,38 +370,38 @@ public class inventory_insights extends AppCompatActivity {
 
 	}
 
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
+//
+//	@Override
+//	protected void onStart() {
+//		super.onStart();
+//		//        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+////  ================================================================================================
+//	}
+//
+//	@Override
+//	protected void onRestart() {
+//		super.onRestart();
+////        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+////  ================================================================================================
+//	}
+//
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+////        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+////  ================================================================================================
+//	}
 
 }

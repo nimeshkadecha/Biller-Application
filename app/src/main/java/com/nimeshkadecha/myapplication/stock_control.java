@@ -1,7 +1,5 @@
 package com.nimeshkadecha.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -19,8 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
@@ -31,14 +29,11 @@ import java.util.Objects;
 
 public class stock_control extends AppCompatActivity {
 
-	private ImageView menu;
-
 	//    Shared preference to Get User name
 	public static final String SHARED_PREFS = "sharedPrefs";
-
 	DBManager DB = new DBManager(this);
-
-	private String blockCharacterSet = " (){}[]:;'//.,-<>?+₹`@~#^|$%&*!=";
+	private ImageView menu;
+	private final String blockCharacterSet = " (){}[]:;'//.,-<>?+₹`@~#^|$%&*!=";
 
 	private final InputFilter filter = new InputFilter() {
 
@@ -59,10 +54,10 @@ public class stock_control extends AppCompatActivity {
 		setContentView(R.layout.stock_control);
 
 //        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
 //  ================================================================================================
 
 //        Getting seller email from shared preference
@@ -80,7 +75,6 @@ public class stock_control extends AppCompatActivity {
 		Bundle name = getIntent().getExtras();
 		seller = name.getString("Email");
 		EditText GSTEdt = findViewById(R.id.GSTPersentage);
-		;
 
 //        GST filed visibility =====================================================================
 		Boolean GST_availability = false;
@@ -148,9 +142,7 @@ public class stock_control extends AppCompatActivity {
 			} while (Name_Sugg.moveToNext());
 
 			Names = new String[i];
-			for (int j = 0; j < i; j++) {
-				Names[j] = NameSuggestion[j];
-			}
+			System.arraycopy(NameSuggestion, 0, Names, 0, i);
 		} else {
 			Names = new String[]{"No Data"};
 		}
@@ -310,38 +302,38 @@ public class stock_control extends AppCompatActivity {
 
 //  ================================================================================================
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
+//	@Override
+//	protected void onStart() {
+//		super.onStart();
+//		//        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+////  ================================================================================================
+//	}
+//
+//	@Override
+//	protected void onRestart() {
+//		super.onRestart();
+////        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+////  ================================================================================================
+//	}
+//
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+////        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+////  ================================================================================================
+//	}
 
 
 }

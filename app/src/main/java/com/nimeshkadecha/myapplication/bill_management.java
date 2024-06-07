@@ -7,12 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.ColorSpace;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,16 +24,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.material.color.utilities.ColorUtils;
 import com.google.android.material.textfield.TextInputLayout;
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -54,20 +46,14 @@ import java.util.Random;
 
 public class bill_management extends AppCompatActivity {
 
-	private EditText dateedt, billidedt, todateedt;
-
-	private AutoCompleteTextView nameedt, contactedt;
-
-	private Button searchbtn, showbtn, pdf;
-
-	private ImageView menuclick;
-
-	private DBManager DB = new DBManager(this);
-
-	private Spinner spinner;
-
-	private TextInputLayout cl, dl, edl, bl, CN;
 	String[] shorting = {"Name", "Date"};
+	private EditText dateedt, billidedt, todateedt;
+	private AutoCompleteTextView nameedt, contactedt;
+	private Button searchbtn, showbtn, pdf;
+	private ImageView menuclick;
+	private final DBManager DB = new DBManager(this);
+	private Spinner spinner;
+	private TextInputLayout cl, dl, edl, bl, CN;
 
 	@SuppressLint("Range")
 	@Override
@@ -76,10 +62,10 @@ public class bill_management extends AppCompatActivity {
 		setContentView(R.layout.bill_management);
 
 //        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
 
 //        Finding Layout for Spinner (DropDown MEnu) ===============================================
 		cl = findViewById(R.id.contactlayout);
@@ -153,9 +139,7 @@ public class bill_management extends AppCompatActivity {
 			} while (customerNameSuggestionCursor.moveToNext());
 
 			Names = new String[i];
-			for (int j = 0; j < i; j++) {
-				Names[j] = NameSuggestion[j];
-			}
+			System.arraycopy(NameSuggestion, 0, Names, 0, i);
 		} else {
 			Names = new String[]{"No DAta"};
 		}
@@ -191,9 +175,7 @@ public class bill_management extends AppCompatActivity {
 			} while (customerNumberSuggestionCursor.moveToNext());
 
 			NUmber = new String[i];
-			for (int j = 0; j < i; j++) {
-				NUmber[j] = numberSugg[j];
-			}
+			System.arraycopy(numberSugg, 0, NUmber, 0, i);
 		} else {
 			NUmber = new String[]{"No Data"};
 			numberSugg = new String[]{"No Data for Suggestion"};
@@ -363,7 +345,7 @@ public class bill_management extends AppCompatActivity {
 				} else {
 					Cursor searchResultCursor;
 					if (!nametxt.isEmpty()) {
-						char c[] = nametxt.toCharArray();
+						char[] c = nametxt.toCharArray();
 						boolean contain_digit = false;
 						int NumberOfDigits = 0;
 						for (char check : c) {
@@ -453,7 +435,7 @@ public class bill_management extends AppCompatActivity {
 									break;
 
 								case "billid":
-									alert.setMessage("Delete data of the billid : " + String.valueOf(Integer.parseInt(nametxt)));
+									alert.setMessage("Delete data of the billid : " + Integer.parseInt(nametxt));
 									break;
 
 								case "name":
@@ -581,7 +563,7 @@ public class bill_management extends AppCompatActivity {
 					PdfDocument pdfDocument = new PdfDocument(writer);
 					Document document = new Document(pdfDocument);
 
-					float cWidth[] = {560};
+					float[] cWidth = {560};
 					Table table1 = new Table(cWidth);
 
 //        Table 1 do this
@@ -595,17 +577,17 @@ public class bill_management extends AppCompatActivity {
 					} else {
 						selerDATA.moveToFirst();
 						do {
-							table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(selerDATA.getColumnIndex("name")) + "").setFontSize(32)).setBorder(Border.NO_BORDER));
+							table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(selerDATA.getColumnIndex("name"))).setFontSize(32)).setBorder(Border.NO_BORDER));
 
-							table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(selerDATA.getColumnIndex("address")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+							table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(selerDATA.getColumnIndex("address"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 
-							table1.addCell(new Cell().add(new Paragraph("E=mail: " + selerDATA.getString(selerDATA.getColumnIndex("email")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+							table1.addCell(new Cell().add(new Paragraph("E=mail: " + selerDATA.getString(selerDATA.getColumnIndex("email"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 
-							table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(selerDATA.getColumnIndex("contact")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+							table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(selerDATA.getColumnIndex("contact"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 
 							if (!selerDATA.getString(selerDATA.getColumnIndex("gst")).equals("-1")) {
 								haveGST = true;
-								table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(selerDATA.getColumnIndex("gst")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+								table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(selerDATA.getColumnIndex("gst"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 							}
 
 							table1.addCell(new Cell());
@@ -617,20 +599,20 @@ public class bill_management extends AppCompatActivity {
 					//        Table 2 do this    FROM BILLID
 //        Want display ||||||  customerName=5 customerNumber=6 date=7
 
-					float cWidth3[] = {142, 142, 142, 142};
+					float[] cWidth3 = {142, 142, 142, 142};
 					Table table3 = new Table(cWidth3);
 
 					Table table2;
 					if (haveGST) {
-						float cWidth2[] = {120, 90, 110, 80, 80, 90};
+						float[] cWidth2 = {120, 90, 110, 80, 80, 90};
 						table2 = new Table(cWidth2);
 
 					} else {
-						float cWidth2[] = {270, 100, 100, 100};
+						float[] cWidth2 = {270, 100, 100, 100};
 						table2 = new Table(cWidth2);
 					}
 
-					float cWidth6[] = {560};
+					float[] cWidth6 = {560};
 					Table END = new Table(cWidth6);
 					Table END_Border = new Table(cWidth6);
 
@@ -640,7 +622,7 @@ public class bill_management extends AppCompatActivity {
 					int checker = 0;
 
 					if (!nametxt.isEmpty()) {
-						char c[] = nametxt.toCharArray();
+						char[] c = nametxt.toCharArray();
 						boolean contain_digit = false;
 						int NumberOfDigits = 0;
 						for (char check : c) {
@@ -713,32 +695,32 @@ public class bill_management extends AppCompatActivity {
 							customerDetail.moveToFirst();
 							do {
 								//  Printing bill heading ==========================================
-								float cWidth5[] = {142, 142, 142, 142};
+								float[] cWidth5 = {142, 142, 142, 142};
 								Table table5 = new Table(cWidth5);
 
 								table5.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-								table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerName")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+								table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerName"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 								table5.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-								table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerNumber")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+								table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerNumber"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 
 								table5.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-								table5.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(customerDetail.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+								table5.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(customerDetail.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy")).setFontSize(14)).setBorder(Border.NO_BORDER));
 								table5.addCell(new Cell().setBorder(Border.NO_BORDER));
 								table5.addCell(new Cell().setBorder(Border.NO_BORDER));
 
 								table5.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
-								table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("billId")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+								table5.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("billId"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 								table5.addCell(new Cell().setBorder(Border.NO_BORDER));
 								table5.addCell(new Cell().setBorder(Border.NO_BORDER));
 								document.add(table5);
 								table5.flushContent();
 								//  printing bill details ==========================================
 								if (haveGST) {
-									float cWidth2[] = {120, 90, 110, 80, 80, 90};
+									float[] cWidth2 = {120, 90, 110, 80, 80, 90};
 									table2 = new Table(cWidth2);
 
 								} else {
-									float cWidth2[] = {270, 100, 100, 100};
+									float[] cWidth2 = {270, 100, 100, 100};
 									table2 = new Table(cWidth2);
 								}
 
@@ -773,17 +755,17 @@ public class bill_management extends AppCompatActivity {
 												}
 												float tax = ((Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("quantity")))) * (Integer.parseInt(String.valueOf(gst)) / 100f)));
 												TotalGST += tax;
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")) + "")));
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")) + "")));
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")) + "")));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")))));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")))));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")))));
 												table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
 												table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")) + "")));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")))));
 											} else {
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")) + "")));
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")) + "")));
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")) + "")));
-												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")) + "")));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")))));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")))));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")))));
+												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")))));
 											}
 											index++;
 											total += list.getInt(list.getColumnIndex("subtotal"));
@@ -819,15 +801,15 @@ public class bill_management extends AppCompatActivity {
 							customerDetail.moveToFirst();
 
 							table3.addCell(new Cell().add(new Paragraph("Customer Name").setFontSize(14)).setBorder(Border.NO_BORDER));
-							table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerName")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+							table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerName"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 							table3.addCell(new Cell().add(new Paragraph("Customer Number").setFontSize(14)).setBorder(Border.NO_BORDER));
-							table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerNumber")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+							table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerNumber"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 
 							table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
-							table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(customerDetail.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy") + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+							table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(customerDetail.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy")).setFontSize(14)).setBorder(Border.NO_BORDER));
 
 							table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
-							table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("billId")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
+							table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("billId"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 							//  Printing bill details ==============================================
 							table2.addCell(new Cell().add(new Paragraph("Product Name")));
 							table2.addCell(new Cell().add(new Paragraph("Product Price")));
@@ -859,17 +841,17 @@ public class bill_management extends AppCompatActivity {
 										}
 										float tax = ((Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("quantity")))) * (Integer.parseInt(String.valueOf(gst)) / 100f)));
 										TotalGST += tax;
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")) + "")));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")) + "")));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")) + "")));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")))));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")))));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")))));
 										table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
 										table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")) + "")));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")))));
 									} else {
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")) + "")));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")) + "")));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")) + "")));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")) + "")));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")))));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")))));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")))));
+										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")))));
 									}
 									total += list.getInt(list.getColumnIndex("subtotal"));
 								} while (list.moveToNext());
@@ -1006,41 +988,42 @@ public class bill_management extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
+		super.onBackPressed();
 		finish();
 	}
 
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-//        Google ads code --------------------------------------------------------------------------
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-
-	}
+//	@Override
+//	protected void onStart() {
+//		super.onStart();
+//		//        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+//
+//	}
+//
+//	@Override
+//	protected void onRestart() {
+//		super.onRestart();
+////        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+//
+//	}
+//
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+////        Google ads code --------------------------------------------------------------------------
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+//
+//	}
 
 }

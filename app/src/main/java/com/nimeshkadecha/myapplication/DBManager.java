@@ -1,7 +1,6 @@
 package com.nimeshkadecha.myapplication;
 
 import android.Manifest;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,21 +12,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
-import java.nio.channels.FileChannel;
-
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.time.LocalDate;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
@@ -40,6 +32,12 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class DBManager extends SQLiteOpenHelper {
+	// Encryption parameters ==========================================================================
+	private static final String ALGORITHM = "AES";
+	private static final int KEY_SIZE = 256;
+	private static final int ITERATIONS = 65536;
+	private static final int SALT_LENGTH = 16;
+
 	public DBManager(Context context) {
 //        Creating database with name = Biller
 		super(context, "Biller", null, 1);
@@ -226,6 +224,8 @@ public class DBManager extends SQLiteOpenHelper {
 		return DB.rawQuery("select * from users", null);
 	}
 
+//------------------------------------- Working on customer tables ---------------------------------
+
 	//    Getting specific user all DATA ========================[select * from users where email=?]
 	public Cursor GetUser(String email) {
 		SQLiteDatabase DB = this.getReadableDatabase();
@@ -294,8 +294,6 @@ public class DBManager extends SQLiteOpenHelper {
 			return false;
 		}
 	}
-
-//------------------------------------- Working on customer tables ---------------------------------
 
 	//    ADDING ITEM in list/ in recyclerview / in display insert TABLE ==================================
 	@SuppressLint("Range")
@@ -584,7 +582,6 @@ public class DBManager extends SQLiteOpenHelper {
 		return DB.rawQuery("select * from customers where sellerId =?", new String[]{sellerId});
 	}
 
-
 	// Fetching single customer =======[select * from customer where seller =? and customerName = ?]
 	public Cursor ParticularCustomerInformation(String email, String name) {
 		SQLiteDatabase DB = this.getReadableDatabase();
@@ -754,6 +751,7 @@ public class DBManager extends SQLiteOpenHelper {
 		delete_display = db.delete("display", "billId = ? and sellerId = ?", new String[]{billId, sellerId});
 		return delete_customer != -1 && delete_display != -1;
 	}
+//    ----------------------------------- Managing Stock -------------------------------------------
 
 	// Delete Bill With Customer Number ============================================================
 	public boolean DeleteBillWithCustomerNumber(String number, String email) {
@@ -802,7 +800,6 @@ public class DBManager extends SQLiteOpenHelper {
 		} while (data.moveToNext());
 		return true;
 	}
-//    ----------------------------------- Managing Stock -------------------------------------------
 
 	// creating extra 2 table for stock ============================================================
 	public void CreateTable() {
@@ -1097,13 +1094,6 @@ public class DBManager extends SQLiteOpenHelper {
 	}
 
 
-	// Encryption parameters ==========================================================================
-	private static final String ALGORITHM = "AES";
-	private static final int KEY_SIZE = 256;
-	private static final int ITERATIONS = 65536;
-	private static final int SALT_LENGTH = 16;
-
-
 	// Download backup =============================================================================
 
 	@SuppressLint("Range")
@@ -1113,17 +1103,17 @@ public class DBManager extends SQLiteOpenHelper {
 		Cursor user = getdata();
 		user.moveToFirst();
 		boolean passwordFetched = false;
-		do{
+		do {
 			if (user.getString(user.getColumnIndex("email")).equals(email)) {
 				password = user.getString(user.getColumnIndex("password"));
 				passwordFetched = true;
 				break;
 			}
-		}while (user.moveToNext());
-		Log.d("ENimesh","Downlod before password is = " + password);
+		} while (user.moveToNext());
+		Log.d("ENimesh", "Downlod before password is = " + password);
 
 
-		while(!passwordFetched){};
+		while (!passwordFetched) {}
 
 		if (!isPermissionGranted(context)) {
 			return "Permission Denied";
@@ -1145,7 +1135,7 @@ public class DBManager extends SQLiteOpenHelper {
 			}
 			String backupDatabasePath = backupPath + "Biller_Backup.db";
 
-			Log.d("ENimesh","Downlod after password is = " + password);
+			Log.d("ENimesh", "Downlod after password is = " + password);
 			// Generate salt and secret key
 			byte[] salt = new byte[16];
 			SecureRandom secureRandom = new SecureRandom();
@@ -1380,7 +1370,7 @@ public class DBManager extends SQLiteOpenHelper {
 		try {
 			FileInputStream fis = new FileInputStream(selectedFile);
 
-			Log.d("ENimesh","upload password = " + Arrays.toString(password));
+			Log.d("ENimesh", "upload password = " + Arrays.toString(password));
 
 			// Read salt and IV from the backup file
 			byte[] salt = new byte[16];

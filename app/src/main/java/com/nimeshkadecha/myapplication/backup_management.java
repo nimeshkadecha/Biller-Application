@@ -1,12 +1,9 @@
 package com.nimeshkadecha.myapplication;
 
+import static com.nimeshkadecha.myapplication.login_Screen.MANAGE_STORAGE_PERMISSION_CODE;
+import static com.nimeshkadecha.myapplication.login_Screen.STORAGE_PERMISSION_CODE;
+
 import android.Manifest;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,7 +14,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -28,8 +28,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,23 +47,52 @@ import java.util.Locale;
 public class backup_management extends AppCompatActivity {
 
 
-	private static final int REQUEST_WRITE_STORAGE = 112;
-
-	DBManager dbManager = new DBManager(this);
 	public static final String SHARED_PREFS = "sharedPrefs";
-
+	private static final int REQUEST_WRITE_STORAGE = 112;
+	final String[] password = {"0000"};
+	DBManager dbManager = new DBManager(this);
 	Button showPathAuto;
 	@SuppressLint("UseSwitchCompatOrMaterialCode")
 	Switch AutoUploadSwitch;
-
-	private TextView uploadDate, Download, AutoUpdateLabel, AutoUpdateDate;
-
 	//      Getting Current Date to put ----------------------------------------------------------------
 	Date c = Calendar.getInstance().getTime();
-
 	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 	String formattedDate = df.format(c);
+	private TextView uploadDate, Download, AutoUpdateLabel, AutoUpdateDate;
 
+	// getting file from URL =======================================================================
+	public static File convertUriToFile(Context context, Uri uri) throws IOException {
+		InputStream input = null;
+		OutputStream output = null;
+		try {
+			// Open an input stream from the Uri
+			ContentResolver contentResolver = context.getContentResolver();
+			input = contentResolver.openInputStream(uri);
+
+			// Create a temporary file in the app's cache directory
+			File outputFile = new File(context.getCacheDir(), "temp_file_biller");
+
+			// Create a stream to write data to the output file
+			output = new FileOutputStream(outputFile);
+
+			byte[] data = new byte[4096];
+			int count;
+			while ((count = input.read(data)) != -1) {
+				// Write data to the output stream
+				output.write(data, 0, count);
+			}
+
+			return outputFile; // Return the temporary file
+		} finally {
+			try {
+				if (output != null)
+					output.close();
+				if (input != null)
+					input.close();
+			} catch (IOException ignored) {
+			}
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +100,10 @@ public class backup_management extends AppCompatActivity {
 		setContentView(R.layout.backup_management);
 
 //        Google ads code ==========================================================================
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
 
 
 //        Using Shared Preference to store Last Date ===============================================
@@ -125,33 +156,33 @@ public class backup_management extends AppCompatActivity {
 		AutoUploadSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    boolean check = dbManager.AutoLocalBackup(backup_management.this);
+				if (isChecked) {
+					boolean check = dbManager.AutoLocalBackup(backup_management.this);
 
-                    if(check){
-                        Date c = Calendar.getInstance().getTime();
-                        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                        String formattedDate = df.format(c);
+					if (check) {
+						Date c = Calendar.getInstance().getTime();
+						SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+						String formattedDate = df.format(c);
 
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("AutoUpload", formattedDate);
-                        editor.apply();
-                        AutoUpdateDate.setText(formattedDate);
-                    }
+						SharedPreferences.Editor editor = sharedPreferences.edit();
+						editor.putString("AutoUpload", formattedDate);
+						editor.apply();
+						AutoUpdateDate.setText(formattedDate);
+					}
 
-                    AutoUpdateLabel.setVisibility(View.VISIBLE);
-                    AutoUpdateDate.setVisibility(View.VISIBLE);
+					AutoUpdateLabel.setVisibility(View.VISIBLE);
+					AutoUpdateDate.setVisibility(View.VISIBLE);
 
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("AutoBackup", "true");
-                    editor.apply();
-                } else {
-                    AutoUpdateLabel.setVisibility(View.GONE);
-                    AutoUpdateDate.setVisibility(View.GONE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("AutoBackup", "false");
-                    editor.apply();
-                }
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.putString("AutoBackup", "true");
+					editor.apply();
+				} else {
+					AutoUpdateLabel.setVisibility(View.GONE);
+					AutoUpdateDate.setVisibility(View.GONE);
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.putString("AutoBackup", "false");
+					editor.apply();
+				}
 			}
 		});
 
@@ -169,37 +200,96 @@ public class backup_management extends AppCompatActivity {
 			@Override
 			public void onClick(View view) {
 
-				String check = dbManager.DownloadBackup(backup_management.this,sharedPreferences.getString("UserName", ""));
-				if (!check.equals("false")) {
-					SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-					SharedPreferences.Editor editor = sp.edit();
-					editor.putString("Last Download", formattedDate);
-					editor.apply();
-					Download.setText(formattedDate);
+				if (isPermissionGranted(backup_management.this)) {
 
-					Toast.makeText(backup_management.this, "Success", Toast.LENGTH_SHORT).show();
-					AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
-					builder.setCancelable(false);
-					builder.setTitle("Bills");
-					builder.setMessage("You can locate the backup at \n \"" + check + "\" ");
-					builder.setNeutralButton("ok", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
+					String check = dbManager.DownloadBackup(backup_management.this, sharedPreferences.getString("UserName", ""));
+					if (!check.equals("false")) {
+						SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+						SharedPreferences.Editor editor = sp.edit();
+						editor.putString("Last Download", formattedDate);
+						editor.apply();
+						Download.setText(formattedDate);
+
+						Toast.makeText(backup_management.this, "Success", Toast.LENGTH_SHORT).show();
+						AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
+						builder.setCancelable(false);
+						builder.setTitle("Bills");
+						builder.setMessage("Notice:\nYour current app password is used to encrypt this backup.\nYou must provide the same password to access it in the future.\n\nStore securely; backup is deleted with app.\n\nYou can locate the backup at\n \"" + check + "\" ");
+						builder.setNeutralButton("ok", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						});
+						builder.show();
+					}
+				} else {
+					Toast.makeText(backup_management.this, "Please allow storage permission", Toast.LENGTH_SHORT).show();
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+						try {
+							Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+							intent.addCategory("android.intent.category.DEFAULT");
+							intent.setData(Uri.parse(String.format("package:%s", getPackageName())));
+							startActivityForResult(intent, MANAGE_STORAGE_PERMISSION_CODE);
+						} catch (Exception e) {
+							Intent intent = new Intent();
+							intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+							startActivityForResult(intent, MANAGE_STORAGE_PERMISSION_CODE);
 						}
-					});
-					builder.show();
+					} else {
+						ActivityCompat.requestPermissions(backup_management.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+					}
 				}
 			}
 		});
+
 
 		// upload backup button ====================================================================
 		Button uploadBTN = findViewById(R.id.LocaluploadDatabtn);
 		uploadBTN.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				selectBackupFile();
+				AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
+				builder.setTitle("Enter Password of backup file");
+
+				// Set up the input
+				final EditText input = new EditText(backup_management.this);
+				input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				builder.setView(input);
+
+				// Set up the buttons
+				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						password[0] = input.getText().toString();
+						if (!password[0].equals("") && password[0].length() > 7) {
+							selectBackupFile();
+						} else {
+							Toast.makeText(backup_management.this, "Please enter password valid", Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+
+				// Show the dialog
+				builder.show();
 			}
 		});
+	}
+
+	// Permission checker ==========================================================================
+	private boolean isPermissionGranted(Context context) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			return Environment.isExternalStorageManager();
+		} else {
+			int writePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+			int readPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+			return writePermission == PackageManager.PERMISSION_GRANTED && readPermission == PackageManager.PERMISSION_GRANTED;
+		}
 	}
 
 	// selecting .db file ==========================================================================
@@ -218,37 +308,12 @@ public class backup_management extends AppCompatActivity {
 			Uri selectedFileUri = data.getData();
 			if (selectedFileUri != null) {
 				try {
-					final String[] password = {"0000"};
-					AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
-					builder.setTitle("Enter Password");
-
-					// Set up the input
-					final EditText input = new EditText(backup_management.this);
-					input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-					builder.setView(input);
-
-					// Set up the buttons
-					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							password[0] = input.getText().toString();
-						}
-					});
-					builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-						}
-					});
-
-					// Show the dialog
-					builder.show();
 
 					File selectedFile = convertUriToFile(this, selectedFileUri); // Get the File from the file picker or any other source
-					boolean restoreSuccess = dbManager.UploadLocalBackup(this, selectedFile,password[0].toCharArray());
-					if(!restoreSuccess){
+					boolean restoreSuccess = dbManager.UploadLocalBackup(this, selectedFile, password[0].toCharArray());
+					if (!restoreSuccess) {
 						Toast.makeText(this, "Password is incorrect", Toast.LENGTH_SHORT).show();
-					}else{
+					} else {
 						SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 						SharedPreferences.Editor editor = sp.edit();
 						editor.putString("Last Upload", formattedDate);
@@ -289,41 +354,6 @@ public class backup_management extends AppCompatActivity {
 		}
 	}
 
-	// getting file from URL =======================================================================
-	public static File convertUriToFile(Context context, Uri uri) throws IOException {
-		InputStream input = null;
-		OutputStream output = null;
-		try {
-			// Open an input stream from the Uri
-			ContentResolver contentResolver = context.getContentResolver();
-			input = contentResolver.openInputStream(uri);
-
-			// Create a temporary file in the app's cache directory
-			File outputFile = new File(context.getCacheDir(), "temp_file_biller");
-
-			// Create a stream to write data to the output file
-			output = new FileOutputStream(outputFile);
-
-			byte data[] = new byte[4096];
-			int count;
-			while ((count = input.read(data)) != -1) {
-				// Write data to the output stream
-				output.write(data, 0, count);
-			}
-
-			return outputFile; // Return the temporary file
-		} finally {
-			try {
-				if (output != null)
-					output.close();
-				if (input != null)
-					input.close();
-			} catch (IOException ignored) {
-			}
-		}
-	}
-
-
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -336,34 +366,34 @@ public class backup_management extends AppCompatActivity {
 		}
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		//        Google ads code ==================================================================
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-		//        Google ads code ==================================================================
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		//        Google ads code ==================================================================
-		AdView mAdView;
-		mAdView = findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-	}
+//	@Override
+//	protected void onStart() {
+//		super.onStart();
+//		//        Google ads code ==================================================================
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+//	}
+//
+//	@Override
+//	protected void onRestart() {
+//		super.onRestart();
+//		//        Google ads code ==================================================================
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+//	}
+//
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+//		//        Google ads code ==================================================================
+//		AdView mAdView;
+//		mAdView = findViewById(R.id.adView);
+//		AdRequest adRequest = new AdRequest.Builder().build();
+//		mAdView.loadAd(adRequest);
+//	}
 
 }
