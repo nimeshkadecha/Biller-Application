@@ -102,8 +102,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         @Override
                         public boolean onLongClick(View view) {
                             DBlocal = new DBManager(context);
-                            Cursor b = DBlocal.RemoveItem(String.valueOf(index.get(position)));
-                            if(b.getCount()<0){
+                            boolean removeItem = DBlocal.RemoveItem(String.valueOf(index.get(position)));
+                            if(!removeItem){
                                 Toast.makeText(context, "Failed to Removed", Toast.LENGTH_SHORT).show();
                                 return false;
                             }else{
@@ -159,8 +159,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             @Override
             public boolean onLongClick(View v) {
                 DBlocal = new DBManager(context);
-                Cursor b = DBlocal.RemoveItem(String.valueOf(index.get(position)));
-                if(b.getCount()<0){
+                boolean removeItem = DBlocal.RemoveItem(String.valueOf(index.get(position)));
+                if(!removeItem){
                     Toast.makeText(context, "Failed to Removed", Toast.LENGTH_SHORT).show();
                     return false;
                 }else{

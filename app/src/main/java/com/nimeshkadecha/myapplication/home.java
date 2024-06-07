@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -119,6 +120,7 @@ public class home extends AppCompatActivity {
 
         Cursor Name_Sugg = DB.CustomerInformation(email);
         Name_Sugg.moveToFirst();
+        Log.d("ENimesh" , "Name count = " + Name_Sugg.getCount());
         if (Name_Sugg.getCount() > 0) {
             int i = 0;
             boolean insert = true;
@@ -452,6 +454,7 @@ public class home extends AppCompatActivity {
                         intent.putExtra("billId", finalBillIdtxt[0]);
                         intent.putExtra("seller", email);
                         intent.putExtra("origin", "home");
+
                         startActivity(intent);
                     }
                 }

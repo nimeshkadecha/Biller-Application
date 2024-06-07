@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -176,8 +177,8 @@ public class add_product extends AppCompatActivity {
                 productName_ST = productName.getText().toString();
                 price_ST = price.getText().toString();
                 quantity_ST = quantity.getText().toString();
-
                 GstPersentageString = GstPersentageEDT.getText().toString();
+
                 if (productName_ST.isEmpty() || price_ST.isEmpty() || quantity_ST.isEmpty()) {
                     if (productName_ST.isEmpty() && price_ST.isEmpty() && quantity_ST.isEmpty()) {
                         productName.setError("Enter Item Name here");
@@ -199,11 +200,12 @@ public class add_product extends AppCompatActivity {
                 } else {
 
                     if (cNametxt.isEmpty() || cNumbertxt.isEmpty() || datetext.isEmpty()) {
-                        Toast.makeText(add_product.this, "Emptity intent", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(add_product.this, "Empty intent", Toast.LENGTH_SHORT).show();
                     } else if (finalNeedGST && GstPersentageString.isEmpty()) {
                         Toast.makeText(add_product.this, "GST filed is empty", Toast.LENGTH_SHORT).show();
                         GstPersentageEDT.setError("Enter how much gst is applicable enter 0 if there is not any");
                     } else {
+                        Log.d("ENimesh","before call !" + productName_ST + price_ST + quantity_ST + cNametxt + cNumbertxt + datetext + billIdtxt + sellertxt + GstPersentageString);
                         // calling insert function
                         boolean check = DB.InsertList(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0, GstPersentageString);
                         if (check) {
@@ -255,6 +257,7 @@ public class add_product extends AppCompatActivity {
     //    if user click back then goto home with all the data 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         if (!origintxt.equalsIgnoreCase("home")) {
             // if origin is not home then we are here from show list so first user must save the bill 
             Toast.makeText(this, "Please save the bill before exiting", Toast.LENGTH_SHORT).show();

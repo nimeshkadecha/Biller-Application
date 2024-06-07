@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -113,7 +114,7 @@ public class inventory_insights extends AppCompatActivity {
 			do {
 				if (i != 0) {
 					for (int j = 0; j < i; j++) {
-						if (NameSuggestion[j].equals(categoryNameSuggestionCursor.getString(categoryNameSuggestionCursor.getColumnIndex("catagory")))) {
+						if (NameSuggestion[j].equals(categoryNameSuggestionCursor.getString(categoryNameSuggestionCursor.getColumnIndex("category")))) {
 							insert = false;
 							break;
 						} else {
@@ -122,7 +123,7 @@ public class inventory_insights extends AppCompatActivity {
 					}
 				}
 				if (insert) {
-					NameSuggestion[i] = categoryNameSuggestionCursor.getString(categoryNameSuggestionCursor.getColumnIndex("catagory"));
+					NameSuggestion[i] = categoryNameSuggestionCursor.getString(categoryNameSuggestionCursor.getColumnIndex("category"));
 					i++;
 				}
 			} while (categoryNameSuggestionCursor.moveToNext());
@@ -235,6 +236,8 @@ public class inventory_insights extends AppCompatActivity {
 					if (!itemName.getText().toString().trim().equals("")) {
 						Cursor ReportCursor = dbLocal.ViewProductHistory(Seller_email, itemName.getText().toString());
 
+						Log.d("ENimesh","Count = " +ReportCursor.getCount());
+
 						if (ReportCursor.getCount() <= 0) {
 							Toast.makeText(this, "You haven't managed '" + itemName.getText().toString() + "' product's stocks.", Toast.LENGTH_SHORT).show();
 						} else {
@@ -243,10 +246,10 @@ public class inventory_insights extends AppCompatActivity {
 							buffer.append("Product = " + itemName.getText().toString() + "\n\n");
 							do {
 								buffer.append("Date = " + date_convertor.convertDateFormat(ReportCursor.getString(ReportCursor.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy") + "\n");
-								buffer.append("Buy Price = " + ReportCursor.getString(ReportCursor.getColumnIndex("purchesPrice")) + "\n");
+								buffer.append("Buy Price = " + ReportCursor.getString(ReportCursor.getColumnIndex("purchasePrice")) + "\n");
 								buffer.append("Sell Price = " + ReportCursor.getString(ReportCursor.getColumnIndex("sellingPrice")) + "\n");
-								buffer.append("Quantity = " + ReportCursor.getString(ReportCursor.getColumnIndex("quentity")) + "\n");
-								buffer.append("Category = " + ReportCursor.getString(ReportCursor.getColumnIndex("catagory")) + "\n\n");
+								buffer.append("Quantity = " + ReportCursor.getString(ReportCursor.getColumnIndex("quantity")) + "\n");
+								buffer.append("Category = " + ReportCursor.getString(ReportCursor.getColumnIndex("category")) + "\n\n");
 							} while (ReportCursor.moveToNext());
 
 							AlertDialog.Builder builder = new AlertDialog.Builder(inventory_insights.this);
@@ -268,9 +271,9 @@ public class inventory_insights extends AppCompatActivity {
 							buffer.append("Category = " + catagory.getText().toString() + "\n\n");
 							do {
 								buffer.append("Date = " + date_convertor.convertDateFormat(ReportCursor.getString(ReportCursor.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy") + "\n");
-								buffer.append("Buy Price = " + ReportCursor.getString(ReportCursor.getColumnIndex("purchesPrice")) + "\n");
+								buffer.append("Buy Price = " + ReportCursor.getString(ReportCursor.getColumnIndex("purchasePrice")) + "\n");
 								buffer.append("Sell Price = " + ReportCursor.getString(ReportCursor.getColumnIndex("sellingPrice")) + "\n");
-								buffer.append("Quantity = " + ReportCursor.getString(ReportCursor.getColumnIndex("quentity")) + "\n");
+								buffer.append("Quantity = " + ReportCursor.getString(ReportCursor.getColumnIndex("quantity")) + "\n");
 								buffer.append("Product = " + ReportCursor.getString(ReportCursor.getColumnIndex("productName")) + "\n\n");
 							} while (ReportCursor.moveToNext());
 

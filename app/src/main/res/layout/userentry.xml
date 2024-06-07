@@ -143,14 +143,14 @@
                 android:layout_height="wrap_content"
                 android:text="Gst:"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/gstNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="19sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -169,14 +169,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/subtotal"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textsubtotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="19sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout

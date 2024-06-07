@@ -86,14 +86,14 @@ public class chart extends AppCompatActivity {
                     int b=rnd.nextInt(256);
 
                     ainput.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
-                    aquantity.add(get_Qty.getString(get_Qty.getColumnIndex("quentity")));
+                    aquantity.add(get_Qty.getString(get_Qty.getColumnIndex("quantity")));
 
                     Ar.add(String.valueOf(r));
                     Ag.add(String.valueOf(g));
                     Ab.add(String.valueOf(b));
                     ANAME.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
 
-                    int qty = Integer.parseInt(get_Qty.getString(get_Qty.getColumnIndex("quentity")));
+                    int qty = Integer.parseInt(get_Qty.getString(get_Qty.getColumnIndex("quantity")));
                     if(qty<0){
                         qty *= -1;
                     }

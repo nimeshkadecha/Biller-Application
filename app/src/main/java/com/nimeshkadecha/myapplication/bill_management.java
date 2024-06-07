@@ -362,7 +362,6 @@ public class bill_management extends AppCompatActivity {
 					Toast.makeText(bill_management.this, "Enter Starting Date", Toast.LENGTH_SHORT).show();
 				} else {
 					Cursor searchResultCursor;
-					searchResultCursor = DB.CustomerInformation(sellertxt);
 					if (!nametxt.isEmpty()) {
 						char c[] = nametxt.toCharArray();
 						boolean contain_digit = false;
@@ -511,7 +510,7 @@ public class bill_management extends AppCompatActivity {
 
 										case "rangDate":
 											confirmDelete = false;
-											confirmDelete = DB.DeleteCustomerWithRangeDate(finalRes, sellertxt);
+											confirmDelete = DB.DeleteBillWithDate(finalRes, sellertxt);
 											if (confirmDelete) {
 												Toast.makeText(bill_management.this, "bills from that range is deleted successfully", Toast.LENGTH_SHORT).show();
 											} else {
@@ -604,7 +603,7 @@ public class bill_management extends AppCompatActivity {
 
 							table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(selerDATA.getColumnIndex("contact")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 
-							if (!selerDATA.getString(3).equals("no")) {
+							if (!selerDATA.getString(selerDATA.getColumnIndex("gst")).equals("-1")) {
 								haveGST = true;
 								table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(selerDATA.getColumnIndex("gst")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 							}
@@ -638,7 +637,6 @@ public class bill_management extends AppCompatActivity {
 
 					Cursor customerDetail;
 					Cursor list;
-					customerDetail = DB.CustomerInformation(sellertxt);
 					int checker = 0;
 
 					if (!nametxt.isEmpty()) {
@@ -691,8 +689,8 @@ public class bill_management extends AppCompatActivity {
 						customerDetail = DB.CustomerBillID(billID, sellertxt);
 						list = DB.CustomerBillID(billID, sellertxt);
 					} else {
-						customerDetail = DB.CustomerInformation(sellertxt);
-						list = DB.CustomerInformation(sellertxt);
+						customerDetail = DB.CustomerInformation(sellertxt); // never used
+						list = DB.CustomerInformation(sellertxt); // never used
 						Toast.makeText(bill_management.this, "Error", Toast.LENGTH_SHORT).show();
 					}
 
@@ -768,7 +766,7 @@ public class bill_management extends AppCompatActivity {
 										if (customerDetail.getString(customerDetail.getColumnIndex("billId")).equals(list.getString(list.getColumnIndex("billId")))) {
 											if (haveGST) {
 												String gst;
-												if (list.getString(list.getColumnIndex("Gst")).equals("")) {
+												if (list.getString(list.getColumnIndex("Gst")).equals("-1")) {
 													gst = "0";
 												} else {
 													gst = list.getString(list.getColumnIndex("Gst"));
@@ -854,7 +852,7 @@ public class bill_management extends AppCompatActivity {
 								do {
 									if (haveGST) {
 										String gst;
-										if (list.getString(list.getColumnIndex("Gst")).equals("")) {
+										if (list.getString(list.getColumnIndex("Gst")).equals("-1")) {
 											gst = "0";
 										} else {
 											gst = list.getString(list.getColumnIndex("Gst"));
@@ -933,6 +931,7 @@ public class bill_management extends AppCompatActivity {
 
 //        Show ALl Customer Button =================================================================
 		showbtn = findViewById(R.id.showallData);
+		// can be hidden
 
 		showbtn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -946,13 +945,13 @@ public class bill_management extends AppCompatActivity {
 
 				StringBuffer buffer = new StringBuffer();
 				while (res.moveToNext()) {
-					String formattedDate = date_convertor.convertDateFormat(res.getString(res.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy");
+//					String formattedDate = date_convertor.convertDateFormat(res.getString(res.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy");
 //                    DATE | name | number | Total |
-					buffer.append("Bill ID = " + res.getString(res.getColumnIndex("billId")) + "\n");
+					buffer.append("Customer ID = " + res.getString(res.getColumnIndex("customerId")) + "\n");
 					buffer.append("Customer Name = " + res.getString(res.getColumnIndex("customerName")) + "\n");
 					buffer.append("Customer Number = " + res.getString(res.getColumnIndex("customerNumber")) + "\n");
-					buffer.append("Date = " + formattedDate + "\n");
-					buffer.append("Total = " + res.getString(res.getColumnIndex("total")) + "\n\n");
+//					buffer.append("Date = " + formattedDate + "\n");
+//					buffer.append("Total = " + res.getString(res.getColumnIndex("total")) + "\n\n");
 				}
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(bill_management.this);

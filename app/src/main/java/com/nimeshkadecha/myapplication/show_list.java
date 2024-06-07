@@ -191,11 +191,13 @@ public class show_list extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while (res.moveToNext()) {
+
+                    String formattedDate = date_convertor.convertDateFormat( res.getString(res.getColumnIndex("date")),"yyyy-MM-dd" ,"dd/MM/yyyy" );
                     //                    DATE | name | number | Total |
                     buffer.append("Bill ID = " + res.getString(res.getColumnIndex("billId")) + "\n");
                     buffer.append("Customer Name = " + res.getString(res.getColumnIndex("customerName")) + "\n");
-                    buffer.append("Customer Number = " + res.getString(res.getColumnIndex("CustomerNumber")) + "\n");
-                    buffer.append("Date = " + res.getString(res.getColumnIndex("date")) + "\n");
+                    buffer.append("Customer Number = " + res.getString(res.getColumnIndex("customerNumber")) + "\n");
+                    buffer.append("Date = " +formattedDate + "\n");
                     buffer.append("Total = " + res.getString(res.getColumnIndex("total")) + "\n\n");
                 }
 
@@ -297,7 +299,7 @@ public class show_list extends AppCompatActivity {
 // --------------------------------------------------------------------------------------------------
                             table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(selerDATA.getColumnIndex("contact")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-                            if(!selerDATA.getString(3).equals("no")){
+                            if(!selerDATA.getString(selerDATA.getColumnIndex("gst")).equals("-1")){
                                 haveGST = true;
                                 table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(selerDATA.getColumnIndex("gst")) + "").setFontSize(14)).setBorder(Border.NO_BORDER));
                             }
@@ -370,7 +372,7 @@ public class show_list extends AppCompatActivity {
                         do {
                             if(haveGST){
                                 String  gst;
-                                if(displayListCursor.getString(displayListCursor.getColumnIndex("Gst")).equals("")){
+                                if(displayListCursor.getString(displayListCursor.getColumnIndex("Gst")).equals("-1")){
                                     gst = "0";
                                 }else{
                                     gst = displayListCursor.getString(displayListCursor.getColumnIndex("Gst"));
@@ -468,7 +470,7 @@ public class show_list extends AppCompatActivity {
                 aprice.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("price")));
                 aquantity.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("quantity")));
                 asubtotal.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("subtotal")));
-                if(displayCursorRV.getString(displayCursorRV.getColumnIndex("Gst")).equals("null")){
+                if(displayCursorRV.getString(displayCursorRV.getColumnIndex("Gst")).equals("-1")){
                     aGST.add("0");
                 }else{
                     aGST.add(displayCursorRV.getString(displayCursorRV.getColumnIndex("Gst")));

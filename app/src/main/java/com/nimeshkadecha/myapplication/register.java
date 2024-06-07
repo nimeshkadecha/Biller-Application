@@ -39,10 +39,10 @@ public class register extends AppCompatActivity {
         setContentView(R.layout.register);
 
 //        Google ads code --------------------------------------------------------------------------
-        AdView mAdView;
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+//        AdView mAdView;
+//        mAdView = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
 //  ================================================================================================
 
 //        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
@@ -69,7 +69,7 @@ public class register extends AppCompatActivity {
 // Making GST button invisible so that user can togel switch
         gst.setVisibility(View.GONE);
         gstLayout.setVisibility(View.GONE);
-        gst.setText("no");
+        gst.setText("-1");
         contact = findViewById(R.id.contactNumber);
         address = findViewById(R.id.address);
         gstSwitch = findViewById(R.id.switch1GST);
@@ -84,7 +84,7 @@ public class register extends AppCompatActivity {
                 }else{
                     gst.setVisibility(View.GONE);
                     gstLayout.setVisibility(View.GONE);
-                    gst.setText("no");
+                    gst.setText("0");
                 }
             }
         });
@@ -137,7 +137,7 @@ public class register extends AppCompatActivity {
 
         if (emailTXT.isEmpty() || passwordTXT.isEmpty() || nameTXT.isEmpty() || gstTXT.isEmpty() || contactTXT.isEmpty() || addressTXT.isEmpty()) {
             if (emailTXT.isEmpty() && passwordTXT.isEmpty() && nameTXT.isEmpty() && gstTXT.isEmpty() && contactTXT.isEmpty() && addressTXT.isEmpty()) {
-                Toast.makeText(this, "Fillup FORM", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Fill-up FORM", Toast.LENGTH_SHORT).show();
             } else if (emailTXT.isEmpty()) {
                 Toast.makeText(this, "Fill up E-mail", Toast.LENGTH_SHORT).show();
             } else if (passwordTXT.isEmpty()) {
@@ -188,10 +188,10 @@ public class register extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //        Google ads code --------------------------------------------------------------------------
-        AdView mAdView;
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+//        AdView mAdView;
+//        mAdView = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
 //  ================================================================================================
     }
 
@@ -199,10 +199,10 @@ public class register extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 //        Google ads code --------------------------------------------------------------------------
-        AdView mAdView;
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+//        AdView mAdView;
+//        mAdView = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
 //  ================================================================================================
     }
 
@@ -210,10 +210,10 @@ public class register extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //        Google ads code --------------------------------------------------------------------------
-        AdView mAdView;
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+//        AdView mAdView;
+//        mAdView = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
 //  ================================================================================================
     }
 

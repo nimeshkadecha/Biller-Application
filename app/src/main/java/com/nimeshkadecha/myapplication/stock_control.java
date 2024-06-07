@@ -255,7 +255,7 @@ public class stock_control extends AppCompatActivity {
 //                    DATE | name | number | Total |
 						buffer.append("product name = " + data.getString(data.getColumnIndex("productName")) + "\n");
 						buffer.append("Price = " + data.getString(data.getColumnIndex("price")) + "\n");
-						buffer.append("Quantity = " + data.getString(data.getColumnIndex("quentity")) + "\n\n");
+						buffer.append("Quantity = " + data.getString(data.getColumnIndex("quantity")) + "\n\n");
 					}
 
 					AlertDialog.Builder builder = new AlertDialog.Builder(stock_control.this);

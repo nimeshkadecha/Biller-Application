@@ -70,8 +70,8 @@ public class profile_editing extends AppCompatActivity {
             do {
                 name.setText(getuserinfo.getString(getuserinfo.getColumnIndex("name")));
                 password.setText(getuserinfo.getString(getuserinfo.getColumnIndex("password")));
-                if(getuserinfo.getString(3).equals("no")){
-                    gst.setText("");
+                if(getuserinfo.getString(getuserinfo.getColumnIndex("gst")).equals("-1")){
+                    gst.setText("no");
                 }else{
                     gst.setText(getuserinfo.getString(getuserinfo.getColumnIndex("gst")));
                 }
@@ -131,10 +131,12 @@ public class profile_editing extends AppCompatActivity {
 
                 String nameTXT = name.getText().toString();
                 String passwordTXT = password.getText().toString();
-                String gstTXT = gst.getText().toString();
-                if(gstTXT.isEmpty()){
-                    gst.setText("no");
+                String gstTXT = gst.getText().toString().toLowerCase().trim();
+                if(!gstTXT.isEmpty() && !gstTXT.equals("no")){
                     gstTXT = gst.getText().toString();
+                }else{
+                    gst.setText("no");
+                    gstTXT = "-1";
                 }
                 String contactNumberTXT = contact.getText().toString();
                 String addressTXT = address.getText().toString();
