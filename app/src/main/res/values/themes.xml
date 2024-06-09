@@ -58,4 +58,12 @@
         <item name="srcCompat">@drawable/baseline_arrow_back_24</item>
     </style>
 
+    <style name="loadingBlur">
+        <item name="android:background">#11000000</item>
+    </style>
+
+    <style name="Gemini_btn" >
+        <item name="android:background">@drawable/gemini_button_background_light</item>
+    </style>
+
 </resources>

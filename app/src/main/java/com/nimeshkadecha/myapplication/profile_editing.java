@@ -53,7 +53,7 @@ public class profile_editing extends AppCompatActivity {
 		String number = "";
 
 		header = findViewById(R.id.Header);
-		header.setText("Update data of E-Mail : " + email);
+		header.setText("Update data of E-Mail " + email);
 		name = findViewById(R.id.rName);
 		password = findViewById(R.id.password);
 		gst = findViewById(R.id.gst);
@@ -90,6 +90,7 @@ public class profile_editing extends AppCompatActivity {
 
 //        SHOW Btn Works starts --------------------------------------------------------------------
 		show = findViewById(R.id.show);
+		show.setVisibility(View.GONE);
 		show.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -213,36 +214,36 @@ public class profile_editing extends AppCompatActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		final String SHARED_PREFS = "sharedPrefs";
-		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-		DBManager dbManager = new DBManager(getApplicationContext());
-		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-		if (check) {
-			Date c = Calendar.getInstance().getTime();
-			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-			String formattedDate = df.format(c);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
-			editor.putString("AutoUpload", formattedDate);
-			editor.apply();
-		}
+//		final String SHARED_PREFS = "sharedPrefs";
+//		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//		DBManager dbManager = new DBManager(getApplicationContext());
+//		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+//		if (check) {
+//			Date c = Calendar.getInstance().getTime();
+//			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+//			String formattedDate = df.format(c);
+//			SharedPreferences.Editor editor = sharedPreferences.edit();
+//			editor.putString("AutoUpload", formattedDate);
+//			editor.apply();
+//		}
 	}
 
 	// on stop
 	@Override
 	protected void onStop() {
 		super.onStop();
-		final String SHARED_PREFS = "sharedPrefs";
-		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-		DBManager dbManager = new DBManager(getApplicationContext());
-		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-		if (check) {
-			Date c = Calendar.getInstance().getTime();
-			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-			String formattedDate = df.format(c);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
-			editor.putString("AutoUpload", formattedDate);
-			editor.apply();
-		}
+//		final String SHARED_PREFS = "sharedPrefs";
+//		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//		DBManager dbManager = new DBManager(getApplicationContext());
+//		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+//		if (check) {
+//			Date c = Calendar.getInstance().getTime();
+//			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+//			String formattedDate = df.format(c);
+//			SharedPreferences.Editor editor = sharedPreferences.edit();
+//			editor.putString("AutoUpload", formattedDate);
+//			editor.apply();
+//		}
 	}
 
 //  ================================================================================================

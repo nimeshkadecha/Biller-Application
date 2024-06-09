@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#4f9ede" /> <!-- Background color for dark mode -->
+            <corners android:radius="8dp" /> <!-- Border radius -->
+            <padding android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp" /> <!-- Padding for shadow -->
+        </shape>
+    </item>
+    <item android:bottom="2dp" android:left="2dp" android:right="2dp" android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#80000000" /> <!-- Shadow color -->
+            <corners android:radius="0dp" /> <!-- Border radius for shadow -->
+        </shape>
+    </item>
+    <item android:left="1dp" android:top="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#DCBDE1FF" /> <!-- Inner background color for dark mode -->
+            <corners android:radius="4dp" /> <!-- Inner border radius -->
+        </shape>
+    </item>
+</layer-list>

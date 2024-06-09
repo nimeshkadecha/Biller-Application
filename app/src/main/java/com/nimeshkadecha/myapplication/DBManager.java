@@ -2,17 +2,26 @@ package com.nimeshkadecha.myapplication;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +29,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -32,11 +46,6 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class DBManager extends SQLiteOpenHelper {
-	// Encryption parameters ==========================================================================
-	private static final String ALGORITHM = "AES";
-	private static final int KEY_SIZE = 256;
-	private static final int ITERATIONS = 65536;
-	private static final int SALT_LENGTH = 16;
 
 	public DBManager(Context context) {
 //        Creating database with name = Biller
@@ -45,15 +54,6 @@ public class DBManager extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase DB) {
-//        Creating table name as user and column like
-//        Name | TEXT
-//        E-Mail | TEXT
-//        Password | TEXT
-//        GST | TEXT
-//        Contact | TEXT
-//        Address | TEXT
-
-//        DB.execSQL("CREATE TABLE users(name TEXT,email TEXT primary key,password TEXT ,gst TEXT,contact TEXT ,address TEXT)");
 
 		// record of seller(user) ===================================================
 		DB.execSQL("CREATE TABLE users(" +
@@ -63,7 +63,8 @@ public class DBManager extends SQLiteOpenHelper {
 										           " password TEXT," +
 										           " gst TEXT," +
 										           " contact TEXT," +
-										           " address TEXT)"
+										           " address TEXT," +
+										           " apiKey TEXT)"
 		          );
 
 		// record of each bills ================================================================
@@ -83,36 +84,12 @@ public class DBManager extends SQLiteOpenHelper {
 										           " FOREIGN KEY(sellerId) REFERENCES users(userId))"
 		          );
 
-//		DB.execSQL("Create table display(indexs Integer primary key autoincrement," +  // 0
-//										           "product TEXT ," + //1
-//										           "price TEXT," + //2
-//										           "quantity TEXT," + //3
-//										           "subtotal Float," +//4
-//										           "customerName TEXT," +//5
-//										           "customerNumber TEXT," +//6
-//										           "date Date," +//7
-//										           "billId Integer ," +//8
-//										           "seller TEXT," +//9
-//										           "backup Integer," +//10
-//										           "Gst Integer)"); //11
-
 // Product records ============================================================================
 		DB.execSQL("CREATE TABLE products(" +
 										           "productId INTEGER PRIMARY KEY AUTOINCREMENT, " +
 										           "productName TEXT, " +
 										           "category TEXT)"
 		          );
-
-//        Customer table
-//		DB.execSQL("Create TABLE customer(billId Integer primary key," + // 0
-//										           "customerName TEXT," + // 1
-//										           "customerNumber TEXT," + // 2
-//										           "date Date," + // 3
-//										           "total TEXT," + // 4
-//										           "seller TEXT," + // 5
-//										           "backup Integer)"); // 6
-		//        stock table
-
 
 		// Customer data =====================================================================
 
@@ -129,7 +106,7 @@ public class DBManager extends SQLiteOpenHelper {
 		DB.execSQL("CREATE TABLE customers(" +
 										           " customerId INTEGER PRIMARY KEY AUTOINCREMENT," +
 										           " customerName TEXT," +
-										           " customerNumber TEXT UNIQUE, " +
+										           " customerNumber TEXT, " +
 										           "sellerId INTEGER )"
 		          );
 
@@ -157,6 +134,15 @@ public class DBManager extends SQLiteOpenHelper {
 										           " FOREIGN KEY(sellerId) REFERENCES users(userId))"
 		          );
 
+		// GEMINI chat ===================================================================================
+
+		DB.execSQL("CREATE TABLE messages (" +
+										           "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+										           "message TEXT NOT NULL, " +
+										           "is_sent_by_user INTEGER NOT NULL, " +
+										           "timestamp INTEGER NOT NULL, " +
+										           "seller_id INTEGER NOT NULL, " +
+										           "FOREIGN KEY (seller_id) REFERENCES users(userId))");
 	}
 
 	@Override
@@ -189,19 +175,13 @@ public class DBManager extends SQLiteOpenHelper {
 		contentValues.put("gst", gst);
 		contentValues.put("contact", contact);
 		contentValues.put("address", address);
-
-//        Checking
-//		long result;
-//
-//		result = DB.insert("users", null, contentValues);
+		contentValues.put("apikey", "");
 
 		return DB.insert("users", null, contentValues) != -1;
 	}
 
 	//    Login Verification ==================[select * from users where email =? AND password = ?]
 	public boolean LoginUser(String email, String password) {
-//        SQLiteDatabase DB = this.getReadableDatabase();
-//        Creating a cursor to check password;
 		SQLiteDatabase DB = this.getReadableDatabase();
 		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email =? AND password = ?", new String[]{email, password});
 		boolean ans = cursor.getCount() > 0;
@@ -222,6 +202,23 @@ public class DBManager extends SQLiteOpenHelper {
 	public Cursor getdata() {
 		SQLiteDatabase DB = this.getReadableDatabase();
 		return DB.rawQuery("select * from users", null);
+	}
+
+	public boolean insertApiKey(String apiKey, String email) {
+		SQLiteDatabase DB = this.getWritableDatabase();
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("apiKey", apiKey);
+		return DB.update("users", contentValues, "userId =?", new String[]{String.valueOf(get_userId(email))}) != -1;
+	}
+
+	public String getApiKey(String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email =?", new String[]{email});
+		cursor.moveToFirst();
+		@SuppressLint("Range") String apiKey = cursor.getString(cursor.getColumnIndex("apiKey"));
+		cursor.close();
+		DB.close();
+		return apiKey;
 	}
 
 //------------------------------------- Working on customer tables ---------------------------------
@@ -257,7 +254,6 @@ public class DBManager extends SQLiteOpenHelper {
 		//        Getting all values in
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("name", name);
-//        contentValues.put("email", email);
 		contentValues.put("password", password);
 		contentValues.put("gst", gst);
 		contentValues.put("contact", contact);
@@ -295,11 +291,90 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 	}
 
+	//
+//	@SuppressLint("Range")
+//	public boolean validate_nameAndNumberConnection(String name, String number, String email, Context context) @SuppressLint("Range")
+	@SuppressLint("Range")
+	public void validateNameAndNumberConnection(final String name, final String number, final String email, final Context context, final Handler handler) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Log.d("ENimesh", "data in method = " + name + number + email);
+
+				SQLiteDatabase DB = getWritableDatabase();
+				String sellerId = String.valueOf(get_userId(email));
+
+				Cursor cursor = DB.rawQuery("SELECT customerName FROM customers WHERE customerNumber = ? AND sellerId = ? ", new String[]{number, sellerId});
+				int count = cursor.getCount();
+				Log.d("ENimesh", "Count = " + count);
+
+				if (count == 0) {
+					cursor.close();
+					Message message = handler.obtainMessage(1, true);
+					handler.sendMessage(message);
+				} else {
+					cursor.moveToFirst();
+					final String existingCustomerName = cursor.getString(cursor.getColumnIndex("customerName"));
+					if (existingCustomerName.equals(name)) {
+						cursor.close();
+						Message message = handler.obtainMessage(1, true);
+						handler.sendMessage(message);
+					} else {
+						cursor.close();
+						Handler mainHandler = new Handler(Looper.getMainLooper());
+						mainHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								AlertDialog.Builder alert = new AlertDialog.Builder(context);
+								alert.setTitle("Note!");
+								alert.setMessage("Customer :\"" + existingCustomerName + "\" already exist with this number.\nDo you want to update it's name to : \"" + name + "\"");
+								alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialogInterface, int i) {
+										new Thread(new Runnable() {
+											@Override
+											public void run() {
+												ContentValues contentValues = new ContentValues();
+												contentValues.put("customerName", name);
+
+												boolean isUpdated = DB.update("customers", contentValues, "customerNumber = ? AND sellerId = ?", new String[]{number, sellerId}) != -1;
+												Message message = handler.obtainMessage(1, isUpdated);
+												handler.sendMessage(message);
+											}
+										}).start();
+										dialogInterface.dismiss();
+									}
+								});
+								alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialogInterface, int i) {
+										Message message = handler.obtainMessage(1, false);
+										handler.sendMessage(message);
+										dialogInterface.dismiss();
+									}
+								});
+								alert.show();
+							}
+						});
+					}
+				}
+			}
+		}).start();
+	}
+
+
+	public String get_customerNameFromNumber(String name, String number, String email) {
+//		SQLiteDatabase DB = this.getWritableDatabase();
+//
+//		String sellerId = String.valueOf(get_userId(email));
+//
+//		Cursor cursor = DB.rawQuery("SELECT customerName FROM customers WHERE customerNumber = ? AND sellerId = ? ",new String[]{number,sellerId});
+
+		return "";
+	}
 	//    ADDING ITEM in list/ in recyclerview / in display insert TABLE ==================================
 	@SuppressLint("Range")
 	public boolean InsertList(String name, String price, String quantity, String cName, String cNumber, String date, int billId, String email, int state, String Gst) {
-
-		Log.d("ENimesh", "inside Insert List = " + price);
 
 		int priceInt = Integer.parseInt(price);
 
@@ -350,17 +425,6 @@ public class DBManager extends SQLiteOpenHelper {
 
 			String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
 
-//			contentValues.put("Product", name);
-//			contentValues.put("quantity", number_of_product);
-//			contentValues.put("subtotal", subtotal);
-//			contentValues.put("customerName", cName);
-//			contentValues.put("customerNumber", cNumber);
-//			contentValues.put("date", formattedDate);
-//			contentValues.put("billId", billId);
-//			contentValues.put("seller", email);
-//			contentValues.put("backup", state);
-//			contentValues.put("Gst", Gst);
-
 			contentValues.put("productId", p_id); // product name and category
 			contentValues.put("quantity", number_of_product);
 			contentValues.put("price", price);
@@ -385,18 +449,6 @@ public class DBManager extends SQLiteOpenHelper {
 			contentValues.put("date", formattedDate);
 			contentValues.put("billId", billId);
 			contentValues.put("Gst", Gst);
-
-
-//			contentValues.put("Product", name);
-//			contentValues.put("quantity", quantity);
-//			contentValues.put("subtotal", subtotal);
-//			contentValues.put("customerName", cName);
-//			contentValues.put("customerNumber", cNumber);
-//			contentValues.put("date", formattedDate);
-//			contentValues.put("billId", billId);
-//			contentValues.put("seller", email);
-//			contentValues.put("backup", state);
-//			contentValues.put("Gst", Gst);
 
 			return DB.insert("display", null, contentValues) != -1;
 		}
@@ -437,7 +489,7 @@ public class DBManager extends SQLiteOpenHelper {
 			cursor.close();
 
 			if (categoryLocal.equals("all") && !category.equals("all")) {
-				Cursor cursor1 = DB.rawQuery("UPDATE products SET category = ? WHERE productId = ?", new String[]{category, String.valueOf(id)});
+				@SuppressLint("Recycle") Cursor cursor1 = DB.rawQuery("UPDATE products SET category = ? WHERE productId = ?", new String[]{category, String.valueOf(id)});
 
 				if (cursor1.getCount() > 0) {
 					return id;
@@ -510,15 +562,12 @@ public class DBManager extends SQLiteOpenHelper {
 										                   "FROM display d " +
 										                   "JOIN products p ON d.productId = p.productId " +
 										                   "WHERE d.billId = ?", new String[]{bID});
-
-//		return DB.rawQuery("select * from display where billId =? ", new String[]{bID});
 	}
 
 	//    Remove from list ====================================[delete from display where index =? ]
 	@SuppressLint("Recycle")
 	public boolean RemoveItem(String id) {
 		SQLiteDatabase DB = this.getWritableDatabase();
-//		Log.d("ENimesh","index =" + id +"count test" + DB.rawQuery("DELETE FROM display WHERE indexs = ?", new String[]{id}).getCount());
 		return DB.rawQuery("DELETE FROM display WHERE indexs = ?", new String[]{id}).getCount() > -1;
 	}
 
@@ -577,9 +626,27 @@ public class DBManager extends SQLiteOpenHelper {
 
 		String sellerId = String.valueOf(get_userId(email));
 
-		Log.d("ENimesh", "Seller id - " + sellerId);
-
 		return DB.rawQuery("select * from customers where sellerId =?", new String[]{sellerId});
+	}
+
+	public String[] customersName_arr(String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		String sellerId = String.valueOf(get_userId(email));
+
+		Cursor nameCursor = DB.rawQuery("SELECT DISTINCT customerName FROM customers WHERE sellerId = ?;", new String[]{sellerId});
+
+		String[] name = new String[nameCursor.getCount()];
+
+		nameCursor.moveToFirst();
+		if (nameCursor.getCount() > 0) {
+			int count = 0;
+			do {
+				name[count] = nameCursor.getString(0);
+				count++;
+			} while (nameCursor.moveToNext());
+		}
+		return name;
 	}
 
 	// Fetching single customer =======[select * from customer where seller =? and customerName = ?]
@@ -604,8 +671,6 @@ public class DBManager extends SQLiteOpenHelper {
 										                   "JOIN customers c ON d.customerId = c.customerId " +
 										                   "WHERE c.customerName = ? AND d.sellerId = ?", new String[]{Name, sellerId}
 		                  );
-
-//		return DB.rawQuery("select * from display where customerName = ? and sellerId=?", new String[]{Name, sellerId});
 	}
 
 	//    Search Based on single date =========[select * from display where date = ? and sellerId = ?]
@@ -624,7 +689,6 @@ public class DBManager extends SQLiteOpenHelper {
 										                   "JOIN customers c ON d.customerId = c.customerId " +
 										                   "WHERE d.date = ? AND  d.sellerId = ?", new String[]{formattedDate, sellerId}
 		                  );
-//		return DB.rawQuery("select * from display where date = ? and sellerId = ?", new String[]{formattedDate, sellerId});
 	}
 
 	//    Search Based on number =====[select * from display where customerNumber = ? and seller=? ]
@@ -640,7 +704,7 @@ public class DBManager extends SQLiteOpenHelper {
 										                   "JOIN users u ON d.sellerId = u.userId " +
 										                   "WHERE c.customerNumber = ? AND u.email = ?", new String[]{Number, email}
 		                  );
-//		return DB.rawQuery("select * from display where customerNumber = ? and sellerId=? ", new String[]{Number, sellerId});
+
 	}
 
 	//    Search based on billID ===========[select * from display where billId = ? and sellerId = ? ]
@@ -658,8 +722,6 @@ public class DBManager extends SQLiteOpenHelper {
 										                   "JOIN users u ON d.sellerId = u.userId " +
 										                   "WHERE d.billId = ? AND u.email = ?", new String[]{billId, email}
 		                  );
-
-//		return DB.rawQuery("select * from display where billId = ? and sellerId = ? ", new String[]{billId, sellerId});
 	}
 
 	//    Getting Bill TOTAL ==============================[select * from customer where billid = ?]
@@ -696,8 +758,6 @@ public class DBManager extends SQLiteOpenHelper {
 										                            "WHERE u.email = ? AND d.date BETWEEN ? AND ?",
 		                            new String[]{email, startDate_formattedDate, endDate_formattedDate}
 		                           );
-//		cursor = DB.rawQuery("Select * from display where sellerId =? AND  date  BETWEEN ? AND ? ", new String[]{sellerId, startDate_formattedDate, endDate_formattedDate});
-
 		return cursor;
 	}
 
@@ -777,19 +837,6 @@ public class DBManager extends SQLiteOpenHelper {
 		return delete_customer != -1 && delete_display != -1;
 	}
 
-	String getCustomerIdFromName(String name) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-		Cursor customerId_C = DB.rawQuery("SELECT customerId FROM customers WHERE customerName = ? ", new String[]{name});
-
-		customerId_C.moveToFirst();
-		if (customerId_C.getCount() > 0) {
-			@SuppressLint("Range") String id = String.valueOf(customerId_C.getInt(customerId_C.getColumnIndex("customerId")));
-			customerId_C.close();
-			return id;
-		}
-		return "";
-	}
-
 	// Deleting bills with Date ====================================================================
 	@SuppressLint("Range")
 	public boolean DeleteBillWithDate(Cursor data, String email) {
@@ -799,30 +846,6 @@ public class DBManager extends SQLiteOpenHelper {
 				return false;
 		} while (data.moveToNext());
 		return true;
-	}
-
-	// creating extra 2 table for stock ============================================================
-	public void CreateTable() {
-//		SQLiteDatabase DB = this.getWritableDatabase();
-//
-//		DB.execSQL("Create TABLE IF NOT EXISTS stock(productID Integer primary key autoincrement ," + // 0
-//										           "productName TEXT ," + // 1
-//										           "catagory TEXT," + // 2
-//										           "purchesPrice TEXT," + // 3
-//										           "sellingPrice TEXT," + // 4
-//										           "date Date," + // 5
-//										           "quantity TEXT," + // 6
-//										           "seller TEXT," + // 7
-//										           "backup Integer," + // 8
-//										           "Gst Integer)"); // 9
-//
-//		DB.execSQL("Create TABLE IF NOT EXISTS stockQuantity(productName TEXT ," + //0
-//										           "quantity TEXT," + //1
-//										           "price TEXT," + //2
-//										           "seller TEXT ," + //3
-//										           "backup Integer," + //4
-//										           "stickTrackId Integer primary key autoincrement," + //5
-//										           "Gst Integer)"); //6
 	}
 
 	// setting current quantity ==[Select * from stockQuantity where sellerId = ? AND productName = ?]
@@ -875,7 +898,9 @@ public class DBManager extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.rawQuery("Select * from products where productId = ?", new String[]{String.valueOf(ID)});
 		cursor.moveToFirst();
-		return cursor.getString(cursor.getColumnIndex("productName"));
+		String name = cursor.getString(cursor.getColumnIndex("productName"));
+		cursor.close();
+		return name;
 	}
 
 	// removing the sold product Quantity ==========================================================
@@ -957,8 +982,6 @@ public class DBManager extends SQLiteOpenHelper {
 		String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
 
 		ContentValues cv = new ContentValues();
-//		cv.put("productName", name);
-//		cv.put("category", catagory);
 		cv.put("productId", get_productId(name, catagory));
 		cv.put("purchasePrice", pPrice);
 		cv.put("sellingPrice", sPrice);
@@ -966,7 +989,6 @@ public class DBManager extends SQLiteOpenHelper {
 		cv.put("quantity", quantity);
 		cv.put("sellerId", sellerId);
 		cv.put("Gst", gst);
-//		cv.put("backup", 0);
 
 		long check;
 
@@ -1017,7 +1039,6 @@ public class DBManager extends SQLiteOpenHelper {
 
 	// View current Stock Quantity ====================[Select * from stockQuantity where seller =?]
 	public Cursor ViewStock(String seller) {
-		CreateTable();
 		SQLiteDatabase db = this.getReadableDatabase();
 
 		String sellerId = String.valueOf(get_userId(seller));
@@ -1035,12 +1056,6 @@ public class DBManager extends SQLiteOpenHelper {
 		return db.rawQuery("SELECT * FROM stock " +
 										                   "JOIN products ON stock.productId = products.productId " +
 										                   "WHERE sellerId = ? AND products.productName = ?", new String[]{sellerId, product});
-
-//		return db.rawQuery("SELECT * FROM stock " +
-//										                   "WHERE sellerId = (SELECT userId FROM users WHERE email = ?) " +
-//										                   "AND productId = (SELECT productId FROM products WHERE productName = ?)",
-//		                   new String[]{seller, product});
-//		return db.rawQuery("Select * from stock where sellerId =? AND productName=? ", new String[]{sellerId, product});
 	}
 
 	// view stock history but category wise ====[Select * from stock where seller =? AND catagory=?]
@@ -1050,11 +1065,6 @@ public class DBManager extends SQLiteOpenHelper {
 
 		return db.rawQuery("SELECT * FROM stock JOIN products ON stock.productId = products.productId WHERE sellerId = ? AND products.category = ?",
 		                   new String[]{String.valueOf(get_userId(seller)), catagory});
-//		                   return db.rawQuery("SELECT * FROM stock" +
-//										                   " WHERE sellerId = (SELECT userId FROM users WHERE email = ?) " +
-//										                   "AND productId = (SELECT productId FROM products WHERE catagory = ?)",
-//		                   new String[]{seller, catagory});
-//		return db.rawQuery("Select * from stock where sellerId =? AND catagory=? ", new String[]{sellerId, catagory});
 	}
 
 	// Salse data of a perticular product
@@ -1085,12 +1095,6 @@ public class DBManager extends SQLiteOpenHelper {
 										                   "WHERE sellerId = ? " +
 										                   "AND products.category = ? ",
 		                   new String[]{sellerId, category});
-
-//		return db.rawQuery("Select DISTINCT productName " +
-//										                   "from stock " +
-//										                   "where sellerId = ? " +
-//										                   "AND productId = (SELECT productId FROM products WHERE category = ?) ",
-//		                   new String[]{sellerId, category});
 	}
 
 
@@ -1110,8 +1114,6 @@ public class DBManager extends SQLiteOpenHelper {
 				break;
 			}
 		} while (user.moveToNext());
-		Log.d("ENimesh", "Downlod before password is = " + password);
-
 
 		while (!passwordFetched) {}
 
@@ -1134,8 +1136,6 @@ public class DBManager extends SQLiteOpenHelper {
 				}
 			}
 			String backupDatabasePath = backupPath + "Biller_Backup.db";
-
-			Log.d("ENimesh", "Downlod after password is = " + password);
 			// Generate salt and secret key
 			byte[] salt = new byte[16];
 			SecureRandom secureRandom = new SecureRandom();
@@ -1176,101 +1176,6 @@ public class DBManager extends SQLiteOpenHelper {
 			return "Error";
 		}
 	}
-
-//	@SuppressLint("Range")
-//	public String DownloadBackup(Context context, String email) {
-//		String userPassword = "963258741";
-//		Cursor user = getdata();
-//		user.moveToFirst();
-//		while (user.moveToNext()) {
-//			if (user.getString(user.getColumnIndex("email")).equals(email)) {
-//				userPassword = user.getString(user.getColumnIndex("password"));
-//				break;
-//			}
-//		}
-//
-//		if (!isPermissionGranted(context)) {
-//			return "Permission Denied";
-//		}
-//
-//		try {
-//			// Step 1: Get the path to the app's internal database
-//			String internalDatabasePath = context.getDatabasePath("Biller").getPath();
-//
-//			// Step 2: Open the database file using FileInputStream
-//			FileInputStream fis = new FileInputStream(new File(internalDatabasePath));
-//
-//			// Step 3: Create the backup file path
-//			String backupPath = context.getExternalFilesDir(null) + "/Backups/";
-//			File backupFolder = new File(backupPath);
-//			if (!backupFolder.exists()) {
-//				if (!backupFolder.mkdirs()) {
-//					Log.e("ENimesh", "Failed to create backup directory");
-//					return "Error Creating Directory";
-//				}
-//			}
-//			String backupDatabasePath = backupPath + "Biller_Backup.db";
-//
-//			// Step 4: Encrypt the database file
-//			File encryptedBackupFile = new File(backupDatabasePath);
-//			encryptFile(fis, encryptedBackupFile, userPassword);
-//
-//			return backupDatabasePath; // Backup successful
-//		} catch (IOException | GeneralSecurityException e) {
-//			e.printStackTrace();
-//			return "Error";
-//		}
-//	}
-
-	//	public String DownloadBackup(Context context) {
-//		if (!isPermissionGranted(context)) {
-//			return "Permission Denied";
-//		}
-//
-//		try {
-//			// Step 1: Get the path to the app's internal database
-//			String internalDatabasePath = context.getDatabasePath("Biller").getPath();
-//
-//			Log.d("ENimesh","internalDatabasePath" + internalDatabasePath);
-//
-//			// Step 2: Open the database file using FileChannel for efficient file copy
-//			File databaseFile = new File(internalDatabasePath);
-//			FileInputStream fis = new FileInputStream(databaseFile);
-//			FileChannel src = fis.getChannel();
-//
-//			// Step 3: Create the backup file on external storage or other location
-//			String backupPath = context.getExternalFilesDir(null) + "/Backups/";
-//			File backupFolder = new File(backupPath);
-//			Log.d("ENimesh","backupPath = " + backupPath + " folder exists: " + backupFolder.exists());
-//
-//			if (!backupFolder.exists()) {
-//				if (!backupFolder.mkdirs()) {
-//					Log.e("ENimesh", "Failed to create backup directory");
-//					return "Error Creating Directory";
-//				}
-//			}
-//
-//			Log.d("ENimesh","backupPath = " + backupPath + " folder exists again: " + backupFolder.exists());
-//			String backupDatabasePath = backupPath + "Biller_Backup.db";
-//			Log.d("ENimesh","backupDatabasePath" + backupDatabasePath);
-//			FileOutputStream fos = new FileOutputStream(backupDatabasePath);
-//			FileChannel dst = fos.getChannel();
-//
-//			// Step 4: Copy the database file to the backup location
-//			dst.transferFrom(src, 0, src.size());
-//
-//			// Step 5: Close the channels
-//			src.close();
-//			dst.close();
-//			fis.close();
-//			fos.close();
-//
-//			return backupDatabasePath; // Backup successful
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return "Error";
-//		}
-//	}
 	private boolean isPermissionGranted(Context context) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			return Environment.isExternalStorageManager();
@@ -1281,86 +1186,6 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 	}
 
-
-//	public String DownloadBackup(Context context) {
-//		try {
-//			// Step 1: Get the path to the app's internal database
-//			String internalDatabasePath = context.getDatabasePath("Biller").getPath();
-//
-//			Log.d("ENimesh","internalDatabasePath" + internalDatabasePath);
-//
-//			// Step 2: Open the database file using FileChannel for efficient file copy
-//			File databaseFile = new File(internalDatabasePath);
-//			FileInputStream fis = new FileInputStream(databaseFile);
-//			FileChannel src = fis.getChannel();
-//
-//			// Step 3: Create the backup file on external storage or other location
-//			String backupPath = Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.nimeshkadecha.Biller/Backups/";
-//			File backupFolder = new File(backupPath);
-//			Log.d("ENimesh","backupPath = " + backupPath + "folder" + backupFolder.exists());
-//			if (!backupFolder.exists()) {
-//				backupFolder.mkdirs();
-//			}
-//			Log.d("ENimesh","backupPath = " + backupPath + "folder existe again" + backupFolder.exists());
-//			String backupDatabasePath = backupPath + "Biller_Backup.db";
-//			Log.d("ENimesh","backupDatabasePath" + backupDatabasePath);
-//			FileOutputStream fos = new FileOutputStream(backupDatabasePath);
-//			FileChannel dst = fos.getChannel();
-//
-//			// Step 4: Copy the database file to the backup location
-//			dst.transferFrom(src, 0, src.size());
-//
-//			// Step 5: Close the channels
-//			src.close();
-//			dst.close();
-//			fis.close();
-//			fos.close();
-//
-//			return backupDatabasePath; // Backup successful
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return "Error";
-//		}
-//	}
-
-	// download backup but at different location and very frequently called ========================
-	public Boolean AutoLocalBackup(Context context) {
-		return true;
-//		try {
-//			// Step 1: Get the path to the app's internal database
-//			String internalDatabasePath = context.getDatabasePath("Biller").getPath();
-//
-//			// Step 2: Open the database file using FileChannel for efficient file copy
-//			File databaseFile = new File(internalDatabasePath);
-//			FileInputStream fis = new FileInputStream(databaseFile);
-//			FileChannel src = fis.getChannel();
-//
-//			// Step 3: Create the backup file on external storage or other location
-//			String backupPath = Environment.getExternalStorageDirectory().getPath() + "/Android/data/com.nimeshkadecha.Biller/Auto Backup/";
-//			File backupFolder = new File(backupPath);
-//			if (!backupFolder.exists()) {
-//				backupFolder.mkdirs();
-//			}
-//			String backupDatabasePath = backupPath + "Auto_Biller_Backup.db";
-//			FileOutputStream fos = new FileOutputStream(backupDatabasePath);
-//			FileChannel dst = fos.getChannel();
-//
-//			// Step 4: Copy the database file to the backup location
-//			dst.transferFrom(src, 0, src.size());
-//
-//			// Step 5: Close the channels
-//			src.close();
-//			dst.close();
-//			fis.close();
-//			fos.close();
-//
-//			return true; // Backup successful
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-	}
-
 	// upload backup from either login screen or normally ==========================================
 
 	// Upload local backup method with decryption
@@ -1369,8 +1194,6 @@ public class DBManager extends SQLiteOpenHelper {
 		File dbFile = context.getDatabasePath("Biller");
 		try {
 			FileInputStream fis = new FileInputStream(selectedFile);
-
-			Log.d("ENimesh", "upload password = " + Arrays.toString(password));
 
 			// Read salt and IV from the backup file
 			byte[] salt = new byte[16];
@@ -1407,18 +1230,6 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 	}
 
-
-//	public String UploadLocalBackup(Context context, File selectedFile) {
-//		File dbFile = context.getDatabasePath("Biller");
-//		try (FileChannel src = new FileInputStream(selectedFile).getChannel();
-//		     FileChannel dst = new FileOutputStream(dbFile).getChannel()) {
-//			dst.transferFrom(src, 0, src.size());
-//			return "True";
-//		} catch (IOException e) {
-//			return "False";
-//		}
-//	}
-
 	// Generate secret key from password and salt
 	private SecretKey generateKey(char[] password, byte[] salt) throws GeneralSecurityException {
 		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -1426,5 +1237,169 @@ public class DBManager extends SQLiteOpenHelper {
 		SecretKey tmp = factory.generateSecret(spec);
 		return new SecretKeySpec(tmp.getEncoded(), "AES");
 	}
+
+
+	// Work for GEMINI ==============================================================================
+	// Method to fetch data from a specific table
+	public JSONArray getTableData(String tableName, int sellerId) {
+		SQLiteDatabase db = null;
+		JSONArray resultSet = new JSONArray();
+		Cursor cursor = null;
+
+		try {
+			db = this.getReadableDatabase();
+			String query;
+			if (tableName.equals("users")) {
+				query = "SELECT * FROM " + tableName + " WHERE userId = ?";
+			} else if (tableName.equals("products")) {
+				query = "SELECT p.* FROM " + tableName + " p JOIN stockQuantity sq ON sq.productId = p.productId WHERE sq.sellerId = ?";
+			} else {
+				query = "SELECT * FROM " + tableName + " WHERE sellerId = ?";
+			}
+
+			cursor = db.rawQuery(query, new String[]{String.valueOf(sellerId)});
+
+			if (cursor.moveToFirst()) {
+				do {
+					JSONObject rowObject = new JSONObject();
+					for (int i = 0; i < cursor.getColumnCount(); i++) {
+						try {
+							rowObject.put(cursor.getColumnName(i), cursor.getString(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+					resultSet.put(rowObject);
+				} while (cursor.moveToNext());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+			// Close the database connection if it's open
+			if (db != null && db.isOpen()) {
+				db.close();
+			}
+		}
+
+		return resultSet;
+	}
+
+
+	// working on Message table =====================================================================
+	public long insertMessage(ChatMessage message) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("message", message.getMessage());
+		values.put("is_sent_by_user", message.isSentByUser() ? 1 : 0);
+		values.put("timestamp", message.getTimestamp());
+		values.put("seller_id", message.getSellerId());
+		return db.insert("messages", null, values);
+	}
+
+	public List<ChatMessage> getChatBySeller(int sellerId) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		List<ChatMessage> messages = new ArrayList<>();
+		Cursor cursor = null;
+
+		try {
+			String[] selectionArgs = {String.valueOf(sellerId)};
+			cursor = db.query("messages",
+			                  new String[]{"_id", "message", "is_sent_by_user", "timestamp", "seller_id"},
+			                  "seller_id = ?", selectionArgs, null, null, "timestamp ASC");
+
+			while (cursor.moveToNext()) {
+				int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+				String message = cursor.getString(cursor.getColumnIndexOrThrow("message"));
+				boolean isSentByUser = cursor.getInt(cursor.getColumnIndexOrThrow("is_sent_by_user")) == 1;
+				long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow("timestamp"));
+				int seller = cursor.getInt(cursor.getColumnIndexOrThrow("seller_id"));
+
+				messages.add(new ChatMessage(id, message, isSentByUser, timestamp, seller));
+			}
+		} catch (Exception e) {
+			// Handle exception
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+
+		return messages;
+	}
+
+
+
+	public List<ChatMessage> getChatBySellerAndDate(int sellerId, String date) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		List<ChatMessage> chatMessages = new ArrayList<>();
+		long startTime = getStartOfDayInMillis(date);
+		long endTime = getEndOfDayInMillis(date);
+
+		String sql = "SELECT * FROM messages WHERE seller_id = ? AND timestamp BETWEEN ? AND ?";
+		Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(sellerId), String.valueOf(startTime), String.valueOf(endTime)});
+
+		if (cursor.moveToFirst()) {
+			do {
+				int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+				String message = cursor.getString(cursor.getColumnIndexOrThrow("message"));
+				boolean isUser = cursor.getInt(cursor.getColumnIndexOrThrow("is_sent_by_user")) == 1;
+				long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow("timestamp"));
+				ChatMessage chatMessage = new ChatMessage(id, message, isUser, timestamp, sellerId);
+				chatMessages.add(chatMessage);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return chatMessages;
+	}
+
+	private long getStartOfDayInMillis(String date) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+			Date parsedDate = sdf.parse(date);
+			if (parsedDate != null) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(parsedDate);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				return calendar.getTimeInMillis();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	private long getEndOfDayInMillis(String date) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+			Date parsedDate = sdf.parse(date);
+			if (parsedDate != null) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(parsedDate);
+				calendar.set(Calendar.HOUR_OF_DAY, 23);
+				calendar.set(Calendar.MINUTE, 59);
+				calendar.set(Calendar.SECOND, 59);
+				calendar.set(Calendar.MILLISECOND, 999);
+				return calendar.getTimeInMillis();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+public boolean clearChat(String sellerId){
+		SQLiteDatabase db = this.getWritableDatabase();
+	    String sql = "DELETE FROM messages WHERE seller_id = ?";
+	    db.execSQL(sql, new String[]{sellerId});
+	    return true;
+}
+
 
 }

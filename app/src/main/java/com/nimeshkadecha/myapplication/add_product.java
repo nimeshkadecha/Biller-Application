@@ -24,13 +24,13 @@ import java.util.Objects;
 public class add_product extends AppCompatActivity {
 
 	//    for insert operation and outher stuf
-	Button show;
-	DBManager DB = new DBManager(this);
+	private Button show;
+	private DBManager DB = new DBManager(this);
 	//    toolbar and navagation drawer ends;
-	String cNametxt, cNumbertxt, datetext, sellertxt, origintxt;
-	int billIdtxt;
+	private String cNametxt, cNumbertxt, datetext, sellertxt, origintxt;
+	private int billIdtxt;
 	//    In input Filter ==========================================================================
-	String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
+	private String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
 	private final InputFilter filter = new InputFilter() {
 
 		@Override
@@ -197,7 +197,6 @@ public class add_product extends AppCompatActivity {
 						Toast.makeText(add_product.this, "GST filed is empty", Toast.LENGTH_SHORT).show();
 						GstPersentageEDT.setError("Enter how much gst is applicable enter 0 if there is not any");
 					} else {
-						Log.d("ENimesh", "before call !" + productName_ST + price_ST + quantity_ST + cNametxt + cNumbertxt + datetext + billIdtxt + sellertxt + GstPersentageString);
 						// calling insert function
 						boolean check = DB.InsertList(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0, GstPersentageString);
 						if (check) {

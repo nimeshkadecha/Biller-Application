@@ -24,7 +24,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/Downloadbtn"
+                android:id="@+id/analyze_stock_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Download"
@@ -76,7 +76,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/LocaluploadDatabtn"
+                android:id="@+id/understand_customer_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Upload Data"
@@ -111,73 +111,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="50dp"
-        android:fadingEdge="horizontal"
-        android:orientation="horizontal"
-        android:background="#27676767"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Switch
-                android:id="@+id/autoBackupSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginTop="10dp"
-                android:text="Automatic offline backup"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            <Button
-                android:id="@+id/showPathAuto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show location"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AutoUpdateLable" />
-
-            <TextView
-                android:id="@+id/AutoUpdateLable"
-                style="@style/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="Last auto Download At:"
-                android:visibility="gone"
-                android:layout_marginStart="40dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/autoBackupSwitch" />
-
-            <TextView
-                android:id="@+id/autouploadDate"
-                style="@style/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="Not Uploaded"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/AutoUpdateLable"
-                app:layout_constraintStart_toEndOf="@+id/AutoUpdateLable"
-                app:layout_constraintTop_toTopOf="@+id/AutoUpdateLable" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/title"
         style="@style/textView"
@@ -191,29 +124,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <LinearLayout
+        android:id="@+id/LoadingBlur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/loadingBlur"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/Ploding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:indeterminate="true"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp"
         android:indeterminateDrawable="@drawable/progress_back"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <com.google.android.gms.ads.AdView-->
-<!--        android:id="@+id/adView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        app:adSize="BANNER"-->
-<!--        app:adUnitId="ca-app-pub-6774391225250306/5183271503"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

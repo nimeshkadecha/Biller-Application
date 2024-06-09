@@ -14,17 +14,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.Html;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,14 +51,18 @@ public class backup_management extends AppCompatActivity {
 	private static final int REQUEST_WRITE_STORAGE = 112;
 	final String[] password = {"0000"};
 	DBManager dbManager = new DBManager(this);
-	Button showPathAuto;
+
+	private View PlodingView;
+	private LinearLayout loadingBlur;
+
+
 	@SuppressLint("UseSwitchCompatOrMaterialCode")
-	Switch AutoUploadSwitch;
+
 	//      Getting Current Date to put ----------------------------------------------------------------
 	Date c = Calendar.getInstance().getTime();
 	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 	String formattedDate = df.format(c);
-	private TextView uploadDate, Download, AutoUpdateLabel, AutoUpdateDate;
+	private TextView uploadDate, Download;
 
 	// getting file from URL =======================================================================
 	public static File convertUriToFile(Context context, Uri uri) throws IOException {
@@ -106,12 +110,15 @@ public class backup_management extends AppCompatActivity {
 //		mAdView.loadAd(adRequest);
 
 
+		//        Finding progressbar
+		PlodingView = findViewById(R.id.Ploding);
+		PlodingView.setVisibility(View.INVISIBLE);
+		loadingBlur = findViewById(R.id.LoadingBlur);
+		loadingBlur.setVisibility(View.INVISIBLE);
 //        Using Shared Preference to store Last Date ===============================================
 		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 		String UploadDate = sharedPreferences.getString("Last Upload", "Not Uploaded");
 		String DownloadDate = sharedPreferences.getString("Last Download", "Not Downloaded");
-		String AutoUpload = sharedPreferences.getString("AutoUpload", "Not Uploaded");
-
 
 		//Upload Date ==============================================================================
 		uploadDate = findViewById(R.id.uploadDate);
@@ -121,108 +128,18 @@ public class backup_management extends AppCompatActivity {
 		Download = findViewById(R.id.Download);
 		Download.setText(DownloadDate);
 
-		//button ===================================================================================
-		showPathAuto = findViewById(R.id.showPathAuto);
-		showPathAuto.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
-				builder.setCancelable(true);
-				builder.setTitle("Automatic Backup Location");
-				builder.setMessage("If enabled then you can find backup at \n:/Android/data/com.nimeshkadecha.Biller/Auto Backup/Auto_Biller_Backup.db");
-				builder.show();
-			}
-		});
-
-		// AutoDownload switch =====================================================================
-		AutoUpdateLabel = findViewById(R.id.AutoUpdateLable);
-
-		AutoUpdateDate = findViewById(R.id.autouploadDate);
-
-		AutoUploadSwitch = findViewById(R.id.autoBackupSwitch);
-
-		boolean hasPermission = (ContextCompat.checkSelfPermission(getApplicationContext(),
-		                                                           Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-
-		if (!hasPermission) {
-			Log.d("Permission", "Requesting Write External Storage permission");
-			ActivityCompat.requestPermissions(backup_management.this,
-			                                  new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-			                                  REQUEST_WRITE_STORAGE);
-		} else {
-			Log.d("Permission", "Write External Storage permission already granted");
-		}
-
-		AutoUploadSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-				if (isChecked) {
-					boolean check = dbManager.AutoLocalBackup(backup_management.this);
-
-					if (check) {
-						Date c = Calendar.getInstance().getTime();
-						SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-						String formattedDate = df.format(c);
-
-						SharedPreferences.Editor editor = sharedPreferences.edit();
-						editor.putString("AutoUpload", formattedDate);
-						editor.apply();
-						AutoUpdateDate.setText(formattedDate);
-					}
-
-					AutoUpdateLabel.setVisibility(View.VISIBLE);
-					AutoUpdateDate.setVisibility(View.VISIBLE);
-
-					SharedPreferences.Editor editor = sharedPreferences.edit();
-					editor.putString("AutoBackup", "true");
-					editor.apply();
-				} else {
-					AutoUpdateLabel.setVisibility(View.GONE);
-					AutoUpdateDate.setVisibility(View.GONE);
-					SharedPreferences.Editor editor = sharedPreferences.edit();
-					editor.putString("AutoBackup", "false");
-					editor.apply();
-				}
-			}
-		});
-
-		String checkAutoBackup = sharedPreferences.getString("AutoBackup", "");
-		if (checkAutoBackup.equals("true")) {
-			AutoUploadSwitch.setChecked(true);
-			AutoUpdateLabel.setVisibility(View.VISIBLE);
-			AutoUpdateDate.setVisibility(View.VISIBLE);
-			AutoUpdateDate.setText(AutoUpload);
-		}
-
 		// Download backup button ==================================================================
-		Button DownloadBTN = findViewById(R.id.Downloadbtn);
+		Button DownloadBTN = findViewById(R.id.analyze_stock_btn);
 		DownloadBTN.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-
+				PlodingView.setVisibility(View.VISIBLE);
+				loadingBlur.setVisibility(View.VISIBLE);
 				if (isPermissionGranted(backup_management.this)) {
-
-					String check = dbManager.DownloadBackup(backup_management.this, sharedPreferences.getString("UserName", ""));
-					if (!check.equals("false")) {
-						SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-						SharedPreferences.Editor editor = sp.edit();
-						editor.putString("Last Download", formattedDate);
-						editor.apply();
-						Download.setText(formattedDate);
-
-						Toast.makeText(backup_management.this, "Success", Toast.LENGTH_SHORT).show();
-						AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
-						builder.setCancelable(false);
-						builder.setTitle("Bills");
-						builder.setMessage("Notice:\nYour current app password is used to encrypt this backup.\nYou must provide the same password to access it in the future.\n\nStore securely; backup is deleted with app.\n\nYou can locate the backup at\n \"" + check + "\" ");
-						builder.setNeutralButton("ok", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-							}
-						});
-						builder.show();
-					}
+					new BackupTask().execute(sharedPreferences.getString("UserName", ""));
 				} else {
+					PlodingView.setVisibility(View.INVISIBLE);
+					loadingBlur.setVisibility(View.INVISIBLE);
 					Toast.makeText(backup_management.this, "Please allow storage permission", Toast.LENGTH_SHORT).show();
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 						try {
@@ -243,8 +160,10 @@ public class backup_management extends AppCompatActivity {
 		});
 
 
+
+
 		// upload backup button ====================================================================
-		Button uploadBTN = findViewById(R.id.LocaluploadDatabtn);
+		Button uploadBTN = findViewById(R.id.understand_customer_btn);
 		uploadBTN.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -281,6 +200,50 @@ public class backup_management extends AppCompatActivity {
 		});
 	}
 
+
+	private class BackupTask extends AsyncTask<String, Void, String> {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			PlodingView.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			String username = params[0];
+			return dbManager.DownloadBackup(backup_management.this, username);
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			PlodingView.setVisibility(View.INVISIBLE);
+			loadingBlur.setVisibility(View.INVISIBLE);
+
+			if (!result.equals("false")) {
+				SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+				SharedPreferences.Editor editor = sp.edit();
+				editor.putString("Last Download", formattedDate);
+				editor.apply();
+				Download.setText(formattedDate);
+
+				Toast.makeText(backup_management.this, "Success", Toast.LENGTH_SHORT).show();
+				AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
+				builder.setCancelable(false);
+				builder.setTitle("Bills");
+				builder.setMessage(Html.fromHtml("<b>Notice:</b><br>Your current app password is used to encrypt this backup.<br>You must provide the same password to access it in the future.<br><br>Store securely; backup is deleted with app.<br><br>You can locate the backup at<br> \"" + result + "\" "));
+				builder.setNeutralButton("ok", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
+				builder.show();
+			} else {
+				Toast.makeText(backup_management.this, "Failed", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
 	// Permission checker ==========================================================================
 	private boolean isPermissionGranted(Context context) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -308,38 +271,22 @@ public class backup_management extends AppCompatActivity {
 			Uri selectedFileUri = data.getData();
 			if (selectedFileUri != null) {
 				try {
-
 					File selectedFile = convertUriToFile(this, selectedFileUri); // Get the File from the file picker or any other source
 					boolean restoreSuccess = dbManager.UploadLocalBackup(this, selectedFile, password[0].toCharArray());
 					if (!restoreSuccess) {
 						Toast.makeText(this, "Password is incorrect", Toast.LENGTH_SHORT).show();
 					} else {
-						SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-						SharedPreferences.Editor editor = sp.edit();
-						editor.putString("Last Upload", formattedDate);
-						editor.putString("Login", "false");
-						editor.putString("bioLock", "false");
-						editor.putString("UserName", "");
-						editor.apply();
-
-						uploadDate.setText(formattedDate);
-
+//						SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//						SharedPreferences.Editor editor = sp.edit();
+//						editor.putString("Last Upload", formattedDate);
+//						editor.putString("Login", "false");
+//						editor.putString("bioLock", "false");
+//						editor.putString("UserName", "");
+//						editor.apply();
+//						uploadDate.setText(formattedDate);
+//						AlertDialog.Builder alert = getBuilder();
+//						alert.show();
 						Toast.makeText(this, "Application Data is updated", Toast.LENGTH_SHORT).show();
-
-						AlertDialog.Builder alert = new AlertDialog.Builder(backup_management.this);
-						alert.setTitle("Security Note:");
-						alert.setCancelable(false);
-						alert.setMessage("For security reasons, you have been logged out.\nKindly use your previous email and password to log back in.");
-						alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialogInterface, int i) {
-								finishAffinity();
-
-								Intent logOUT = new Intent(backup_management.this, login_Screen.class);
-								startActivity(logOUT);
-							}
-						});
-						alert.show();
 					}
 					// Now you have the File object, and you can use it as needed
 					// For example, you can copy, move, or read the contents of the file
@@ -350,20 +297,33 @@ public class backup_management extends AppCompatActivity {
 			} else {
 				Toast.makeText(this, "Please select a valid .db file", Toast.LENGTH_SHORT).show();
 			}
-
 		}
+	}
+
+	@NonNull
+	private AlertDialog.Builder getBuilder() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(backup_management.this);
+		alert.setTitle("Security Note:");
+		alert.setCancelable(false);
+		alert.setMessage("For security reasons, you have been logged out.\nKindly use your previous email and password to log back in.");
+		alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				finishAffinity();
+
+				Intent logOUT = new Intent(backup_management.this, login_Screen.class);
+				startActivity(logOUT);
+			}
+		});
+		return alert;
 	}
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == REQUEST_WRITE_STORAGE) {
-			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Log.d("Permission", "Write External Storage permission granted");
-			} else {
-				Log.d("Permission", "Write External Storage permission denied");
-			}
-		}
+		if (requestCode == REQUEST_WRITE_STORAGE && grantResults.length > 0 && grantResults[0]
+										!= PackageManager.PERMISSION_GRANTED)
+				Toast.makeText(this, "Write External Storage permission denied", Toast.LENGTH_SHORT).show();
 	}
 
 //	@Override

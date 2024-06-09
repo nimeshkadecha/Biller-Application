@@ -1,7 +1,6 @@
 package com.nimeshkadecha.myapplication;
 
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -9,16 +8,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
+import android.os.Handler;
 import android.text.InputType;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -27,10 +23,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,27 +34,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 public class login_Screen extends AppCompatActivity {
 	//    Shared preference to store Login Information !
-	public static final String SHARED_PREFS = "sharedPrefs";
 	static final int STORAGE_PERMISSION_CODE = 112;
 	static final int MANAGE_STORAGE_PERMISSION_CODE = 113;
 	final String[] passwordUpload = {"0000"};
-	private final int StoragePermisionCode = 112;
+
+	public static final String SHARED_PREFS = "sharedPrefs";
+
+	private LottieAnimationView lottieAnimationView , lottieAnimationView_GEMINI;
+	private ConstraintLayout loginForm;
+
 	//    initlizing varablwe
 	private EditText email, password;
+	SharedPreferences sharedPreferences;
+
 	private Button permisions;
-	private TextView Data_cloud;
+	private TextView local_upload;
 	//    Creating object
 	private DBManager DBM;
-	private ImageView menuclick;
+	private ImageView menuclick, fingerprintUnlock;
+
+	private String checkLogin, username, bio_matrix_lock;
 
 	public static File convertUriToFile(Context context, Uri uri) throws IOException {
 		InputStream input = null;
@@ -108,123 +110,145 @@ public class login_Screen extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_screen);
 
-//        Checking if user is already loged in or not ----------------------------------------------
-		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-		String checkLogin = sharedPreferences.getString("Login", "");
-		String username = sharedPreferences.getString("UserName", "");
-		if (Objects.equals(checkLogin, "true")) {
-
-			Intent SucessfullyLogin = new Intent(this, home.class);
-			SucessfullyLogin.putExtra("Email", username);
-			SucessfullyLogin.putExtra("Origin", "Login");
-			startActivity(SucessfullyLogin);
-
-			finish();
-		}
-//--------------------------------------------------------------------------------------------------
+		//          menu Button ----------------------------------------------------------------------------
+		menuclick = findViewById(R.id.Menu);
+//          Keeping MENUE Invisible
+		menuclick.setVisibility(View.INVISIBLE);
 
 //      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
 //          Removing Suport bar / top line containing name
 		Objects.requireNonNull(getSupportActionBar()).hide();
 
-//          menu Button ----------------------------------------------------------------------------
-		menuclick = findViewById(R.id.Menu);
-//          Keeping MENUE Invisible
-		menuclick.setVisibility(View.INVISIBLE);
-//--------------------------------------------------------------------------------------------------
+		// Initialize Lottie animation view and show it
+		lottieAnimationView = findViewById(R.id.lottie_animation_login);
+		lottieAnimationView_GEMINI = findViewById(R.id.lottie_animation_login_gemini);
+		loginForm = findViewById(R.id.loginForm);
 
-//        assign variable --------------------------------------------------------------------------
-		email = findViewById(R.id.email);
-		password = findViewById(R.id.password);
-
-//--------------------------------------------------------------------------------------------------
-
-//        assigning DBM ----------------------------------------------------------------------------
-		DBM = new DBManager(this);
-
-//        Working with Permission ------------------------------------------------------------------
-
-		permisions = findViewById(R.id.permisions);
-		permisions.setVisibility(View.INVISIBLE);
-
-//        Fingerprint unlock -----------------------------------------------------------------------
-
-		ImageView fingerprintUnlock = findViewById(R.id.fingerprint_unlock);
-
-		//        checking for fingerprint verification
-		SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-		String bio_matrix_lock = sp.getString("bioLock", "");
-		if (bio_matrix_lock.equals("true")) {
-			fingerprintUnlock.setVisibility(View.VISIBLE);
-
-		}
-
-		fingerprintUnlock.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				boolean EV = EmailValidation(email.getText().toString());
-
-				if (EV) {
-					boolean verify = DBM.ValidateUser(email.getText().toString());
-					if (verify) {
-						Intent FingerprintVerification = new Intent(login_Screen.this, fingerprint_lock.class);
-
-						FingerprintVerification.putExtra("Email", email.getText().toString());
-						FingerprintVerification.putExtra("Origin", "Login");
-
-						startActivity(FingerprintVerification);
-					} else {
-						Toast.makeText(login_Screen.this, "Email Don't Exists", Toast.LENGTH_SHORT).show();
-					}
-				} else {
-					Toast.makeText(login_Screen.this, "Enter Email for login", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-
-//--------------------------------------------------------------------------------------------------
-
-//        Login From Cloud button ------------------------------------------------------------------
-		Data_cloud = findViewById(R.id.Data_cloud);
-		Data_cloud.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(login_Screen.this);
-				builder.setTitle("Enter Password");
-
-				// Set up the input
-				final EditText input = new EditText(login_Screen.this);
-				input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-				builder.setView(input);
-
-				// Set up the buttons
-				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						passwordUpload[0] = input.getText().toString();
-						if (!passwordUpload[0].isEmpty()) {
-							selectBackupFile();
-						} else {
-							Toast.makeText(login_Screen.this, "Please Enter Password", Toast.LENGTH_SHORT).show();
-						}
-					}
-				});
-				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				});
-
-				// Show the dialog
-				builder.show();
-
-			}
-		});
+// Execute async task to perform initialization in the background
+		new InitTask().execute();
 //--------------------------------------------------------------------------------------------------
 	}
+
+	private class InitTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... voids) {
+			// Perform background initialization tasks
+			email = findViewById(R.id.email);
+			password = findViewById(R.id.password);
+			DBM = new DBManager(login_Screen.this);
+			local_upload = findViewById(R.id.local_upload);
+			fingerprintUnlock = findViewById(R.id.fingerprint_unlock);
+			//        Working with Permission ------------------------------------------------------------------
+			permisions = findViewById(R.id.permisions);
+			email = findViewById(R.id.email);
+			password = findViewById(R.id.password);
+
+
+			// Check if user is already logged in
+			sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+			checkLogin = sharedPreferences.getString("Login", "");
+			username = sharedPreferences.getString("UserName", "");
+			bio_matrix_lock = sharedPreferences.getString("bioLock", "");
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void aVoid) {
+			super.onPostExecute(aVoid);
+
+			// Check login status after animation
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					lottieAnimationView.setVisibility(View.GONE);
+					lottieAnimationView_GEMINI.setVisibility(View.GONE);
+					findViewById(R.id.poweredBy).setVisibility(View.GONE);
+					if (Objects.equals(checkLogin, "true")) {
+						Intent SuccessfullyLogin = new Intent(login_Screen.this, home.class);
+						SuccessfullyLogin.putExtra("Email", username);
+						SuccessfullyLogin.putExtra("Origin", "Login");
+						startActivity(SuccessfullyLogin);
+						finish();
+					} else {
+						loginForm.setVisibility(View.VISIBLE);
+						permisions.setVisibility(View.INVISIBLE);
+
+						if (bio_matrix_lock.equals("true")) {
+							fingerprintUnlock.setVisibility(View.VISIBLE);
+						}
+						//        Login From Local button ------------------------------------------------------------------
+						local_upload.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+
+								AlertDialog.Builder builder = new AlertDialog.Builder(login_Screen.this);
+								builder.setTitle("Enter Password");
+
+								// Set up the input
+								final EditText input = new EditText(login_Screen.this);
+								input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+								builder.setView(input);
+
+								// Set up the buttons
+								builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										passwordUpload[0] = input.getText().toString();
+										if (!passwordUpload[0].isEmpty()) {
+											selectBackupFile();
+										} else {
+											Toast.makeText(login_Screen.this, "Please Enter Password", Toast.LENGTH_SHORT).show();
+										}
+									}
+								});
+								builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.cancel();
+									}
+								});
+
+								// Show the dialog
+								builder.show();
+
+							}
+						});
+						//--------------------------------------------------------------------------------------------------
+						//        Fingerprint unlock -----------------------------------------------------------------------
+						fingerprintUnlock.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+
+								boolean EV = EmailValidation(email.getText().toString());
+
+								if (EV) {
+									boolean verify = DBM.ValidateUser(email.getText().toString());
+									if (verify) {
+										Intent FingerprintVerification = new Intent(login_Screen.this, fingerprint_lock.class);
+
+										FingerprintVerification.putExtra("Email", email.getText().toString());
+										FingerprintVerification.putExtra("Origin", "Login");
+
+										startActivity(FingerprintVerification);
+									} else {
+										Toast.makeText(login_Screen.this, "Email Don't Exists", Toast.LENGTH_SHORT).show();
+									}
+								} else {
+									Toast.makeText(login_Screen.this, "Enter Email for login", Toast.LENGTH_SHORT).show();
+								}
+							}
+						});
+						//--------------------------------------------------------------------------------------------------
+
+					}
+				}
+			}, 3000); // Delay for 3 seconds while showing the animation
+		}
+	}
+
+
 
 	private void selectBackupFile() {
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -289,6 +313,7 @@ public class login_Screen extends AppCompatActivity {
 	public void register(View view) {
 		Intent register = new Intent(this, register.class);
 		startActivity(register);
+		finish();
 	}
 //--------------------------------------------------------------------------------------------------
 

@@ -59,4 +59,13 @@
         <item name="srcCompat">@drawable/back</item>
     </style>
 
+    <style name="loadingBlur">
+        <item name="android:background">#11FFFFFF</item>
+    </style>
+
+    <style name="Gemini_btn">
+        <item name="android:background">@drawable/gemini_button_background_dark</item>
+    </style>
+
+
 </resources>

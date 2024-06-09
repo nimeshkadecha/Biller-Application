@@ -32,20 +32,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/item_name"
-        app:helperTextTextColor="#FF002E"
         app:endIconMode="clear_text"
+        app:helperTextTextColor="#FF002E"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:startIconDrawable="@drawable/ic_baseline_shopping_bag_24">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/productname"
             style="@style/TextInputEditText"
-            android:textColorHint="#FA0202"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,13 +82,16 @@
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="GST percentage"
+
         android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
-        app:endIconMode="clear_text"
+        android:hint="GST percentage"
         android:visibility="visible"
+        app:endIconMode="clear_text"
         app:helperTextTextColor="#FF002E"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
         app:startIconDrawable="@drawable/taxlogo">
 
@@ -94,7 +99,7 @@
             android:id="@+id/GstPersentage"
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:inputType="number"
             android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />

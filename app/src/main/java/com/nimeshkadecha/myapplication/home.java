@@ -8,8 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -37,6 +40,7 @@ public class home extends AppCompatActivity {
 	private ImageView menu, backBtn;
 	private Button product;
 	private Button customerInfo, editInfo, backup, logout, report, stock;
+	private ImageView Gemini_Home;
 	private View navagationDrawer, homeLayout;
 	private final DBManager DB = new DBManager(this);
 	private EditText number, date;
@@ -91,10 +95,8 @@ public class home extends AppCompatActivity {
 
 //        checking for fingerprint verification
 
-		String biomatrixLock = sp.getString("bioLock", "");
-		if (biomatrixLock.equals("true")) {
+		if (sp.getString("bioLock", "").equals("true")) {
 			bio_lock_switch.setChecked(true);
-
 		}
 
 //      Progressbar Finding ========================================================================
@@ -103,46 +105,8 @@ public class home extends AppCompatActivity {
 
 //      Finding edit texts =========================================================================
 		name = findViewById(R.id.name);
-
-//        adding auto complete facility
-		String[] NameSuggestion;
-		String[] Names;
-
-		Cursor Name_Sugg = DB.CustomerInformation(email);
-		Name_Sugg.moveToFirst();
-		Log.d("ENimesh", "Name count = " + Name_Sugg.getCount());
-		if (Name_Sugg.getCount() > 0) {
-			int i = 0;
-			boolean insert = true;
-
-			NameSuggestion = new String[Name_Sugg.getCount()];
-			do {
-				if (i != 0) {
-					for (int j = 0; j < i; j++) {
-
-						if (NameSuggestion[j].equals(Name_Sugg.getString(Name_Sugg.getColumnIndex("customerName")))) {
-							insert = false;
-							break;
-						} else {
-							insert = true;
-						}
-					}
-				}
-
-				if (insert) {
-					NameSuggestion[i] = Name_Sugg.getString(Name_Sugg.getColumnIndex("customerName"));
-
-					i++;
-				}
-			} while (Name_Sugg.moveToNext());
-
-
-			Names = new String[i];
-			System.arraycopy(NameSuggestion, 0, Names, 0, i);
-		} else {
-			Names = new String[]{"No Data"};
-		}
-		name.setAdapter(new ArrayAdapter<>(home.this, android.R.layout.simple_list_item_1, Names));
+		// adding names from database to auto complete textview
+		name.setAdapter(new ArrayAdapter<>(home.this, android.R.layout.simple_list_item_1, DB.customersName_arr(email)));
 
 		name.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -351,9 +315,7 @@ public class home extends AppCompatActivity {
 
 //        Clossing navagation drawer ===============================================================
 
-		homeLayout =
-
-										findViewById(R.id.homeLayout);
+		homeLayout = findViewById(R.id.homeLayout);
 
 		homeLayout.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -399,7 +361,6 @@ public class home extends AppCompatActivity {
 		product.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				DB.CreateTable();
 				Intent intent = new Intent(home.this, add_product.class);
 
 				String nametxt, numbertxt, datetxt;
@@ -430,7 +391,6 @@ public class home extends AppCompatActivity {
 						Toast.makeText(home.this, "Invalid Number", Toast.LENGTH_SHORT).show();
 					} else {
 						datetxt = date.getText().toString();
-
 						if (finalBillIdtxt[0] == 0) {
 							finalBillIdtxt[0] = DB.GetBillId();
 						}
@@ -441,18 +401,70 @@ public class home extends AppCompatActivity {
 						intent.putExtra("billId", finalBillIdtxt[0]);
 						intent.putExtra("seller", email);
 						intent.putExtra("origin", "home");
+						new NameValidatorAsyncTask(nametxt, numbertxt, email, home.this, intent).execute();
+//							startActivity(intent);
 
-						startActivity(intent);
 					}
 				}
 			}
 		});
 //  ================================================================================================
+
+		//GEMINI HOME ====================================================================================
+		Gemini_Home = findViewById(R.id.google_gemini_logo_btn);
+		Gemini_Home.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(home.this, Gemini_Home.class);
+				intent.putExtra("seller", email);
+				startActivity(intent);
+			}
+		});
+
+	}
+
+	@SuppressLint("StaticFieldLeak")
+	private class NameValidatorAsyncTask extends AsyncTask<Void, Void, Void> {
+
+		private final String name;
+		private final String number;
+		private final String email;
+		private final Context context;
+		private final Intent intent;
+
+		public NameValidatorAsyncTask(String name, String number, String email, Context context, Intent intent) {
+			this.name = name;
+			this.number = number;
+			this.email = email;
+			this.context = context;
+			this.intent = intent;
+		}
+
+		@Override
+		protected Void doInBackground(Void... voids) {
+			// Create a Handler to handle the result on the main thread
+			Handler handler = new Handler(Looper.getMainLooper()) {
+				@Override
+				public void handleMessage(Message msg) {
+					boolean result = (boolean) msg.obj;
+					if (result) {
+						context.startActivity(intent);
+					} else {
+						Toast.makeText(context, "Failed to update! try again", Toast.LENGTH_SHORT).show();
+					}
+				}
+			};
+
+			// Perform validation in the background thread
+			DB.validateNameAndNumberConnection(name, number, email, context, handler);
+			return null;
+		}
 	}
 
 	//  Alert dialog box for Exiting Application =======================================================
 	@Override
 	public void onBackPressed() {
+		super.onBackPressed();
 		if (String.valueOf(navagationDrawer.getVisibility()).equals("0")) {
 			navagationDrawer.setVisibility(View.INVISIBLE);
 			product.setVisibility(View.VISIBLE);
@@ -478,6 +490,7 @@ public class home extends AppCompatActivity {
 		}
 	}
 //  ================================================================================================
+
 
 	@Override
 	protected void onStart() {
@@ -518,34 +531,34 @@ public class home extends AppCompatActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-		DBManager dbManager = new DBManager(getApplicationContext());
-		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-		if (check) {
-			Date c = Calendar.getInstance().getTime();
-			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-			String formattedDate = df.format(c);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
-			editor.putString("AutoUpload", formattedDate);
-			editor.apply();
-		}
+//		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//		DBManager dbManager = new DBManager(getApplicationContext());
+//		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+//		if (check) {
+//			Date c = Calendar.getInstance().getTime();
+//			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+//			String formattedDate = df.format(c);
+//			SharedPreferences.Editor editor = sharedPreferences.edit();
+//			editor.putString("AutoUpload", formattedDate);
+//			editor.apply();
+//		}
 	}
 
 	// on stop
 	@Override
 	protected void onStop() {
 		super.onStop();
-		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-		DBManager dbManager = new DBManager(getApplicationContext());
-		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
-		if (check) {
-			Date c = Calendar.getInstance().getTime();
-			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-			String formattedDate = df.format(c);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
-			editor.putString("AutoUpload", formattedDate);
-			editor.apply();
-		}
+//		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//		DBManager dbManager = new DBManager(getApplicationContext());
+//		boolean check = dbManager.AutoLocalBackup(getApplicationContext());
+//		if (check) {
+//			Date c = Calendar.getInstance().getTime();
+//			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+//			String formattedDate = df.format(c);
+//			SharedPreferences.Editor editor = sharedPreferences.edit();
+//			editor.putString("AutoUpload", formattedDate);
+//			editor.apply();
+//		}
 	}
 
 //  ================================================================================================

@@ -232,8 +232,6 @@ public class inventory_insights extends AppCompatActivity {
 					if (!itemName.getText().toString().trim().equals("")) {
 						Cursor ReportCursor = dbLocal.ViewProductHistory(Seller_email, itemName.getText().toString());
 
-						Log.d("ENimesh", "Count = " + ReportCursor.getCount());
-
 						if (ReportCursor.getCount() <= 0) {
 							Toast.makeText(this, "You haven't managed '" + itemName.getText().toString() + "' product's stocks.", Toast.LENGTH_SHORT).show();
 						} else {

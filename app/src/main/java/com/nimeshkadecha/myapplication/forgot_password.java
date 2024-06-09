@@ -184,7 +184,6 @@ public class forgot_password extends AppCompatActivity {
 							if (message.equals("false")) {
 								Log.d("ENimesh", "String = " + message);
 							} else {
-//                                Log.d("ENimesh","String = " + message);
 								Intent GETOTP = new Intent(forgot_password.this, otp_validation.class);
 								GETOTP.putExtra("Email", email);
 								GETOTP.putExtra("OTP", otp);

@@ -56,4 +56,13 @@
     <string name="stock">Stock Control</string>
     <string name="viewS">View Stock</string>
     <string name="addS">Add Stock</string>
+    <string name="gemini_feature">Gemini Feature</string>
+    <string name="total_used_token">Total used token:</string>
+    <string name="counting">Counting...</string>
+    <string name="understand_customer">Understand Customer</string>
+    <string name="token_count">Token Count</string>
+    <string name="analyze_stock">Analyze Stock</string>
+    <string name="business_insights">Business Insights</string>
+    <string name="submit">Submit</string>
+    <string name="enter_api_key">Enter API key</string>
 </resources>

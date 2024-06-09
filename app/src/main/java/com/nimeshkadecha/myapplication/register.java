@@ -3,6 +3,7 @@ package com.nimeshkadecha.myapplication;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 public class register extends AppCompatActivity {
 	private EditText name, email, password, gst, contact, address;
+	public static final String SHARED_PREFS = "sharedPrefs";
 	private final login_Screen MA = new login_Screen();
 	private DBManager DBM;
 	private Button show;
@@ -163,8 +165,17 @@ public class register extends AppCompatActivity {
 				if (validEmail && validPassword) {
 					CheckOperation = DBM.RegisterUser(nameTXT, emailTXT, passwordTXT, gstTXT, contactTXT, addressTXT);
 					if (CheckOperation) {
+						Intent SuccessfullyLogin = new Intent(this, home.class);
 						Toast.makeText(this, "User Register Successfully", Toast.LENGTH_SHORT).show();
-						startActivity(login);
+						SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+						SharedPreferences.Editor editor = sp.edit();
+						editor.putString("Login", "true");
+						editor.putString("UserName", emailTXT);
+						editor.apply();
+
+						SuccessfullyLogin.putExtra("Email", emailTXT);
+						SuccessfullyLogin.putExtra("Origin", "Login");
+						startActivity(SuccessfullyLogin);
 						finish();
 					} else {
 						Toast.makeText(this, "Fail to Register User", Toast.LENGTH_SHORT).show();
