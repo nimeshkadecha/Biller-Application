@@ -3,6 +3,8 @@ package com.nimeshkadecha.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,14 +49,20 @@ public class Gemini_Home extends AppCompatActivity {
 
 	private TextView custom_tc, product_tc, business_tc, used_tc;
 
-	private LottieAnimationView loading;
-
 	public static JSONObject customer_JO, stock_JO, business_JO;
 
 	private GenerativeModel gm;
 	private GenerativeModelFutures model;
 
 	int customer_token_count = 0, stock_token_count = 0, business_token_count = 0;
+
+	boolean checkConnection() {
+		ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		NetworkInfo net = manager.getActiveNetworkInfo();
+
+		return net != null;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +83,6 @@ public class Gemini_Home extends AppCompatActivity {
 		interface_layout = findViewById(R.id.Gemini_layout);
 		interface_layout.setVisibility(View.GONE);
 
-		loading = findViewById(R.id.lottie_animation_login);
-		loading.setVisibility(View.GONE);
 		//        Adding Spinner (Dropdown menu) ===========================================================
 		spinner = findViewById(R.id.spinner);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(Gemini_Home.this, android.R.layout.simple_spinner_item, shorting);
@@ -132,6 +138,8 @@ public class Gemini_Home extends AppCompatActivity {
 		findViewById(R.id.business_insights_btn).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(checkConnection()){
+					
 				Intent intent = new Intent(Gemini_Home.this, Gemini_chat.class);
 
 				intent.putExtra("seller", email);
@@ -141,40 +149,59 @@ public class Gemini_Home extends AppCompatActivity {
 
 
 				startActivity(intent);
+				}else{
+					Toast.makeText(Gemini_Home.this, "No internet", Toast.LENGTH_SHORT).show();
+					
+				}
 			}
 		});
 
 		findViewById(R.id.analyze_stock_btn).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(checkConnection()){
+					
 				Intent intent = new Intent(Gemini_Home.this, Gemini_chat.class);
 				intent.putExtra("seller", email);
 				intent.putExtra("type", "stock");
 				sp.edit().putString("tokenCount", String.valueOf(Integer.parseInt(sp.getString("tokenCount", "0")) + stock_token_count)).apply();
 				used_tc.setText(sp.getString("tokenCount", "0"));
 				startActivity(intent);
+				}else {
+					Toast.makeText(Gemini_Home.this, "No internet", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
 		findViewById(R.id.understand_customer_btn).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(checkConnection()){
+					
 				Intent intent = new Intent(Gemini_Home.this, Gemini_chat.class);
 				intent.putExtra("seller", email);
 				intent.putExtra("type", "customer");
 				sp.edit().putString("tokenCount", String.valueOf(Integer.parseInt(sp.getString("tokenCount", "0")) + customer_token_count)).apply();
 				used_tc.setText(sp.getString("tokenCount", "0"));
 				startActivity(intent);
+				}else{
+					Toast.makeText(Gemini_Home.this, "No Internet", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
 		findViewById(R.id.continue_btn).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(checkConnection()){
+					
 				Intent intent = new Intent(Gemini_Home.this, Gemini_chat.class);
 				intent.putExtra("seller", email);
 				intent.putExtra("type", "continue");
 				startActivity(intent);
+				}else{
+					Toast.makeText(Gemini_Home.this, "No internet", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 	}
@@ -190,10 +217,16 @@ public class Gemini_Home extends AppCompatActivity {
 				register_layout.setVisibility(View.GONE);
 				interface_layout.setVisibility(View.VISIBLE);
 
+				if(checkConnection()){
+					
+				
 				new FetchDataAsyncTask_BusinessInsights(this).execute(sellerId);
 				new FetchDataAsyncTask_AnalyzeStoke().execute(sellerId);
 				new FetchDataAsyncTask_CustomerData().execute(sellerId);
 
+				}else{
+					Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+				}
 				break;
 		}
 	}
@@ -223,7 +256,6 @@ public class Gemini_Home extends AppCompatActivity {
 		protected void onPostExecute(JSONObject result) {
 			// Handle the fetched data here
 			customer_JO = result;
-			Log.d("ENimesh", "Customer Data Fetched = " + result.toString());
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -279,8 +311,6 @@ public class Gemini_Home extends AppCompatActivity {
 		protected void onPostExecute(JSONObject result) {
 			// Handle the fetched data here
 			stock_JO = result;
-			System.out.println(result.toString());
-			Log.d("ENimesh", "analyze stock ! Data Fetched = " + result.toString());
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -344,8 +374,6 @@ public class Gemini_Home extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			business_JO = result;
-			System.out.println(result.toString());
-			Log.d("ENimesh", "Business insight Data Fetched = " + result.toString());
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -360,7 +388,6 @@ public class Gemini_Home extends AppCompatActivity {
 							@Override
 							public void onSuccess(CountTokensResponse result) {
 								int totalTokens = result.getTotalTokens();
-								Log.d("ENimesh", "TOTAL token count = " + totalTokens);
 								business_tc.setText(String.valueOf(totalTokens));
 								business_token_count = totalTokens;
 							}

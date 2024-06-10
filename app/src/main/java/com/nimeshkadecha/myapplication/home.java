@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,8 +49,16 @@ public class home extends AppCompatActivity {
 
 	private AutoCompleteTextView name;
 
-
+	AlertDialog.Builder alert;
 	private ProgressBar lodingPB;
+
+	boolean checkConnection() {
+		ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		NetworkInfo net = manager.getActiveNetworkInfo();
+
+		return net != null;
+	}
 
 
 	@SuppressLint({"MissingInflatedId", "Range"})
@@ -415,13 +425,18 @@ public class home extends AppCompatActivity {
 		Gemini_Home.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(checkConnection()){
 				Intent intent = new Intent(home.this, Gemini_Home.class);
 				intent.putExtra("seller", email);
 				startActivity(intent);
+				}else{
+					Toast.makeText(home.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
 	}
+
 
 	@SuppressLint("StaticFieldLeak")
 	private class NameValidatorAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -462,15 +477,14 @@ public class home extends AppCompatActivity {
 	}
 
 	//  Alert dialog box for Exiting Application =======================================================
+	@SuppressLint("MissingSuperCall")
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
 		if (String.valueOf(navagationDrawer.getVisibility()).equals("0")) {
 			navagationDrawer.setVisibility(View.INVISIBLE);
 			product.setVisibility(View.VISIBLE);
-
 		} else {
-			AlertDialog.Builder alert = new AlertDialog.Builder(home.this);
+			alert = new AlertDialog.Builder(home.this);
 			alert.setTitle("Exit App");
 			alert.setMessage("Confirm Exit");
 			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {

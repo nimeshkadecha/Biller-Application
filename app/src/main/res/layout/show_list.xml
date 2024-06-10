@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/include3"
+        layout="@layout/toolbar">
+
+    </include>
+
+
 <!--    <com.google.android.gms.ads.AdView-->
 <!--        android:id="@+id/adView"-->
 <!--        android:layout_width="wrap_content"-->
@@ -20,6 +27,7 @@
 <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="60dp"
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

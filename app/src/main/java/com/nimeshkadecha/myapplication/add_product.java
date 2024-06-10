@@ -19,11 +19,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class add_product extends AppCompatActivity {
 
-	//    for insert operation and outher stuf
+	private static final double MAX_REAL_VALUE = Double.MAX_VALUE;
+
+	//    for insert operation 
 	private Button show;
 	private DBManager DB = new DBManager(this);
 	//    toolbar and navagation drawer ends;
@@ -142,11 +146,10 @@ public class add_product extends AppCompatActivity {
 					Cursor getPrice = DB.GetProductQuantity(productName.getText().toString(), sellertxt);
 					getPrice.moveToFirst();
 					if (getPrice.getCount() > 0) {
-						price.setText(String.valueOf(getPrice.getInt(getPrice.getColumnIndex("price"))));
+						price.setText(String.valueOf(convertScientificToNormal(getPrice.getDouble(getPrice.getColumnIndex("price")))));
 						if (finalNeedGST1) {
-							GstPersentageEDT.setText(String.valueOf(getPrice.getInt(getPrice.getColumnIndex("Gst"))));
+							GstPersentageEDT.setText(String.valueOf(convertScientificToNormal(getPrice.getDouble(getPrice.getColumnIndex("Gst")))));
 						}
-
 						Toast.makeText(add_product.this, "Added", Toast.LENGTH_SHORT).show();
 					} else {
 						Toast.makeText(add_product.this, "Can't find", Toast.LENGTH_SHORT).show();
@@ -197,6 +200,7 @@ public class add_product extends AppCompatActivity {
 						Toast.makeText(add_product.this, "GST filed is empty", Toast.LENGTH_SHORT).show();
 						GstPersentageEDT.setError("Enter how much gst is applicable enter 0 if there is not any");
 					} else {
+						if (Float.parseFloat(price_ST) * Float.parseFloat(quantity_ST) < MAX_REAL_VALUE) {
 						// calling insert function
 						boolean check = DB.InsertList(productName_ST, price_ST, quantity_ST, cNametxt, cNumbertxt, datetext, billIdtxt, sellertxt, 0, GstPersentageString);
 						if (check) {
@@ -206,6 +210,9 @@ public class add_product extends AppCompatActivity {
 							Toast.makeText(add_product.this, "Inserted", Toast.LENGTH_SHORT).show();
 						} else {
 							Toast.makeText(add_product.this, "Not Inserted", Toast.LENGTH_SHORT).show();
+						}
+						}else{
+							Toast.makeText(add_product.this, "This number is too big Android can't handle this big number !", Toast.LENGTH_SHORT).show();
 						}
 					}
 				}
@@ -303,5 +310,11 @@ public class add_product extends AppCompatActivity {
 //        AdRequest adRequest = new AdRequest.Builder().build();
 //        mAdView.loadAd(adRequest);
 //    }
+
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
+	}
 
 }

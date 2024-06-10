@@ -214,8 +214,6 @@ public class Gemini_chat extends AppCompatActivity {
 					@Override
 					public void onSuccess(GenerateContentResponse result) {
 						String resultText = result.getText();
-						System.out.println(resultText);
-						Log.d("ENimesh", "data from GEMINI = " + resultText);
 						responseAI[0] = resultText;
 						latch.countDown(); // Decrement the count of the latch, releasing all waiting threads
 					}

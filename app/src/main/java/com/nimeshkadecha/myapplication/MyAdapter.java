@@ -2,6 +2,7 @@ package com.nimeshkadecha.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
@@ -24,9 +28,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 	private final ArrayList subtotal;
 	private final ArrayList index;
 	private final ArrayList GST;
+		final double MAX_REAL_VALUE = Double.MAX_VALUE;
 
 	public MyAdapter(Context context, ArrayList item, ArrayList price, ArrayList quantity, ArrayList subtotal, ArrayList index, ArrayList GST) {
 
+		
 		this.context = context;
 		this.price = price;
 		this.item = item;
@@ -55,42 +61,49 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 		}
 
 		holder.item.setText(String.valueOf(item.get(position)));
-		holder.price.setText(String.valueOf(price.get(position)));
+		holder.price.setText(String.valueOf(convertScientificToNormal(Double.parseDouble(String.valueOf(price.get(position))))));
 		holder.quantity.setText(String.valueOf(quantity.get(position)));
-		holder.subtotal.setText(String.valueOf(subtotal.get(position)));
+		holder.subtotal.setText(String.valueOf(convertScientificToNormal(Double.parseDouble(String.valueOf(subtotal.get(position))))));
+
 		if (checkGST) {
-			float tax = ((Integer.parseInt(String.valueOf(price.get(position))) * Integer.parseInt(String.valueOf(quantity.get(position)))) * (Integer.parseInt(String.valueOf(GST.get(position))) / 100f));
+			double tax = ((Double.parseDouble(String.valueOf(price.get(position))) * Integer.parseInt(String.valueOf(quantity.get(position)))) * (Double.parseDouble(String.valueOf(GST.get(position))) / 100d));
 			holder.gst.setText(String.valueOf(tax));
 		}
+
 		holder.AddBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				DBlocal = new DBManager(context);
 				String TempItem = String.valueOf(item.get(position));
-				int TempPrice = Integer.parseInt(String.valueOf(price.get(position)));
+				double TempPrice = Double.parseDouble(String.valueOf(price.get(position)));
 				int TempQuantity = Integer.parseInt(String.valueOf(quantity.get(position)));
-				int TempGST = Integer.parseInt(String.valueOf(GST.get(position)));
-				float TempSubtotal = 1f;
+				double TempGST = Double.parseDouble(String.valueOf(GST.get(position)));
+				double TempSubtotal = 1d;
 				TempQuantity += 1;
-				float tax = ((TempPrice * TempQuantity) * (TempGST / 100f));
+				double tax = ((TempPrice * TempQuantity) * (TempGST / 100d));
 				TempSubtotal = (TempPrice * TempQuantity) + tax;
 
-				boolean updateData = DBlocal.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
+				if(TempSubtotal < MAX_REAL_VALUE) {
 
-				if (updateData) {
-					item.remove(position);
-					price.remove(position);
-					quantity.remove(position);
-					subtotal.remove(position);
+					boolean updateData = DBlocal.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
+					if (updateData) {
+						item.remove(position);
+						price.remove(position);
+						quantity.remove(position);
+						subtotal.remove(position);
 
-					item.add(position, TempItem);
-					price.add(position, TempPrice);
-					quantity.add(position, TempQuantity);
-					subtotal.add(position, TempSubtotal);
+						item.add(position, TempItem);
+						price.add(position, convertScientificToNormal(TempPrice));
+						quantity.add(position, TempQuantity);
+						subtotal.add(position, convertScientificToNormal(TempSubtotal));
 
-					MyAdapter.this.notifyDataSetChanged();
-				} else {
-					Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show();
+						MyAdapter.this.notifyDataSetChanged();
+					} else {
+						Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show();
+					}
+				}
+				else{
+					Toast.makeText(context, "Android can't handle this big number !", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -122,13 +135,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 				} else {
 					DBlocal = new DBManager(context);
 					String TempItem = String.valueOf(item.get(position));
-					int TempPrice = Integer.parseInt(String.valueOf(price.get(position)));
+					double TempPrice = Double.parseDouble(String.valueOf(price.get(position)));
 					int TempQuantity = Integer.parseInt(String.valueOf(quantity.get(position)));
-					int TempGST = Integer.parseInt(String.valueOf(GST.get(position)));
+					double TempGST = Double.parseDouble(String.valueOf(GST.get(position)));
 
-					float TempSubtotal = 1;
-					TempQuantity -= 1;
-					float tax = ((TempPrice * TempQuantity) * (TempGST / 100f));
+					double TempSubtotal = 1;
+					TempQuantity -= 1d;
+					double tax = ((TempPrice * TempQuantity) * (TempGST / 100d));
 					TempSubtotal = (TempPrice * TempQuantity) + tax;
 
 					boolean updateData = DBlocal.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
@@ -140,9 +153,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 						subtotal.remove(position);
 
 						item.add(position, TempItem);
-						price.add(position, TempPrice);
+						price.add(position, convertScientificToNormal(TempPrice));
 						quantity.add(position, TempQuantity);
-						subtotal.add(position, TempSubtotal);
+						subtotal.add(position, convertScientificToNormal(TempSubtotal));
 
 						MyAdapter.this.notifyDataSetChanged();
 					} else {
@@ -205,4 +218,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 			gst = itemView.findViewById(R.id.gstNumber);
 		}
 	}
+
+
+
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
+	}
+
 }

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,6 +38,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -389,7 +392,7 @@ public class bill_management extends AppCompatActivity {
 						return;
 					}
 
-					int total = 0;
+					double total = 0;
 					StringBuffer buffer = new StringBuffer();
 					while (searchResultCursor.moveToNext()) {
 						String formattedDate = date_convertor.convertDateFormat(searchResultCursor.getString(searchResultCursor.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy");
@@ -401,11 +404,11 @@ public class bill_management extends AppCompatActivity {
 						buffer.append("Product Name = " + searchResultCursor.getString(searchResultCursor.getColumnIndex("product")) + "\n");
 						buffer.append("Price = " + searchResultCursor.getString(searchResultCursor.getColumnIndex("price")) + "\n");
 						buffer.append("Quantity = " + searchResultCursor.getString(searchResultCursor.getColumnIndex("quantity")) + "\n");
-						buffer.append("Sub Total = " + searchResultCursor.getString(searchResultCursor.getColumnIndex("subtotal")) + "\n\n");
-						total += Float.parseFloat(searchResultCursor.getString(searchResultCursor.getColumnIndex("subtotal")));
+						buffer.append("Sub Total = " + convertScientificToNormal(searchResultCursor.getDouble(searchResultCursor.getColumnIndex("subtotal"))) + "\n\n");
+						total += Double.parseDouble(searchResultCursor.getString(searchResultCursor.getColumnIndex("subtotal")));
 					}
 
-					buffer.append("Total = " + total);
+					buffer.append("Total = " + convertScientificToNormal(total));
 
 					AlertDialog.Builder builder = new AlertDialog.Builder(bill_management.this);
 					builder.setCancelable(true);
@@ -737,7 +740,7 @@ public class bill_management extends AppCompatActivity {
 
 								float TotalGST = 0f;
 
-								int total = 0;
+								double total = 0d;
 
 								if (list.getCount() == 0) {
 									Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
@@ -753,7 +756,7 @@ public class bill_management extends AppCompatActivity {
 												} else {
 													gst = list.getString(list.getColumnIndex("Gst"));
 												}
-												float tax = ((Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("quantity")))) * (Integer.parseInt(String.valueOf(gst)) / 100f)));
+												float tax = (( Float.parseFloat(String.valueOf(list.getString(list.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("quantity")))) * ( Float.parseFloat(String.valueOf(gst)) / 100f)));
 												TotalGST += tax;
 												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")))));
 												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")))));
@@ -768,7 +771,7 @@ public class bill_management extends AppCompatActivity {
 												table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")))));
 											}
 											index++;
-											total += list.getInt(list.getColumnIndex("subtotal"));
+											total += list.getDouble(list.getColumnIndex("subtotal"));
 										}
 									} while (list.moveToNext());
 								}
@@ -776,12 +779,12 @@ public class bill_management extends AppCompatActivity {
 								if (haveGST) {
 									table2.addCell(new Cell(1, 4).add(new Paragraph("Total")));
 									table2.addCell(new Cell().add(new Paragraph(TotalGST + "")));
-									table2.addCell(new Cell().add(new Paragraph(total + "")));
+									table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(total) + "")));
 									table2.addCell(new Cell(2, 6).setBorder(Border.NO_BORDER)); // adding space
 									table2.addCell(new Cell(0, 6).setBold());// adding line
 								} else {
 									table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-									table2.addCell(new Cell().add(new Paragraph(total + "")));
+									table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(total) + "")));
 									table2.addCell(new Cell(2, 4).setBorder(Border.NO_BORDER)); // adding space
 									table2.addCell(new Cell(0, 4).setBold());// adding line
 								}
@@ -824,7 +827,7 @@ public class bill_management extends AppCompatActivity {
 
 							customerDetail.moveToFirst();
 
-							int total = 0;
+							double total = 0d;
 
 							if (list.getCount() == 0) {
 								Toast.makeText(bill_management.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
@@ -839,31 +842,31 @@ public class bill_management extends AppCompatActivity {
 										} else {
 											gst = list.getString(list.getColumnIndex("Gst"));
 										}
-										float tax = ((Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("quantity")))) * (Integer.parseInt(String.valueOf(gst)) / 100f)));
+										float tax = (( Float.parseFloat(String.valueOf(list.getString(list.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(list.getString(list.getColumnIndex("quantity")))) * ( Float.parseFloat(String.valueOf(gst)) / 100f)));
 										TotalGST += tax;
 										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")))));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")))));
+										table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(Double.parseDouble(list.getString(list.getColumnIndex("price")))))));
 										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")))));
 										table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
 										table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")))));
+										table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(Double.parseDouble(list.getString(list.getColumnIndex("subtotal")))))));
 									} else {
 										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("product")))));
 										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("price")))));
 										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("quantity")))));
-										table2.addCell(new Cell().add(new Paragraph(list.getString(list.getColumnIndex("subtotal")))));
+										table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(Double.parseDouble(list.getString(list.getColumnIndex("subtotal")))))));
 									}
-									total += list.getInt(list.getColumnIndex("subtotal"));
+									total += list.getDouble(list.getColumnIndex("subtotal"));
 								} while (list.moveToNext());
 							}
 
 							if (haveGST) {
 								table2.addCell(new Cell(1, 4).add(new Paragraph("Total")));
 								table2.addCell(new Cell().add(new Paragraph(TotalGST + "")));
-								table2.addCell(new Cell().add(new Paragraph(total + "")));
+								table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(total) + "")));
 							} else {
 								table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-								table2.addCell(new Cell().add(new Paragraph(total + "")));
+								table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(total) + "")));
 							}
 
 						}
@@ -1026,5 +1029,11 @@ public class bill_management extends AppCompatActivity {
 //		mAdView.loadAd(adRequest);
 //
 //	}
+
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
+	}
 
 }

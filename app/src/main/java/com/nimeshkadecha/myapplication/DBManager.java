@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
@@ -72,7 +74,7 @@ public class DBManager extends SQLiteOpenHelper {
 										           " indexs INTEGER PRIMARY KEY AUTOINCREMENT," + // AUTO
 										           " productId INTEGER," + // from Product
 										           " quantity INTEGER," +
-										           " price INTEGER," +
+										           " price REAL," +
 										           " subtotal REAL," +
 										           " customerId INTEGER," + // from Customers
 										           " sellerId INTEGER," + // from Users
@@ -114,12 +116,12 @@ public class DBManager extends SQLiteOpenHelper {
 		DB.execSQL("CREATE TABLE stock(" +
 										           " stockId INTEGER PRIMARY KEY AUTOINCREMENT," +
 										           " productId INTEGER," +
-										           " purchasePrice TEXT," +
-										           " sellingPrice TEXT," +
+										           " purchasePrice REAL," +
+										           " sellingPrice REAL," +
 										           " date DATE," +
 										           " quantity TEXT," +
 										           " sellerId INTEGER," +
-										           " Gst INTEGER," +
+										           " Gst REAL," +
 										           " FOREIGN KEY(productId) REFERENCES products(productId)," +
 										           " FOREIGN KEY(sellerId) REFERENCES users(userId))"
 		          );
@@ -128,7 +130,7 @@ public class DBManager extends SQLiteOpenHelper {
 										           " stickTrackId INTEGER PRIMARY KEY AUTOINCREMENT," +
 										           " productId INTEGER," +
 										           " quantity TEXT," +
-										           " price TEXT," +
+										           " price REAL," +
 										           " sellerId INTEGER," +
 										           " Gst INTEGER," +
 										           " FOREIGN KEY(sellerId) REFERENCES users(userId))"
@@ -299,14 +301,11 @@ public class DBManager extends SQLiteOpenHelper {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Log.d("ENimesh", "data in method = " + name + number + email);
-
 				SQLiteDatabase DB = getWritableDatabase();
 				String sellerId = String.valueOf(get_userId(email));
 
 				Cursor cursor = DB.rawQuery("SELECT customerName FROM customers WHERE customerNumber = ? AND sellerId = ? ", new String[]{number, sellerId});
 				int count = cursor.getCount();
-				Log.d("ENimesh", "Count = " + count);
 
 				if (count == 0) {
 					cursor.close();
@@ -376,15 +375,15 @@ public class DBManager extends SQLiteOpenHelper {
 	@SuppressLint("Range")
 	public boolean InsertList(String name, String price, String quantity, String cName, String cNumber, String date, int billId, String email, int state, String Gst) {
 
-		int priceInt = Integer.parseInt(price);
+		double priceInt = Double.parseDouble(price);
 
 		int quantityInt = Integer.parseInt(quantity);
 
 		if (Gst.isEmpty()) Gst = "0";
 
-		float tax = (priceInt * quantityInt) * (Integer.parseInt(Gst) / 100f);
+		double tax = (priceInt * quantityInt) * (Double.parseDouble(Gst) / 100f);
 
-		float subtotal = ((priceInt * quantityInt) + tax);
+		double subtotal = ((priceInt * quantityInt) + tax);
 
 		SQLiteDatabase DB = this.getWritableDatabase();
 
@@ -420,7 +419,7 @@ public class DBManager extends SQLiteOpenHelper {
 		if (check_if_already_added) {
 
 			number_of_product += 1;
-			float taxUpdate = (priceInt * number_of_product) * (Integer.parseInt(Gst) / 100f);
+			double taxUpdate = (priceInt * number_of_product) * ( Double.parseDouble(Gst) / 100f);
 			subtotal = ((priceInt * number_of_product) + taxUpdate);
 
 			String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
@@ -491,7 +490,7 @@ public class DBManager extends SQLiteOpenHelper {
 			if (categoryLocal.equals("all") && !category.equals("all")) {
 				@SuppressLint("Recycle") Cursor cursor1 = DB.rawQuery("UPDATE products SET category = ? WHERE productId = ?", new String[]{category, String.valueOf(id)});
 
-				if (cursor1.getCount() > 0) {
+				if (cursor1.getCount() >= 0) {
 					return id;
 				} else {
 					return -2;
@@ -572,7 +571,7 @@ public class DBManager extends SQLiteOpenHelper {
 	}
 
 	//    Remove from list =============================[Update Quantity in display where index =? ]
-	public boolean UpdateQuantity(int quantity, float subtotal, int index) {
+	public boolean UpdateQuantity(int quantity, double subtotal, int index) {
 
 		SQLiteDatabase DB = this.getWritableDatabase();
 
@@ -586,19 +585,25 @@ public class DBManager extends SQLiteOpenHelper {
 
 	// Checking Total without saving ===============================================================
 	@SuppressLint("Range")
-	public int CheckTotal(int billID) {
+	public String  CheckTotal(int billID) {
 		Cursor displayList_subtotal = DisplayList(billID);
-		int total = 0;
+		double total = 0d;
 		displayList_subtotal.moveToFirst();
 		if (displayList_subtotal.getCount() == 0) {
 			displayList_subtotal.close();
-			return -1;
+			return "-1";
 		}
 		do {
-			total += displayList_subtotal.getInt(displayList_subtotal.getColumnIndex("subtotal"));
+			total +=  displayList_subtotal.getDouble(displayList_subtotal.getColumnIndex("subtotal"));
 		} while (displayList_subtotal.moveToNext());
 		displayList_subtotal.close();
-		return total;
+		return convertScientificToNormal(total);
+	}
+
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
 	}
 
 	//    Generating BILL ID ===============================================[select * from customer]
@@ -765,13 +770,13 @@ public class DBManager extends SQLiteOpenHelper {
 	@SuppressLint("Range")
 	public boolean InsertCustomer(int billId, String name, String number, String date, String email, int state) {
 
-		int total = 0;
+		double total = 0d;
 
 		Cursor cursor = GetSubTotal(billId);
 
 		cursor.moveToFirst();
 		do {
-			total += cursor.getInt(cursor.getColumnIndex("subtotal"));
+			total += cursor.getDouble(cursor.getColumnIndex("subtotal"));
 		} while (cursor.moveToNext());
 
 		cursor.close();
@@ -937,9 +942,11 @@ public class DBManager extends SQLiteOpenHelper {
 				ContentValues contentValues = new ContentValues();
 				contentValues.put("productId", productID);
 				contentValues.put("quantity", newQty);
-				contentValues.put("price", stockQuentityCursor.getString(stockQuentityCursor.getColumnIndex("price")));
+//				contentValues.put("price", stockQuentityCursor.getString(stockQuentityCursor.getColumnIndex("price")));
+				contentValues.put("price", String.valueOf(Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("price")))));
 				contentValues.put("sellerId", sellerId);
-				contentValues.put("Gst", displayListCursor.getString(displayListCursor.getColumnIndex("Gst")));
+//				contentValues.put("Gst", displayListCursor.getString(displayListCursor.getColumnIndex("Gst")));
+				contentValues.put("Gst", Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("Gst"))));
 
 				result = db.update("stockQuantity", contentValues, "sellerId = ? and productId = ? ", new String[]{sellerId, productID});
 
@@ -949,9 +956,9 @@ public class DBManager extends SQLiteOpenHelper {
 				ContentValues contentValues = new ContentValues();
 				contentValues.put("productId", productID);
 				contentValues.put("quantity", String.valueOf(Sell_qty));
-				contentValues.put("price", String.valueOf(Integer.parseInt(displayListCursor.getString(displayListCursor.getColumnIndex("price")))));
+				contentValues.put("price", String.valueOf(Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("price")))));
 				contentValues.put("sellerId", sellerId);
-				contentValues.put("Gst", displayListCursor.getString(displayListCursor.getColumnIndex("Gst")));
+				contentValues.put("Gst", Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("Gst"))));
 
 				try {
 					result = db.insert("stockQuantity", null, contentValues);
@@ -983,8 +990,8 @@ public class DBManager extends SQLiteOpenHelper {
 
 		ContentValues cv = new ContentValues();
 		cv.put("productId", get_productId(name, catagory));
-		cv.put("purchasePrice", pPrice);
-		cv.put("sellingPrice", sPrice);
+		cv.put("purchasePrice", Double.parseDouble(pPrice));
+		cv.put("sellingPrice", Double.parseDouble(sPrice));
 		cv.put("date", formattedDate);
 		cv.put("quantity", quantity);
 		cv.put("sellerId", sellerId);
@@ -1008,7 +1015,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 				contentValues.put("productId", get_productId(name, catagory));
 				contentValues.put("quantity", newQty);
-				contentValues.put("price", sPrice);
+				contentValues.put("price", Double.parseDouble(sPrice));
 				contentValues.put("sellerId", sellerId);
 				contentValues.put("Gst", gst);
 
@@ -1024,7 +1031,7 @@ public class DBManager extends SQLiteOpenHelper {
 //				contentValues.put("productName", name);
 				contentValues.put("productId", get_productId(name, catagory));
 				contentValues.put("quantity", quantity);
-				contentValues.put("price", sPrice);
+				contentValues.put("price", Double.parseDouble(sPrice));
 				contentValues.put("sellerId", sellerId);
 				contentValues.put("Gst", gst);
 //				contentValues.put("backup", 0);

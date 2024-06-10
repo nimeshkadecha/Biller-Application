@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:maxLength="6"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -100,7 +100,7 @@
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:textColorHint="#FA0202"
             tools:ignore="TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>

@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -32,8 +34,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class show_list extends AppCompatActivity {
@@ -63,6 +68,16 @@ public class show_list extends AppCompatActivity {
 		Bundle seller = getIntent().getExtras();
 		String sellertxt = seller.getString("seller");
 //--------------------------------------------------------------------------------------------------
+
+		//          menu Button ----------------------------------------------------------------------------
+		ImageView menuclick = findViewById(R.id.Menu);
+//          Keeping MENUE Invisible
+		menuclick.setVisibility(View.INVISIBLE);
+
+//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
+//          Removing Suport bar / top line containing name
+		Objects.requireNonNull(getSupportActionBar()).hide();
+
 
 //      Finding ------------------------------------------------------------------------------------
 		// Display Button
@@ -96,13 +111,13 @@ public class show_list extends AppCompatActivity {
 		// add more button
 		addmore = findViewById(R.id.addMore);
 
-
 //      SAVE button --------------------------------------------------------------------------------
 		save = findViewById(R.id.print);
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				save_CLicked[0]++;
+
+				save_CLicked[0]++; // to let user exit
 
 //                Confirm sale Check it there is products in there or not
 				boolean confirm_sale = DB.ConfirmSale(billId); // this will check that there is at least 1 item in list
@@ -191,7 +206,7 @@ public class show_list extends AppCompatActivity {
 					buffer.append("Customer Name = " + res.getString(res.getColumnIndex("customerName")) + "\n");
 					buffer.append("Customer Number = " + res.getString(res.getColumnIndex("customerNumber")) + "\n");
 					buffer.append("Date = " + formattedDate + "\n");
-					buffer.append("Total = " + res.getString(res.getColumnIndex("total")) + "\n\n");
+					buffer.append("Total = " + convertScientificToNormal(res.getDouble(res.getColumnIndex("total"))) + "\n\n");
 				}
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(show_list.this);
@@ -204,13 +219,14 @@ public class show_list extends AppCompatActivity {
 		});
 //--------------------------------------------------------------------------------------------------
 
+
 //        Check Total Button ---------------------------------------------------------------------------
 
 		checkPrice.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 
-				int total = DB.CheckTotal(billId);
+				String total = DB.CheckTotal(billId);
 				AlertDialog.Builder builder = new AlertDialog.Builder(show_list.this);
 				builder.setCancelable(true);
 				builder.setTitle("Quick Total");
@@ -307,7 +323,7 @@ public class show_list extends AppCompatActivity {
 					float[] cWidth3 = {142, 142, 142, 142};
 					Table table3 = new Table(cWidth3);
 
-					int total = 0;
+					double total = 0d;
 
 					Cursor customerDetail = DB.BillTotal(billId);
 					if (customerDetail.getCount() == 0) {
@@ -322,7 +338,7 @@ public class show_list extends AppCompatActivity {
 							table3.addCell(new Cell().add(new Paragraph(customerDetail.getString(customerDetail.getColumnIndex("customerNumber"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 							table3.addCell(new Cell().add(new Paragraph("Date").setFontSize(14)).setBorder(Border.NO_BORDER));
 							table3.addCell(new Cell().add(new Paragraph(date_convertor.convertDateFormat(customerDetail.getString(customerDetail.getColumnIndex("date")), "yyyy-MM-dd", "dd/MM/yyyy")).setFontSize(14)).setBorder(Border.NO_BORDER));
-							total = customerDetail.getInt(customerDetail.getColumnIndex("total"));
+							total = customerDetail.getDouble(customerDetail.getColumnIndex("total"));
 							table3.addCell(new Cell().add(new Paragraph("Bill ID").setFontSize(14)).setBorder(Border.NO_BORDER));
 							table3.addCell(new Cell().add(new Paragraph(billId + "").setFontSize(14)).setBorder(Border.NO_BORDER));
 						} while (customerDetail.moveToNext());
@@ -354,7 +370,7 @@ public class show_list extends AppCompatActivity {
 					}
 					table2.addCell(new Cell().add(new Paragraph("Sub Total")));
 
-					float TotalGST = 0f;
+					double TotalGST = 0d;
 
 					Cursor displayListCursor = DB.DisplayList(billId);
 					if (displayListCursor.getCount() == 0) {
@@ -370,19 +386,19 @@ public class show_list extends AppCompatActivity {
 								} else {
 									gst = displayListCursor.getString(displayListCursor.getColumnIndex("Gst"));
 								}
-								float tax = ((Integer.parseInt(String.valueOf(displayListCursor.getString(displayListCursor.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(displayListCursor.getString(displayListCursor.getColumnIndex("quantity")))) * (Integer.parseInt(String.valueOf(gst)) / 100f)));
+								float tax = ((Float.parseFloat(String.valueOf(displayListCursor.getString(displayListCursor.getColumnIndex("price")))) * Integer.parseInt(String.valueOf(displayListCursor.getString(displayListCursor.getColumnIndex("quantity")))) * (Float.parseFloat(String.valueOf(gst)) / 100f)));
 								TotalGST += tax;
 								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("product")))));
 								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("price")))));
 								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("quantity")))));
 								table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
 								table2.addCell(new Cell().add(new Paragraph(tax / 2 + "")));
-								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("subtotal")))));
+								table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("subtotal")))))));
 							} else {
 								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("product")))));
 								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("price")))));
 								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("quantity")))));
-								table2.addCell(new Cell().add(new Paragraph(displayListCursor.getString(displayListCursor.getColumnIndex("subtotal")))));
+								table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("subtotal")))))));
 							}
 						} while (displayListCursor.moveToNext());
 					}
@@ -390,10 +406,10 @@ public class show_list extends AppCompatActivity {
 					if (haveGST) {
 						table2.addCell(new Cell(1, 4).add(new Paragraph("Total")));
 						table2.addCell(new Cell().add(new Paragraph(TotalGST + "")));
-						table2.addCell(new Cell().add(new Paragraph(total + "")));
+						table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(total) + "")));
 					} else {
 						table2.addCell(new Cell(1, 3).add(new Paragraph("Total")));
-						table2.addCell(new Cell().add(new Paragraph(total + "")));
+						table2.addCell(new Cell().add(new Paragraph(convertScientificToNormal(total) + "")));
 					}
 
 
@@ -475,9 +491,10 @@ public class show_list extends AppCompatActivity {
 //--------------------------------------------------------------------------------------------------
 
 	//     Making Sure User Saved Data Before Going Back -----------------------------------------------
+	@SuppressLint("MissingSuperCall")
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+
 		if (save_CLicked[0] == 0) {
 			Toast.makeText(this, "Click on Save and Then Press Back", Toast.LENGTH_SHORT).show();
 		} else {
@@ -526,5 +543,12 @@ public class show_list extends AppCompatActivity {
 //        mAdView.loadAd(adRequest);
 ////  ================================================================================================
 //    }
+
+
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
+	}
 
 }
