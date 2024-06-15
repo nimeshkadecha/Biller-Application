@@ -1,4 +1,4 @@
-package com.nimeshkadecha.myapplication;
+package com.nimeshkadecha.biller;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -44,9 +43,13 @@ import java.util.Random;
 public class show_list extends AppCompatActivity {
 	final int[] save_CLicked = {0};
 	String filename;
-	private ArrayList<String> ainput, aprice, aquantity, asubtotal, aindex, aGST;
+	private ArrayList<String> aprice;
+	private ArrayList<String> aquantity;
+	private ArrayList<String> asubtotal;
+	private ArrayList<String> aindex;
+	private ArrayList<String> aGST;
 	private RecyclerView recyclerView;
-	private MyAdapter adapter;
+	private adapter_showList adapter;
 	private final DBManager DB = new DBManager(this);
 	private StorageVolume storageVolume;
 	private Button back, save, display, pdf, addmore, checkPrice;
@@ -457,13 +460,13 @@ public class show_list extends AppCompatActivity {
 //  Recycler View ----------------------------------------------------------------------------------
 
 		aindex = new ArrayList<>();
-		ainput = new ArrayList<>();
+		ArrayList<String> ainput = new ArrayList<>();
 		aprice = new ArrayList<>();
 		aquantity = new ArrayList<>();
 		asubtotal = new ArrayList<>();
 		aGST = new ArrayList<>();
 		recyclerView = findViewById(R.id.recyclerview);
-		adapter = new MyAdapter(show_list.this, ainput, aprice, aquantity, asubtotal, aindex, aGST);
+		adapter = new adapter_showList(show_list.this, ainput, aprice, aquantity, asubtotal, aindex, aGST);
 		recyclerView.setAdapter(adapter);
 
 		recyclerView.setLayoutManager(new LinearLayoutManager(show_list.this));

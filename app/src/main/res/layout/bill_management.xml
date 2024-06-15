@@ -34,12 +34,13 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_marginTop="25sp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title1" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/namelayout"
+        android:id="@+id/nameLayout_bm"
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,37 +69,6 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/contactlayout"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/search_by_contact_number"
-        app:endIconMode="clear_text"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/namelayout"
-        app:helperTextTextColor="#FF002E"
-        app:startIconDrawable="@drawable/ic_phone">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/contact"
-            style="@style/TextInputEditText"
-            android:textColorHint="#FA0202"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="number"
-            android:visibility="gone"
-            android:maxLength="10"
-            tools:ignore="TextContrastCheck">
-
-        </com.google.android.material.textfield.MaterialAutoCompleteTextView>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/datelayout"
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
@@ -110,12 +80,12 @@
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contactlayout"
+        app:layout_constraintTop_toBottomOf="@+id/nameLayout_bm"
         app:helperTextTextColor="#FF002E"
         app:startIconDrawable="@drawable/date">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/date"
+            android:id="@+id/date_bm"
             style="@style/TextInputEditText"
             android:textColorHint="#FA0202"
             android:layout_width="match_parent"
@@ -143,40 +113,12 @@
         app:startIconDrawable="@drawable/date">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/rangeDatetEDT"
+            android:id="@+id/rangeDateEDT"
             style="@style/TextInputEditText"
             android:textColorHint="#FA0202"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="date"
-            tools:ignore="TextContrastCheck">
-
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/billIDlayout"
-        style="@style/TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/search_by_billid"
-        app:endIconMode="clear_text"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rangedate"
-        app:startIconDrawable="@drawable/ic_numbers">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/billID"
-            android:visibility="gone"
-            style="@style/TextInputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="number"
             tools:ignore="TextContrastCheck">
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -215,16 +157,30 @@
         app:layout_constraintTop_toBottomOf="@+id/showallData"
         tools:ignore="TextContrastCheck" />
 
-<!--    <com.google.android.gms.ads.AdView-->
-<!--        android:id="@+id/adView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        app:adSize="BANNER"-->
-<!--        app:adUnitId="ca-app-pub-6774391225250306/5183271503"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
+    <LinearLayout
+        android:id="@+id/LoadingBlur_bm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/loadingBlur"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/PLoading_bm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp"
+        android:indeterminateDrawable="@drawable/progress_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

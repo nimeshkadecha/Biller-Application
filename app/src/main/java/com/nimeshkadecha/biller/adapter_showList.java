@@ -1,8 +1,7 @@
-package com.nimeshkadecha.myapplication;
+package com.nimeshkadecha.biller;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-	DBManager DBlocal;
+public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyViewHolder> {
+	private DBManager dbManager;
 	private final Context context;
 	private final ArrayList item;
 	private final ArrayList price;
@@ -30,7 +28,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 	private final ArrayList GST;
 		final double MAX_REAL_VALUE = Double.MAX_VALUE;
 
-	public MyAdapter(Context context, ArrayList item, ArrayList price, ArrayList quantity, ArrayList subtotal, ArrayList index, ArrayList GST) {
+	public adapter_showList(Context context, ArrayList item, ArrayList price, ArrayList quantity, ArrayList subtotal, ArrayList index, ArrayList GST) {
 
 		
 		this.context = context;
@@ -52,7 +50,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 	@Override
 	public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-		Boolean checkGST = false;
+		boolean checkGST = false;
 		if (GST.get(position).equals("0")) {
 			holder.gstLayout.setVisibility(View.GONE);
 		} else {
@@ -71,21 +69,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 		}
 
 		holder.AddBtn.setOnClickListener(new View.OnClickListener() {
+			@SuppressLint("NotifyDataSetChanged")
 			@Override
 			public void onClick(View view) {
-				DBlocal = new DBManager(context);
+				dbManager = new DBManager(context);
 				String TempItem = String.valueOf(item.get(position));
 				double TempPrice = Double.parseDouble(String.valueOf(price.get(position)));
 				int TempQuantity = Integer.parseInt(String.valueOf(quantity.get(position)));
 				double TempGST = Double.parseDouble(String.valueOf(GST.get(position)));
-				double TempSubtotal = 1d;
+				double TempSubtotal;
 				TempQuantity += 1;
 				double tax = ((TempPrice * TempQuantity) * (TempGST / 100d));
 				TempSubtotal = (TempPrice * TempQuantity) + tax;
 
 				if(TempSubtotal < MAX_REAL_VALUE) {
 
-					boolean updateData = DBlocal.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
+					boolean updateData = dbManager.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
 					if (updateData) {
 						item.remove(position);
 						price.remove(position);
@@ -97,7 +96,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 						quantity.add(position, TempQuantity);
 						subtotal.add(position, convertScientificToNormal(TempSubtotal));
 
-						MyAdapter.this.notifyDataSetChanged();
+						adapter_showList.this.notifyDataSetChanged();
 					} else {
 						Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show();
 					}
@@ -109,14 +108,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 		});
 
 		holder.RemoveBtn.setOnClickListener(new View.OnClickListener() {
+			@SuppressLint("NotifyDataSetChanged")
 			@Override
 			public void onClick(View view) {
 				if (String.valueOf(quantity.get(position)).equals("1")) {
 					holder.RemoveBtn.setOnLongClickListener(new View.OnLongClickListener() {
+						@SuppressLint("NotifyDataSetChanged")
 						@Override
 						public boolean onLongClick(View view) {
-							DBlocal = new DBManager(context);
-							boolean removeItem = DBlocal.RemoveItem(String.valueOf(index.get(position)));
+							dbManager = new DBManager(context);
+							boolean removeItem = dbManager.RemoveItem(String.valueOf(index.get(position)));
 							if (!removeItem) {
 								Toast.makeText(context, "Failed to Removed", Toast.LENGTH_SHORT).show();
 								return false;
@@ -126,25 +127,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 								price.remove(position);
 								quantity.remove(position);
 								subtotal.remove(position);
-								MyAdapter.this.notifyDataSetChanged();
+								adapter_showList.this.notifyDataSetChanged();
 								return true;
 							}
 						}
 					});
 					Toast.makeText(context, "Long press to remove", Toast.LENGTH_SHORT).show();
 				} else {
-					DBlocal = new DBManager(context);
+					dbManager = new DBManager(context);
 					String TempItem = String.valueOf(item.get(position));
 					double TempPrice = Double.parseDouble(String.valueOf(price.get(position)));
 					int TempQuantity = Integer.parseInt(String.valueOf(quantity.get(position)));
 					double TempGST = Double.parseDouble(String.valueOf(GST.get(position)));
 
-					double TempSubtotal = 1;
-					TempQuantity -= 1d;
+					double TempSubtotal;
+					TempQuantity -= 1;
 					double tax = ((TempPrice * TempQuantity) * (TempGST / 100d));
 					TempSubtotal = (TempPrice * TempQuantity) + tax;
 
-					boolean updateData = DBlocal.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
+					boolean updateData = dbManager.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
 
 					if (updateData) {
 						item.remove(position);
@@ -157,7 +158,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 						quantity.add(position, TempQuantity);
 						subtotal.add(position, convertScientificToNormal(TempSubtotal));
 
-						MyAdapter.this.notifyDataSetChanged();
+						adapter_showList.this.notifyDataSetChanged();
 					} else {
 						Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show();
 					}
@@ -165,15 +166,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 			}
 		});
 
-		holder.Delete.setOnClickListener(v -> {
-			Toast.makeText(context, "Long press on delete button to remove", Toast.LENGTH_SHORT).show();
-		});
+		holder.Delete.setOnClickListener(v -> Toast.makeText(context, "Long press on delete button to remove", Toast.LENGTH_SHORT).show());
 
 		holder.Delete.setOnLongClickListener(new View.OnLongClickListener() {
+			@SuppressLint("NotifyDataSetChanged")
 			@Override
 			public boolean onLongClick(View v) {
-				DBlocal = new DBManager(context);
-				boolean removeItem = DBlocal.RemoveItem(String.valueOf(index.get(position)));
+				dbManager = new DBManager(context);
+				boolean removeItem = dbManager.RemoveItem(String.valueOf(index.get(position)));
 				if (!removeItem) {
 					Toast.makeText(context, "Failed to Removed", Toast.LENGTH_SHORT).show();
 					return false;
@@ -183,7 +183,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 					price.remove(position);
 					quantity.remove(position);
 					subtotal.remove(position);
-					MyAdapter.this.notifyDataSetChanged();
+					adapter_showList.this.notifyDataSetChanged();
 					return true;
 
 				}
@@ -196,7 +196,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 		return subtotal.size();
 	}
 
-	public class MyViewHolder extends RecyclerView.ViewHolder {
+	public static class MyViewHolder extends RecyclerView.ViewHolder {
 
 		TextView item, price, quantity, subtotal, Delete, gst;
 

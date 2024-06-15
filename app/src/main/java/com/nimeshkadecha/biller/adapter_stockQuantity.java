@@ -1,4 +1,4 @@
-package com.nimeshkadecha.myapplication;
+package com.nimeshkadecha.biller;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class stock_qty_adapter extends RecyclerView.Adapter<stock_qty_adapter.MyViewHolder> {
+public class adapter_stockQuantity extends RecyclerView.Adapter<adapter_stockQuantity.MyViewHolder> {
 	private final Context context;
 	private final ArrayList item;
 	private final ArrayList quantity;
 
-	public stock_qty_adapter(Context context, ArrayList item, ArrayList quantity) {
+	public adapter_stockQuantity(Context context, ArrayList item, ArrayList quantity) {
 
 		this.context = context;
 		this.item = item;
@@ -26,13 +26,13 @@ public class stock_qty_adapter extends RecyclerView.Adapter<stock_qty_adapter.My
 
 	@NonNull
 	@Override
-	public stock_qty_adapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+	public adapter_stockQuantity.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		View v = LayoutInflater.from(context).inflate(R.layout.qty_list, parent, false);
-		return new stock_qty_adapter.MyViewHolder(v);
+		return new adapter_stockQuantity.MyViewHolder(v);
 	}
 
 	@Override
-	public void onBindViewHolder(@NonNull stock_qty_adapter.MyViewHolder holder, int position) {
+	public void onBindViewHolder(@NonNull adapter_stockQuantity.MyViewHolder holder, int position) {
 		holder.item.setText(String.valueOf(item.get(position)));
 		holder.quantity.setText(String.valueOf(quantity.get(position)));
 	}

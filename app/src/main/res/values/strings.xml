@@ -15,7 +15,7 @@
     <string name="number">Number</string>
     <string name="customer_name">Customer Name</string>
     <string name="item_name">Item Name</string>
-    <string name="item_name1">Item Name :</string>
+    <string name="item_name1">Name :</string>
     <string name="price">Price</string>
     <string name="bprice">Purchase Price</string>
     <string name="sprice">Selling Price</string>
@@ -46,8 +46,8 @@
     <string name="addmore">AddMore</string>
     <string name="create_pdf">Create PDF</string>
     <string name="Menulogo">menu</string>
-    <string name="item_price">Item Price :</string>
-    <string name="item_quantity">Item quantity :</string>
+    <string name="item_price">Price :</string>
+    <string name="item_quantity">Quantity :</string>
     <string name="subtotal">Subtotal :</string>
     <string name="customer_information">Bill Management</string>
     <string name="about">About</string>
@@ -65,4 +65,8 @@
     <string name="business_insights">Business Insights</string>
     <string name="submit">Submit</string>
     <string name="enter_api_key">Enter API key</string>
+    <string name="gst">Gst:</string>
+    <string name="decrease_product_count">Decrease product count</string>
+    <string name="increase_product_count">Increase product count</string>
+    <string name="gst_percentage">GST percentage</string>
 </resources>

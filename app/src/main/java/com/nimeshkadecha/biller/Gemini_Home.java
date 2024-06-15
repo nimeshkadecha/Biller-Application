@@ -1,4 +1,4 @@
-package com.nimeshkadecha.myapplication;
+package com.nimeshkadecha.biller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
@@ -67,7 +65,7 @@ public class Gemini_Home extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_gemini_home);
+		setContentView(R.layout.gemini_home);
 
 		//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
 //          Removing Suport bar / top line containing name

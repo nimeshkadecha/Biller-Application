@@ -1,4 +1,4 @@
-package com.nimeshkadecha.myapplication;
+package com.nimeshkadecha.biller;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -23,8 +23,8 @@ public class chart extends AppCompatActivity {
 	PieChart pieChart;
 	DBManager local_db = new DBManager(this);
 	private ArrayList<String> ainput, aquantity, Ar, Ag, Ab, ANAME;
-	private stock_qty_adapter S_Q_adapter;
-	private stock_List_adapter S_L_adapter;
+	private adapter_stockQuantity S_Q_adapter;
+	private adapter_stockList S_L_adapter;
 
 	@SuppressLint("Range")
 	@Override
@@ -59,13 +59,13 @@ public class chart extends AppCompatActivity {
 				ANAME = new ArrayList<>();
 
 				RecyclerView qty_rec = findViewById(R.id.QTY_REC);
-				S_Q_adapter = new stock_qty_adapter(chart.this, ainput, aquantity);
+				S_Q_adapter = new adapter_stockQuantity(chart.this, ainput, aquantity);
 				qty_rec.setAdapter(S_Q_adapter);
 
 				qty_rec.setLayoutManager(new LinearLayoutManager(chart.this));
 
 				RecyclerView Stock_list = findViewById(R.id.list_REC);
-				S_L_adapter = new stock_List_adapter(chart.this, Ar, Ag, Ab, ANAME);
+				S_L_adapter = new adapter_stockList(chart.this, Ar, Ag, Ab, ANAME);
 				Stock_list.setAdapter(S_L_adapter);
 				Stock_list.setLayoutManager(new LinearLayoutManager(chart.this));
 

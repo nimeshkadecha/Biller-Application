@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/namelayout"
+        android:id="@+id/nameLayout_IM"
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/namelayout">
+        app:layout_constraintTop_toBottomOf="@+id/nameLayout_IM">
 
         <TextView
             style="@style/textView"
@@ -162,7 +162,7 @@
         android:layout_height="wrap_content"
         android:text="Quantity chart"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/namelayout"
+        app:layout_constraintEnd_toEndOf="@+id/nameLayout_IM"
         app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout" />
 
     <Button
@@ -171,7 +171,7 @@
         android:layout_height="wrap_content"
         android:text="Show Record"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/namelayout"
+        app:layout_constraintStart_toStartOf="@+id/nameLayout_IM"
         app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout" />
 
 <!--    <com.google.android.gms.ads.AdView-->

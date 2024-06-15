@@ -35,93 +35,91 @@
         tools:targetApi="34" >
         <activity
             android:name=".Gemini_chat"
-            android:exported="false" />
+            android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Gemini_Home"
-            android:exported="false" /> <!-- ads -->
-        <!-- <meta-data -->
-        <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
-        <!-- android:value="ca-app-pub-6774391225250306~7255982647"/> -->
+            android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".backup_management"
-            android:exported="false" />
+            android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".fingerprint_lock"
-            android:exported="false" />
+            android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".chart"
-            android:exported="false" />
+            android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".stock_control"
-            android:exported="false" />
+            android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".inventory_insights"
-            android:exported="false" />
+            android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".add_product"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".bill_management"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".show_list"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".profile_editing"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".reset_password"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".otp_validation"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".forgot_password"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".home"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".register"
-            android:exported="false" >
+            android:exported="false" android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".login_Screen"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

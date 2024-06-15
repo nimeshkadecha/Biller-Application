@@ -1,4 +1,4 @@
-package com.nimeshkadecha.myapplication;
+package com.nimeshkadecha.biller;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -199,7 +198,7 @@ public class inventory_insights extends AppCompatActivity {
 
 //        notifying user to change switch
 
-		TextInputLayout namelayout = findViewById(R.id.namelayout);
+		TextInputLayout namelayout = findViewById(R.id.nameLayout_IM);
 
 
 		namelayout.setOnClickListener(new View.OnClickListener() {

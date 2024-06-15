@@ -1,13 +1,12 @@
-package com.nimeshkadecha.myapplication;
+package com.nimeshkadecha.biller;
 
-import static com.nimeshkadecha.myapplication.Gemini_Home.business_JO;
+import static com.nimeshkadecha.biller.Gemini_Home.business_JO;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,7 +49,7 @@ public class Gemini_chat extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_gemini_chat);
+		setContentView(R.layout.gemini_chat);
 
 
 		//      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------

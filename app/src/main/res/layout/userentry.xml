@@ -8,13 +8,12 @@
     android:backgroundTintMode="add"
     app:cardCornerRadius="16dp"
     app:cardElevation="12dp"
-
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_margin="8dp">
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -40,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:layout_marginStart="2dp"
                 android:textSize="16sp">
 
 
@@ -70,7 +70,7 @@
                 android:id="@+id/textprice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:layout_marginStart="2dp"
                 android:textSize="16sp">
 
             </TextView>
@@ -93,7 +93,6 @@
                 android:text="@string/item_quantity"
                 android:textColor="@color/black"
                 android:textSize="15sp">
-
             </TextView>
 
             <ImageView
@@ -103,6 +102,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:contentDescription="@string/decrease_product_count"
                 android:src="@drawable/remove_folder_svgrepo_com"/>
 
             <TextView
@@ -120,6 +120,7 @@
                 android:id="@+id/addQuantityBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/increase_product_count"
                 android:src="@drawable/add_square_svgrepo_com"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
@@ -131,17 +132,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:visibility="visible"
             android:orientation="horizontal"
+            android:visibility="visible"
+            android:layout_marginStart="132dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 style="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gst:"
+                android:text="@string/gst"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -150,17 +152,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:layout_marginStart="2dp"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:orientation="horizontal"
+            android:layout_marginStart="100dp"
             android:layout_marginTop="12dp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayoutGSTLAYOUT">
 
             <TextView
@@ -176,7 +180,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:layout_marginStart="2dp"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -194,8 +199,8 @@
                 style="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete"
-                android:textColor="#FF0000"
+                android:text="@string/delete"
+                android:textColor="#D90000"
                 android:textSize="18sp" />
 
         </LinearLayout>

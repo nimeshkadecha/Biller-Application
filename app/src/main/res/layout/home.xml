@@ -81,7 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout8"
+        android:id="@+id/textInputDate__home"
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
         android:layout_marginTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout8"
+        app:layout_constraintTop_toBottomOf="@+id/textInputDate__home"
         tools:ignore="TextContrastCheck" />
 
     <include
