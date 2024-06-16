@@ -18,7 +18,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 
 public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyViewHolder> {
-	private DBManager dbManager;
+	final double MAX_REAL_VALUE = Double.MAX_VALUE;
 	private final Context context;
 	private final ArrayList item;
 	private final ArrayList price;
@@ -26,11 +26,11 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 	private final ArrayList subtotal;
 	private final ArrayList index;
 	private final ArrayList GST;
-		final double MAX_REAL_VALUE = Double.MAX_VALUE;
+	private DBManager dbManager;
 
 	public adapter_showList(Context context, ArrayList item, ArrayList price, ArrayList quantity, ArrayList subtotal, ArrayList index, ArrayList GST) {
 
-		
+
 		this.context = context;
 		this.price = price;
 		this.item = item;
@@ -38,6 +38,12 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 		this.quantity = quantity;
 		this.subtotal = subtotal;
 		this.GST = GST;
+	}
+
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
 	}
 
 	@NonNull
@@ -57,7 +63,6 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 			checkGST = true;
 			holder.gstLayout.setVisibility(View.VISIBLE);
 		}
-
 		holder.item.setText(String.valueOf(item.get(position)));
 		holder.price.setText(String.valueOf(convertScientificToNormal(Double.parseDouble(String.valueOf(price.get(position))))));
 		holder.quantity.setText(String.valueOf(quantity.get(position)));
@@ -68,6 +73,7 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 			holder.gst.setText(String.valueOf(tax));
 		}
 
+		// Increase Quantity -----------------------------------------------------------------------------
 		holder.AddBtn.setOnClickListener(new View.OnClickListener() {
 			@SuppressLint("NotifyDataSetChanged")
 			@Override
@@ -82,7 +88,7 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 				double tax = ((TempPrice * TempQuantity) * (TempGST / 100d));
 				TempSubtotal = (TempPrice * TempQuantity) + tax;
 
-				if(TempSubtotal < MAX_REAL_VALUE) {
+				if (TempSubtotal < MAX_REAL_VALUE) {
 
 					boolean updateData = dbManager.UpdateQuantity(TempQuantity, TempSubtotal, Integer.parseInt(String.valueOf(index.get(position))));
 					if (updateData) {
@@ -100,13 +106,13 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 					} else {
 						Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show();
 					}
-				}
-				else{
+				} else {
 					Toast.makeText(context, "Android can't handle this big number !", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
 
+		// Decrease Quantity -----------------------------------------------------------------------------
 		holder.RemoveBtn.setOnClickListener(new View.OnClickListener() {
 			@SuppressLint("NotifyDataSetChanged")
 			@Override
@@ -166,8 +172,9 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 			}
 		});
 
+		// Notify for long press on delete button --------------------------------------------------------
 		holder.Delete.setOnClickListener(v -> Toast.makeText(context, "Long press on delete button to remove", Toast.LENGTH_SHORT).show());
-
+		// Delete ----------------------------------------------------------------------------------------
 		holder.Delete.setOnLongClickListener(new View.OnLongClickListener() {
 			@SuppressLint("NotifyDataSetChanged")
 			@Override
@@ -217,14 +224,6 @@ public class adapter_showList extends RecyclerView.Adapter<adapter_showList.MyVi
 			AddBtn = itemView.findViewById(R.id.addQuantityBtn);
 			gst = itemView.findViewById(R.id.gstNumber);
 		}
-	}
-
-
-
-	public static String convertScientificToNormal(double scientificNotation) {
-		BigDecimal bd = new BigDecimal(scientificNotation);
-		bd = bd.setScale(2, RoundingMode.HALF_UP);
-		return bd.toPlainString();
 	}
 
 }

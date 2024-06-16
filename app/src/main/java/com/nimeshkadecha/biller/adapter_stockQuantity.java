@@ -28,7 +28,7 @@ public class adapter_stockQuantity extends RecyclerView.Adapter<adapter_stockQua
 	@Override
 	public adapter_stockQuantity.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		View v = LayoutInflater.from(context).inflate(R.layout.qty_list, parent, false);
-		return new adapter_stockQuantity.MyViewHolder(v);
+		return new MyViewHolder(v);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class adapter_stockQuantity extends RecyclerView.Adapter<adapter_stockQua
 		return item.size();
 	}
 
-	public class MyViewHolder extends RecyclerView.ViewHolder {
+	public static class MyViewHolder extends RecyclerView.ViewHolder {
 
 		TextView item, quantity;
 

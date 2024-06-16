@@ -14,6 +14,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include4" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -162,15 +174,31 @@
         android:paddingRight="30dp"
         android:paddingBottom="10dp"
         android:text="@string/update"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         tools:ignore="TextContrastCheck" />
+
+    <Button
+        android:id="@+id/Delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:layout_marginTop="40dp"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        tools:ignore="TextContrastCheck" />
+
 
     <Button
         android:id="@+id/show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:text="@string/show"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
@@ -178,41 +206,5 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         tools:ignore="TextContrastCheck" />
 
-    <TextView
-        android:id="@+id/Header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update data of E-Mail: nimeshkadecha4560@gmail.com"
-        android:textSize="20sp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include4" />
-
-    <Button
-        android:id="@+id/Delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/delete"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/update"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-        tools:ignore="TextContrastCheck" />
-
-<!--    <com.google.android.gms.ads.AdView-->
-<!--        android:id="@+id/adView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        app:adSize="BANNER"-->
-<!--        app:adUnitId="ca-app-pub-6774391225250306/5183271503"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

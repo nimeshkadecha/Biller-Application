@@ -35,25 +35,25 @@
         tools:targetApi="34" >
         <activity
             android:name=".Gemini_chat"
-            android:exported="false" android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".Gemini_Home"
-            android:exported="false" android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".backup_management"
-            android:exported="false" android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".fingerprint_lock"
-            android:exported="false" android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".chart"
-            android:exported="false" android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".stock_control"
-            android:exported="false" android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".inventory_insights"
-            android:exported="false" android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".add_product"
             android:exported="false" android:windowSoftInputMode="adjustResize" >
@@ -63,7 +63,7 @@
         </activity>
         <activity
             android:name=".bill_management"
-            android:exported="false" android:windowSoftInputMode="adjustResize" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -77,53 +77,51 @@
         </activity>
         <activity
             android:name=".profile_editing"
-            android:exported="false" android:windowSoftInputMode="adjustResize" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".reset_password"
-            android:exported="false" android:windowSoftInputMode="adjustResize" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".otp_validation"
-            android:exported="false" android:windowSoftInputMode="adjustResize" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".forgot_password"
-            android:exported="false" android:windowSoftInputMode="adjustResize" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".home"
-            android:exported="false" android:windowSoftInputMode="adjustResize" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".register"
-            android:exported="false" android:windowSoftInputMode="adjustResize" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".login_Screen"
-            android:windowSoftInputMode="adjustResize"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 

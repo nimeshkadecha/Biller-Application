@@ -32,7 +32,7 @@ public class adapter_stockList extends RecyclerView.Adapter<adapter_stockList.My
 	@Override
 	public adapter_stockList.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		View v = LayoutInflater.from(context).inflate(R.layout.stock_list, parent, false);
-		return new adapter_stockList.MyViewHolder(v);
+		return new MyViewHolder(v);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class adapter_stockList extends RecyclerView.Adapter<adapter_stockList.My
 		return name.size();
 	}
 
-	public class MyViewHolder extends RecyclerView.ViewHolder {
+	public static class MyViewHolder extends RecyclerView.ViewHolder {
 
 		TextView Name;
 

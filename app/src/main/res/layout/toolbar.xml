@@ -22,6 +22,7 @@
         tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
+        android:id="@+id/textView7"
         style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

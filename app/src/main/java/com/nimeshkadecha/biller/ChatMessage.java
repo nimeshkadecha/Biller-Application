@@ -7,10 +7,10 @@ import java.util.Locale;
 
 public class ChatMessage {
 	private int id;
-	private String message;
-	private boolean isSentByUser;
-	private long timestamp;
-	private int sellerId;
+	private final String message;
+	private final boolean isSentByUser;
+	private final long timestamp;
+	private final int sellerId;
 
 	public ChatMessage(String message, boolean isSentByUser, int sellerId) {
 		this.message = message;
@@ -25,13 +25,6 @@ public class ChatMessage {
 		this.isSentByUser = isSentByUser;
 		this.timestamp = timestamp;
 		this.sellerId = sellerId;
-	}
-
-	public ChatMessage(String message, boolean isSentByUser, int sellerId, String timestamp) {
-		this.message = message;
-		this.isSentByUser = isSentByUser;
-		this.sellerId = sellerId;
-		this.timestamp = convertTimestampToLong(timestamp);
 	}
 
 	private long convertTimestampToLong(String timestamp) {

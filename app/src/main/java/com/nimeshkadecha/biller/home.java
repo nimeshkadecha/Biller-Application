@@ -16,7 +16,6 @@ import android.os.Message;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -25,6 +24,8 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,7 +41,7 @@ public class home extends AppCompatActivity {
 	private View navigationDrawerView;
 	private EditText number, date;
 
-	private AutoCompleteTextView name;
+	private MaterialAutoCompleteTextView name;
 
 	AlertDialog.Builder alert;
 
@@ -70,10 +71,9 @@ public class home extends AppCompatActivity {
 // Finding name and number texts ===================================================================
 
 		// Working with name -----------------------------------------------------------------------------
-		name = findViewById(R.id.name);
+		name = findViewById(R.id.customet_name_home);
 		// adding names from database to auto complete textview
 		name.setAdapter(new ArrayAdapter<>(home.this, android.R.layout.simple_list_item_1, dbManager.customersName_arr(email)));
-
 		name.setOnClickListener(v -> {
 			if (navigationDrawerView.getVisibility() == View.VISIBLE) {
 				navigationDrawerView.setVisibility(View.INVISIBLE);
@@ -82,11 +82,17 @@ public class home extends AppCompatActivity {
 		});
 
 		// adding customer number to input field from database if we have the customer
-		name.setOnFocusChangeListener((v, hasFocus) -> {if (!hasFocus) set_customer_number(email);});
+		name.setOnFocusChangeListener((v, hasFocus) -> {
+			if (hasFocus) navigationDrawerView.setVisibility(View.INVISIBLE);
+			if (!hasFocus) set_customer_number(email);
+		});
 		// -----------------------------------------------------------------------------------------------
 
 		// working with number ---------------------------------------------------------------------------
 		number = findViewById(R.id.contact);
+		number.setOnFocusChangeListener((v, hasFocus) -> {
+			if (hasFocus) navigationDrawerView.setVisibility(View.INVISIBLE);
+		});
 		number.setOnClickListener(v -> {
 			if (navigationDrawerView.getVisibility() == View.VISIBLE) {
 				navigationDrawerView.setVisibility(View.INVISIBLE);
@@ -112,8 +118,10 @@ public class home extends AppCompatActivity {
 		date.setShowSoftInputOnFocus(false); // not opening keyboard for date input
 
 		date.setOnFocusChangeListener((v, hasFocus) -> {
-			if (hasFocus) show_date_time_picker();
-
+			if (hasFocus) {
+				navigationDrawerView.setVisibility(View.INVISIBLE);
+				show_date_time_picker();
+			}
 		});
 
 		date.setOnClickListener(v -> show_date_time_picker());
@@ -443,52 +451,4 @@ public class home extends AppCompatActivity {
 	}
 //  ================================================================================================
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-//  AUTO BACKUP ------------------------------------------------------------------------------------
-
-	//    On pause
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	// on stop
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-
-//  ================================================================================================
 }

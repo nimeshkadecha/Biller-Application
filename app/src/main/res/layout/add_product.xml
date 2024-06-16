@@ -30,8 +30,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutitemname"
         style="@style/TextInputLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintWidth_max="500dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
@@ -55,25 +55,26 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout7"
         style="@style/TextInputLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
         android:layout_marginRight="10dp"
         android:hint="@string/price"
-        app:endIconMode="clear_text"
         app:helperTextTextColor="#FF002E"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:endIconMode="clear_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutitemname"
-        app:layout_constraintWidth_max="500dp"
         app:startIconDrawable="@drawable/baseline_currency_rupee_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/price"
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
+            android:maxLength="6"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:maxLength="6" />
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout

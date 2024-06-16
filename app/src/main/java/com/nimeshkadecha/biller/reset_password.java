@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +18,6 @@ public class reset_password extends AppCompatActivity {
 	public static final String SHARED_PREFS = "sharedPrefs";
 	private EditText password, confirmPassword;
 	private DBManager DBM;
-	private ImageView menuclick;
-	private Button confirm;
 
 	@SuppressLint("MissingInflatedId")
 	@Override
@@ -28,56 +25,43 @@ public class reset_password extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.reset_password);
 
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-
 //        finding
 		password = findViewById(R.id.password);
 		confirmPassword = findViewById(R.id.ConfirmPassword);
 		DBM = new DBManager(this);
 
-//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
+//        WORKING WITH TOOLBAR =====================================================================
 		//        Removing Suport bar / top line containing name
 		Objects.requireNonNull(getSupportActionBar()).hide();
-
-		//        FINDING menu
-		menuclick = findViewById(R.id.Menu);
-
 		//        Keeping MENUE Invisible
-		menuclick.setVisibility(View.INVISIBLE);
-//--------------------------------------------------------------------------------------------------
+		findViewById(R.id.Menu).setVisibility(View.INVISIBLE);
+//==================================================================================================
 
-//        Confirm Button ---------------------------------------------------------------------------
-		confirm = findViewById(R.id.confirm);
-		confirm.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// Calling Function
-				Confirm();
-			}
+//        Confirm Button ===========================================================================
+		Button confirm = findViewById(R.id.confirm);
+		confirm.setOnClickListener(v -> {
+			// Calling Function
+			Confirm();
 		});
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 
-	}
+	} // End of onCreate
 
-	//    validating Password length >= 6 --------------------------------------------------------------
+	//    validating Password length >= 6 =============================================================
 	private boolean PasswordValidation(EditText password, EditText confirmPassword) {
 		String passwordInput = password.getText().toString().trim();
 		String confirmPasswordInput = confirmPassword.getText().toString().trim();
 		return passwordInput.length() == confirmPasswordInput.length() && passwordInput.length() >= 6;
 	}
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 
-	//    RESETTING PASSWORD ---------------------------------------------------------------------------
+	//    RESETTING PASSWORD ==========================================================================
 	public void Confirm() {
 		boolean VP = PasswordValidation(password, confirmPassword);
 		if (VP) {
 			if (password.getText().toString().equals(confirmPassword.getText().toString())) {
 				Bundle bundle = getIntent().getExtras();
+				assert bundle != null;
 				String Email = bundle.getString("Email");
 				boolean check;
 				check = DBM.ResetPassword(Email, confirmPassword.getText().toString().trim());
@@ -107,40 +91,6 @@ public class reset_password extends AppCompatActivity {
 			Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show();
 		}
 	}
-//--------------------------------------------------------------------------------------------------
-
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        //        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
+//==================================================================================================
 
 }

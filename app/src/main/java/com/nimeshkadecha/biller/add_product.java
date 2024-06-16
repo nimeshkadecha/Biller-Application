@@ -25,16 +25,27 @@ public class add_product extends AppCompatActivity {
 	private static final double MAX_REAL_VALUE = Double.MAX_VALUE;
 
 	private final DBManager dbManager = new DBManager(this);
+	//    In input Filter =============================================================================
+	private final InputFilter filter = (source, start, end, dest, d_start, d_end) -> {
+		String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
+		if (source != null && blockCharacterSet.contains(("" + source))) return "";
 
+		return null;
+	};
 	private Button show;
-
 	private String cName_txt, cNumber_txt, date_text, seller_txt, origin_txt;
 	private int billId_txt;
 	private EditText price, quantity, gstPercentageEDT;
 	private AutoCompleteTextView productName;
-
 	private View rootView;
 
+	// To convert really big number to human readable format ==========================================
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
+	}
+// =================================================================================================
 
 	@SuppressLint({"MissingInflatedId", "Range"})
 	@Override
@@ -200,6 +211,7 @@ public class add_product extends AppCompatActivity {
 // =================================================================================================
 
 	} // OnCreate Ends ================================================================================
+// =================================================================================================
 
 	// adding Price and GST from database if we have it ===============================================
 	@SuppressLint("Range")
@@ -218,7 +230,7 @@ public class add_product extends AppCompatActivity {
 			}
 		}
 	}
-// =================================================================================================
+	// ================================================================================================
 
 	//    Going TO Home With User DATA ON Back Button Press ===========================================
 	//    if user click back then goto home with all the data
@@ -241,23 +253,6 @@ public class add_product extends AppCompatActivity {
 			finish();
 		}
 	}
-// =================================================================================================
-
-	// To convert really big number to human readable format ==========================================
-	public static String convertScientificToNormal(double scientificNotation) {
-		BigDecimal bd = new BigDecimal(scientificNotation);
-		bd = bd.setScale(2, RoundingMode.HALF_UP);
-		return bd.toPlainString();
-	}
-	// ================================================================================================
-
-	//    In input Filter =============================================================================
-	private final InputFilter filter = (source, start, end, dest, d_start, d_end) -> {
-		String blockCharacterSet = " =(){}[]:;'//.,-<>?+₹`@~#^|$%&*!";
-		if (source != null && blockCharacterSet.contains(("" + source))) return "";
-
-		return null;
-	};
 	// ================================================================================================
 
 

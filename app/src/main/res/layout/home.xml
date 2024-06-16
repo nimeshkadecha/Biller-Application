@@ -60,7 +60,7 @@
         app:startIconDrawable="@drawable/ic_baseline_person_24">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/name"
+            android:id="@+id/customet_name_home"
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

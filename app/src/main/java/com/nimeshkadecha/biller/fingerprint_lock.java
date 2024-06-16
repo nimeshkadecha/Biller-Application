@@ -20,47 +20,32 @@ import java.util.concurrent.Executor;
 
 public class fingerprint_lock extends AppCompatActivity {
 
-	public static final String SHARED_PREFS = "sharedPrefs";
-
-	private Executor executor;
-	private BiometricPrompt biometricPrompt;
-	private BiometricPrompt.PromptInfo promptInfo;
+	private static final String SHARED_PREFS = "sharedPrefs";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fingerprint_lock);
 
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-
 		Button back = findViewById(R.id.back);
 
-		promptInfo = new BiometricPrompt.PromptInfo.Builder()
-										.setTitle("Biometric login for my app")
-										.setSubtitle("Log in using your biometric credential")
-										.setAllowedAuthenticators(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)
-										.build();
+		BiometricPrompt.PromptInfo promptInfo;
 
 		BiometricManager biometricManager = BiometricManager.from(this);
 		switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
 			case BiometricManager.BIOMETRIC_SUCCESS:
-				break;
 			case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-				break;
 			case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-				break;
 			case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+			case BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED:
+			case BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED:
+			case BiometricManager.BIOMETRIC_STATUS_UNKNOWN:
 				break;
 		}
 
-		executor = ContextCompat.getMainExecutor(this);
-		biometricPrompt = new BiometricPrompt(fingerprint_lock.this,
-		                                      executor, new BiometricPrompt.AuthenticationCallback() {
+		Executor executor = ContextCompat.getMainExecutor(this);
+		BiometricPrompt biometricPrompt = new BiometricPrompt(fingerprint_lock.this,
+		                                                      executor, new BiometricPrompt.AuthenticationCallback() {
 			@Override
 			public void onAuthenticationError(int errorCode,
 			                                  @NonNull CharSequence errString) {
@@ -77,6 +62,7 @@ public class fingerprint_lock extends AppCompatActivity {
 				               "Login succeeded!", Toast.LENGTH_SHORT).show();
 
 				Bundle bundle = getIntent().getExtras();
+				assert bundle != null;
 				String email = bundle.getString("Email");
 
 				SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -86,7 +72,6 @@ public class fingerprint_lock extends AppCompatActivity {
 				editor.apply();
 
 				Intent bio_logedIN = new Intent(fingerprint_lock.this, home.class);
-
 
 				bio_logedIN.putExtra("Email", email);
 				bio_logedIN.putExtra("Origin", "Login");
@@ -114,50 +99,9 @@ public class fingerprint_lock extends AppCompatActivity {
 
 		biometricPrompt.authenticate(promptInfo);
 
-		back.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(fingerprint_lock.this, login_Screen.class);
-
-				startActivity(i);
-
-				finish();
-			}
+		back.setOnClickListener(v -> {
+			startActivity(new Intent(fingerprint_lock.this, login_Screen.class));
+			finish();
 		});
 	}
-
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        //        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-
 }

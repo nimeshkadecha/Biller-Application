@@ -20,11 +20,7 @@ import java.util.Random;
 
 public class chart extends AppCompatActivity {
 
-	PieChart pieChart;
-	DBManager local_db = new DBManager(this);
-	private ArrayList<String> ainput, aquantity, Ar, Ag, Ab, ANAME;
-	private adapter_stockQuantity S_Q_adapter;
-	private adapter_stockList S_L_adapter;
+	private final DBManager local_db = new DBManager(this);
 
 	@SuppressLint("Range")
 	@Override
@@ -32,61 +28,54 @@ public class chart extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chart);
 
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-
 //        Getting intent data
 		Bundle bundle = getIntent().getExtras();
+		assert bundle != null;
 		String Seller_email = bundle.getString("seller");
-		String intentt = bundle.getString("intent");
+		String intent = bundle.getString("intent");
 
 		//        Removing Support bar / top line containing name--------------------------------------------
 		Objects.requireNonNull(getSupportActionBar()).hide();
 
 //        using switch to switch between quantity chart and if we add another in future
-		switch (intentt) {
+		switch (Objects.requireNonNull(intent)) {
 			case "qty_chart":
-				ainput = new ArrayList<>();
-				aquantity = new ArrayList<>();
-
-				Ar = new ArrayList<>();
-				Ag = new ArrayList<>();
-				Ab = new ArrayList<>();
-				ANAME = new ArrayList<>();
+				ArrayList<String> a_input = new ArrayList<>();
+				ArrayList<String> a_quantity = new ArrayList<>();
+				ArrayList<String> a_r = new ArrayList<>();
+				ArrayList<String> a_g = new ArrayList<>();
+				ArrayList<String> a_b = new ArrayList<>();
+				ArrayList<String> a_name = new ArrayList<>();
 
 				RecyclerView qty_rec = findViewById(R.id.QTY_REC);
-				S_Q_adapter = new adapter_stockQuantity(chart.this, ainput, aquantity);
-				qty_rec.setAdapter(S_Q_adapter);
+				adapter_stockQuantity s_Q_adapter = new adapter_stockQuantity(chart.this, a_input, a_quantity);
+				qty_rec.setAdapter(s_Q_adapter);
 
 				qty_rec.setLayoutManager(new LinearLayoutManager(chart.this));
 
 				RecyclerView Stock_list = findViewById(R.id.list_REC);
-				S_L_adapter = new adapter_stockList(chart.this, Ar, Ag, Ab, ANAME);
-				Stock_list.setAdapter(S_L_adapter);
+				adapter_stockList s_L_adapter = new adapter_stockList(chart.this, a_r, a_g, a_b, a_name);
+				Stock_list.setAdapter(s_L_adapter);
 				Stock_list.setLayoutManager(new LinearLayoutManager(chart.this));
 
 				Cursor get_Qty = local_db.GetInventory(Seller_email);
 
 				get_Qty.moveToFirst();
 				Random rnd = new Random();
-				pieChart = findViewById(R.id.piechart);
+				PieChart pieChart = findViewById(R.id.piechart);
 
 				do {
 					int r = rnd.nextInt(256);
 					int g = rnd.nextInt(256);
 					int b = rnd.nextInt(256);
 
-					ainput.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
-					aquantity.add(get_Qty.getString(get_Qty.getColumnIndex("quantity")));
+					a_input.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
+					a_quantity.add(get_Qty.getString(get_Qty.getColumnIndex("quantity")));
 
-					Ar.add(String.valueOf(r));
-					Ag.add(String.valueOf(g));
-					Ab.add(String.valueOf(b));
-					ANAME.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
+					a_r.add(String.valueOf(r));
+					a_g.add(String.valueOf(g));
+					a_b.add(String.valueOf(b));
+					a_name.add(get_Qty.getString(get_Qty.getColumnIndex("productName")));
 
 					int qty = Integer.parseInt(get_Qty.getString(get_Qty.getColumnIndex("quantity")));
 					if (qty < 0) {
@@ -108,39 +97,4 @@ public class chart extends AppCompatActivity {
 				break;
 		}
 	}
-
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        //        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-
 }

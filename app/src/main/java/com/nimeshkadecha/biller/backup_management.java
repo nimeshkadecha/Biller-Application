@@ -54,9 +54,10 @@ public class backup_management extends AppCompatActivity {
 
 	private View PlodingView;
 	private LinearLayout loadingBlur;
+
 	// Getting Current Date to put ====================================================================
 	Date c = Calendar.getInstance().getTime();
-	private TextView Download;
+	private TextView Download,uploadDate;
 	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 	String formattedDate = df.format(c);
 // =================================================================================================
@@ -116,7 +117,7 @@ public class backup_management extends AppCompatActivity {
 		String DownloadDate = sharedPreferences.getString("Last Download", "Not Downloaded");
 
 		// Upload Date TextView
-		TextView uploadDate = findViewById(R.id.uploadDate);
+		uploadDate = findViewById(R.id.uploadDate);
 		uploadDate.setText(UploadDate);
 
 		// Download Date TextView
@@ -158,6 +159,7 @@ public class backup_management extends AppCompatActivity {
 		uploadBTN.setOnClickListener(view -> {
 			AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
 			builder.setTitle("Enter Password of backup file");
+			builder.setMessage("NOTE: the current data will be lost and only the backup file data will be uploaded");
 
 			// Set up the input
 			final EditText input = new EditText(backup_management.this);
@@ -215,6 +217,12 @@ public class backup_management extends AppCompatActivity {
 					if (!restoreSuccess) {
 						Toast.makeText(this, "Password is incorrect", Toast.LENGTH_SHORT).show();
 					} else {
+						SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+						SharedPreferences.Editor editor = sp.edit();
+						editor.putString("Last Upload", formattedDate);
+						editor.apply();
+						uploadDate.setText(formattedDate);
+
 						Toast.makeText(this, "Application Data is updated", Toast.LENGTH_SHORT).show();
 					}
 					// Now you have the File object, and you can use it as needed

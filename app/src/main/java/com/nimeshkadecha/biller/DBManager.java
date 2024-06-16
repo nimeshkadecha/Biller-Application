@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,10 +52,39 @@ public class DBManager extends SQLiteOpenHelper {
 		super(context, "Biller", null, 1);
 	}
 
+	// convert scientific notation to normal notation =================================================
+	public static String convertScientificToNormal(double scientificNotation) {
+		BigDecimal bd = new BigDecimal(scientificNotation);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.toPlainString();
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase DB, int oldVersion, int newVersion) {
+
+		DB.execSQL("DROP TABLE IF EXISTS users"); // Seller (User)
+
+		DB.execSQL("DROP TABLE IF EXISTS display"); // bill record
+
+		DB.execSQL("DROP TABLE IF EXISTS products"); // product data
+
+		// Stock history and records
+		DB.execSQL("DROP TABLE IF EXISTS stock"); // stock history
+		DB.execSQL("DROP TABLE IF EXISTS stockQuantity"); // current stock quantity
+
+		// customer data along with there purchase history
+		DB.execSQL("DROP TABLE IF EXISTS customer"); // customer bill data
+		DB.execSQL("DROP TABLE IF EXISTS customers"); // all customer data
+	}
+
+// TODO Users Table ================================================================================
+
+	// Insertion --------------------------------------------------------------------------------------
+
 	@Override
 	public void onCreate(SQLiteDatabase DB) {
 
-		// record of seller(user) ===================================================
+		// record of seller(user) ========================================================================
 		DB.execSQL("CREATE TABLE users(" +
 										           " userId INTEGER PRIMARY KEY AUTOINCREMENT," +
 										           " name TEXT," +
@@ -68,7 +96,7 @@ public class DBManager extends SQLiteOpenHelper {
 										           " apiKey TEXT)"
 		          );
 
-		// record of each bills ================================================================
+		// record of each bills ==========================================================================
 		DB.execSQL("CREATE TABLE display(" +
 										           " indexs INTEGER PRIMARY KEY AUTOINCREMENT," + // AUTO
 										           " productId INTEGER," + // from Product
@@ -85,15 +113,14 @@ public class DBManager extends SQLiteOpenHelper {
 										           " FOREIGN KEY(sellerId) REFERENCES users(userId))"
 		          );
 
-// Product records ============================================================================
+// Product records =================================================================================
 		DB.execSQL("CREATE TABLE products(" +
 										           "productId INTEGER PRIMARY KEY AUTOINCREMENT, " +
 										           "productName TEXT, " +
 										           "category TEXT)"
 		          );
 
-		// Customer data =====================================================================
-
+		// Customer data =================================================================================
 		DB.execSQL("CREATE TABLE customer(" +
 										           " billId INTEGER PRIMARY KEY," +
 										           " customerId INTEGER," +
@@ -111,7 +138,7 @@ public class DBManager extends SQLiteOpenHelper {
 										           "sellerId INTEGER )"
 		          );
 
-		// Stock control =====================================================================
+		// Stock control =================================================================================
 		DB.execSQL("CREATE TABLE stock(" +
 										           " stockId INTEGER PRIMARY KEY AUTOINCREMENT," +
 										           " productId INTEGER," +
@@ -145,30 +172,13 @@ public class DBManager extends SQLiteOpenHelper {
 										           "seller_id INTEGER NOT NULL, " +
 										           "FOREIGN KEY (seller_id) REFERENCES users(userId))");
 	}
+	// ------------------------------------------------------------------------------------------------
 
-	@Override
-	public void onUpgrade(SQLiteDatabase DB, int oldVersion, int newVersion) {
+	// Update -----------------------------------------------------------------------------------------
 
-		DB.execSQL("DROP TABLE IF EXISTS users"); // Seller (User)
-
-		DB.execSQL("DROP TABLE IF EXISTS display"); // bill record
-
-		DB.execSQL("DROP TABLE IF EXISTS products"); // product data
-
-		// Stock history and records
-		DB.execSQL("DROP TABLE IF EXISTS stock"); // stock history
-		DB.execSQL("DROP TABLE IF EXISTS stockQuantity"); // current stock quantity
-
-		// customer data along with there purchase history
-		DB.execSQL("DROP TABLE IF EXISTS customer"); // customer bill data
-		DB.execSQL("DROP TABLE IF EXISTS customers"); // all customer data
-	}
-
-	//    Register User ============================================================================
+	// Register User [Insert - user ] *****************************************************************
 	public boolean RegisterUser(String name, String email, String password, String gst, String contact, String address) {
 		SQLiteDatabase DB = this.getWritableDatabase();
-
-//        Getting all values in
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("name", name);
 		contentValues.put("email", email);
@@ -177,11 +187,67 @@ public class DBManager extends SQLiteOpenHelper {
 		contentValues.put("contact", contact);
 		contentValues.put("address", address);
 		contentValues.put("apikey", "");
-
 		return DB.insert("users", null, contentValues) != -1;
 	}
 
-	//    Login Verification ==================[select * from users where email =? AND password = ?]
+	// inserting API key ******************************************************************************
+	public boolean insertApiKey(String apiKey, String email) {
+		SQLiteDatabase DB = this.getWritableDatabase();
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("apiKey", apiKey);
+		return DB.update("users", contentValues, "userId =?", new String[]{String.valueOf(get_userId(email))}) != -1;
+	}
+
+	//    Update Data *********************************************************************************
+	//    [SELECT * From users where email =?]
+	public boolean UpdateUser(String name, String email, String password, String gst, String contact, String address) {
+		SQLiteDatabase DB = this.getWritableDatabase();
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("name", name);
+		contentValues.put("password", password);
+		contentValues.put("gst", gst);
+		contentValues.put("contact", contact);
+		contentValues.put("address", address);
+
+		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("SELECT * From users where email =?", new String[]{email});
+		if (cursor.getCount() > 0) {
+			cursor.close();
+			return DB.update("users", contentValues, "email =?", new String[]{email}) != -1;
+		} else {
+			cursor.close();
+			return false;
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Selection --------------------------------------------------------------------------------------
+
+	//    Reset Password! *****************************************************************************
+	//    [select * from users where contact = ?]
+	public boolean ResetPassword(String Email, String password) {
+		SQLiteDatabase DB = this.getWritableDatabase();
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("password", password);
+		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{Email});
+		if (cursor.getCount() > 0) {
+			cursor.close();
+			return DB.update("users", contentValues, "email =?", new String[]{Email}) != -1;
+		} else {
+			cursor.close();
+			return false;
+		}
+	}
+
+	//    Getting user info for testing purposes in register ******************************************
+	//    [select * from users]
+	public Cursor getData() {
+		SQLiteDatabase DB = this.getReadableDatabase();
+		return DB.rawQuery("select * from users", null);
+	}
+
+	//    Login Verification **************************************************************************
+	//    [select * from users where email =? AND password = ?]
 	public boolean LoginUser(String email, String password) {
 		SQLiteDatabase DB = this.getReadableDatabase();
 		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email =? AND password = ?", new String[]{email, password});
@@ -190,7 +256,8 @@ public class DBManager extends SQLiteOpenHelper {
 		return ans;
 	}
 
-	//    Validate user ========================================[select * from users where email =?]
+	//    Validate user *******************************************************************************
+	//    [select * from users where email =?]
 	public boolean ValidateUser(String email) {
 		SQLiteDatabase DB = this.getReadableDatabase();
 		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email =?", new String[]{email});
@@ -199,19 +266,8 @@ public class DBManager extends SQLiteOpenHelper {
 		return ans;
 	}
 
-	//    Getting user info for texting purposes in register ==================[select * from users]
-	public Cursor getdata() {
-		SQLiteDatabase DB = this.getReadableDatabase();
-		return DB.rawQuery("select * from users", null);
-	}
-
-	public boolean insertApiKey(String apiKey, String email) {
-		SQLiteDatabase DB = this.getWritableDatabase();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("apiKey", apiKey);
-		return DB.update("users", contentValues, "userId =?", new String[]{String.valueOf(get_userId(email))}) != -1;
-	}
-
+	// fetching API key *******************************************************************************
+	//    [select * from users where email =?]
 	public String getApiKey(String email) {
 		SQLiteDatabase DB = this.getReadableDatabase();
 		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email =?", new String[]{email});
@@ -222,56 +278,53 @@ public class DBManager extends SQLiteOpenHelper {
 		return apiKey;
 	}
 
-//------------------------------------- Working on customer tables ---------------------------------
-
-	//    Getting specific user all DATA ========================[select * from users where email=?]
+	//    Getting specific user all DATA  *************************************************************
+	//    [select * from users where email=?]
 	public Cursor GetUser(String email) {
 		SQLiteDatabase DB = this.getReadableDatabase();
 		return DB.rawQuery("select * from users where email=?", new String[]{email});
 	}
 
-	//    Reset Password! ===================================[select * from users where contact = ?]
-	public boolean ResetPassword(String Email, String password) {
-		SQLiteDatabase DB = this.getWritableDatabase();
-		ContentValues contentValues = new ContentValues();
-
-		contentValues.put("password", password);
-
-		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("select * from users where email = ?", new String[]{Email});
-
-		if (cursor.getCount() > 0) {
-			cursor.close();
-			return DB.update("users", contentValues, "email =?", new String[]{Email}) != -1;
-		} else {
-			cursor.close();
-			return false;
-		}
+	// checking if GST is available or not =========================================================
+	@SuppressLint("Range")
+	public Boolean CheckGstAvailability(String email) {
+		Cursor cursor = GetUser(email);
+		cursor.moveToFirst();
+		return !cursor.getString(cursor.getColumnIndex("gst")).equals("-1");
 	}
 
-	//    Update Data ==========================================[SELECT * From users where email =?]
-	public boolean UpdateUser(String name, String email, String password, String gst, String contact, String address) {
-		SQLiteDatabase DB = this.getWritableDatabase();
+	// ------------------------------------------------------------------------------------------------
 
-		//        Getting all values in
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("name", name);
-		contentValues.put("password", password);
-		contentValues.put("gst", gst);
-		contentValues.put("contact", contact);
-		contentValues.put("address", address);
+	// Deletion ---------------------------------------------------------------------------------------
 
-		@SuppressLint("Recycle") Cursor cursor = DB.rawQuery("SELECT * From users where email =?", new String[]{email});
+	// Get userID *************************************************************************************
+	// [SELECT userId FROM users WHERE email = ?]
+	@SuppressLint("Range")
+	public int get_userId(String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+		Cursor userId_C = DB.rawQuery("SELECT userId FROM users WHERE email = ?", new String[]{email});
 
-		if (cursor.getCount() > 0) {
-			cursor.close();
-			return DB.update("users", contentValues, "email =?", new String[]{email}) != -1;
-		} else {
-			cursor.close();
-			return false;
+		userId_C.moveToFirst();
+		if (userId_C.getCount() > 0) {
+			int ID = userId_C.getInt(userId_C.getColumnIndex("userId"));
+			userId_C.close();
+			return ID;
 		}
+		userId_C.close();
+		return -1;
 	}
+	// ------------------------------------------------------------------------------------------------
 
-	//    Deleting User =======================================[select * from users where email = ?]
+// =================================================================================================
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// TODO Display table ==============================================================================
+
+	// Insertion --------------------------------------------------------------------------------------
+
+	//    Deleting User *******************************************************************************
+	//    [select * from users where email = ?]
 	public boolean DeleteUser(String email) {
 		SQLiteDatabase DB = this.getWritableDatabase();
 
@@ -281,96 +334,27 @@ public class DBManager extends SQLiteOpenHelper {
 
 		if (cursor.getCount() > 0) {
 			cursor.close();
-			long check, check1, check2;
+			long check, check1, check2 , check3 , check4 , check5, check6;
 			check = DB.delete("users", "email = ?", new String[]{email});
 			check1 = DB.delete("display", "sellerId = ?", new String[]{sellerId});
 			check2 = DB.delete("customer", "sellerId = ?", new String[]{sellerId});
-			return check != -1 && check1 != -1 && check2 != -1;
+			check3 = DB.delete("customers", "sellerId = ?", new String[]{sellerId});
+			check4 = DB.delete("stock", "sellerId = ?", new String[]{sellerId});
+			check5 = DB.delete("stockQuantity", "sellerId = ?", new String[]{sellerId});
+			check6 = DB.delete("messages", "seller_id = ?", new String[]{sellerId});
+			return check != -1 && check1 != -1 && check2 != -1 && check3 != -1 && check4 != -1 && check5 != -1 && check6 != -1;
 		} else {
 			cursor.close();
 			return false;
 		}
 	}
 
-	//
-//	@SuppressLint("Range")
-//	public boolean validate_nameAndNumberConnection(String name, String number, String email, Context context) @SuppressLint("Range")
-	@SuppressLint("Range")
-	public void validateNameAndNumberConnection(final String name, final String number, final String email, final Context context, final Handler handler) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				SQLiteDatabase DB = getWritableDatabase();
-				String sellerId = String.valueOf(get_userId(email));
+	// ------------------------------------------------------------------------------------------------
 
-				Cursor cursor = DB.rawQuery("SELECT customerName FROM customers WHERE customerNumber = ? AND sellerId = ? ", new String[]{number, sellerId});
-				int count = cursor.getCount();
+	// Update -----------------------------------------------------------------------------------------
 
-				if (count == 0) {
-					cursor.close();
-					Message message = handler.obtainMessage(1, true);
-					handler.sendMessage(message);
-				} else {
-					cursor.moveToFirst();
-					final String existingCustomerName = cursor.getString(cursor.getColumnIndex("customerName"));
-					if (existingCustomerName.equals(name)) {
-						cursor.close();
-						Message message = handler.obtainMessage(1, true);
-						handler.sendMessage(message);
-					} else {
-						cursor.close();
-						Handler mainHandler = new Handler(Looper.getMainLooper());
-						mainHandler.post(new Runnable() {
-							@Override
-							public void run() {
-								AlertDialog.Builder alert = new AlertDialog.Builder(context);
-								alert.setTitle("Note!");
-								alert.setMessage("Customer :\"" + existingCustomerName + "\" already exist with this number.\nDo you want to update it's name to : \"" + name + "\"");
-								alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialogInterface, int i) {
-										new Thread(new Runnable() {
-											@Override
-											public void run() {
-												ContentValues contentValues = new ContentValues();
-												contentValues.put("customerName", name);
-
-												boolean isUpdated = DB.update("customers", contentValues, "customerNumber = ? AND sellerId = ?", new String[]{number, sellerId}) != -1;
-												Message message = handler.obtainMessage(1, isUpdated);
-												handler.sendMessage(message);
-											}
-										}).start();
-										dialogInterface.dismiss();
-									}
-								});
-								alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialogInterface, int i) {
-										Message message = handler.obtainMessage(1, false);
-										handler.sendMessage(message);
-										dialogInterface.dismiss();
-									}
-								});
-								alert.show();
-							}
-						});
-					}
-				}
-			}
-		}).start();
-	}
-
-
-	public String get_customerNameFromNumber(String name, String number, String email) {
-//		SQLiteDatabase DB = this.getWritableDatabase();
-//
-//		String sellerId = String.valueOf(get_userId(email));
-//
-//		Cursor cursor = DB.rawQuery("SELECT customerName FROM customers WHERE customerNumber = ? AND sellerId = ? ",new String[]{number,sellerId});
-
-		return "";
-	}
-	//    ADDING ITEM in list/ in recyclerview / in display insert TABLE ==================================
+	// inserting data in to display table *************************************************************
+	// if the product exist then update the quantity
 	@SuppressLint("Range")
 	public boolean InsertList(String name, String price, String quantity, String cName, String cNumber, String date, int billId, String email, int state, String Gst) {
 
@@ -411,14 +395,13 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 		displayTableData.close();
 
-//		int p_id = get_productId(name, "all");
 		int s_id = get_userId(email);
 		int c_id = get_customersId(cName, cNumber, s_id);
 
 		if (check_if_already_added) {
 
 			number_of_product += 1;
-			double taxUpdate = (priceInt * number_of_product) * ( Double.parseDouble(Gst) / 100f);
+			double taxUpdate = (priceInt * number_of_product) * (Double.parseDouble(Gst) / 100f);
 			subtotal = ((priceInt * number_of_product) + taxUpdate);
 
 			String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
@@ -452,23 +435,96 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 	}
 
-	// Get userID =======================
-	@SuppressLint("Range")
-	public int get_userId(String email) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-		Cursor userId_C = DB.rawQuery("SELECT userId FROM users WHERE email = ?", new String[]{email});
+	// ------------------------------------------------------------------------------------------------
 
-		userId_C.moveToFirst();
-		if (userId_C.getCount() > 0) {
-			int ID = userId_C.getInt(userId_C.getColumnIndex("userId"));
-			userId_C.close();
-			return ID;
-		}
-		userId_C.close();
-		return -1;
+	// Updating data in display table *****************************************************************
+	// [Update Quantity in display where index =? ]
+	public boolean UpdateQuantity(int quantity, double subtotal, int index) {
+		SQLiteDatabase DB = this.getWritableDatabase();
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("quantity", String.valueOf(quantity));
+		contentValues.put("subtotal", subtotal);
+
+		return DB.update("display", contentValues, "indexs =?", new String[]{String.valueOf(index)}) != -1;
 	}
 
-	// Get productId ======================================================
+	// Selection --------------------------------------------------------------------------------------
+	// Getting sum of total in display table with bill id *********************************************
+	// [select * from display where billId =? ]
+	@SuppressLint("Range")
+	public String CheckTotal(int billID) {
+		Cursor displayList_subtotal = DisplayList(billID);
+		double total = 0d;
+		displayList_subtotal.moveToFirst();
+		if (displayList_subtotal.getCount() == 0) {
+			displayList_subtotal.close();
+			return "-1";
+		}
+		do {
+			total += displayList_subtotal.getDouble(displayList_subtotal.getColumnIndex("subtotal"));
+		} while (displayList_subtotal.moveToNext());
+		displayList_subtotal.close();
+		return convertScientificToNormal(total);
+	}
+
+	// Getting sub total from billID*******************************************************************
+	//    [ select * from display where billId = ? ]
+	public Cursor GetSubTotal(int billID) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		return DB.rawQuery("select * from display where billId = ? ", new String[]{String.valueOf(billID)});
+	}
+
+	// confirming that data is entered ****************************************************************
+	public boolean ConfirmSale(int billId) {
+		Cursor cursor = GetSubTotal(billId);
+		boolean checkResult = cursor.getCount() > 0;
+		cursor.close();
+		return checkResult;
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Deletion ---------------------------------------------------------------------------------------
+
+	// Sales data of a particular product *************************************************************
+	// =[Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND sellerId = ?]
+	public Cursor ViewSaleProductHistory(String seller, String product) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		return db.rawQuery("Select SUM(quantity), SUM(price) ,AVG(price) " +
+										                   "from display " +
+										                   "where productId = (SELECT productId FROM products WHERE productName = ?) " +
+										                   "AND sellerId = ?",
+		                   new String[]{product, String.valueOf(get_userId(seller))});
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+// =================================================================================================
+
+// TODO Product table ==============================================================================
+	// Insertion --------------------------------------------------------------------------------------
+
+	//    Remove from list ****************************************************************************
+	//    [delete from display where index =? ]
+	@SuppressLint("Recycle")
+	public boolean RemoveItem(String id) {
+		SQLiteDatabase DB = this.getWritableDatabase();
+		return DB.rawQuery("DELETE FROM display WHERE indexs = ?", new String[]{id}).getCount() > -1;
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Update -----------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------
+
+	// Selection --------------------------------------------------------------------------------------
+
+	// fetch product Id *******************************************************************************
+	// if nor available then create it
+	// if available but in 'all' category then can update it
 	@SuppressLint("Range")
 	public int get_productId(String p_name, String category) {
 		SQLiteDatabase DB = this.getReadableDatabase();
@@ -519,253 +575,41 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 		product_Id.close();
 		return -1;
-
 	}
 
-	// Get customerId ==================================================
+	// ------------------------------------------------------------------------------------------------
+
+	// Deletion ---------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------
+
+//==================================================================================================
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// TODO Customer table =============================================================================
+	// Insertion --------------------------------------------------------------------------------------
+
+	// fetch productName ******************************************************************************
+	// [select * from products where productId =? ]
 	@SuppressLint("Range")
-	public int get_customersId(String c_name, String c_number, int sid) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-		Cursor customerId_C = DB.rawQuery("SELECT customerId FROM customers WHERE customerNumber = ? ", new String[]{c_number});
-
-		customerId_C.moveToFirst();
-		if (customerId_C.getCount() > 0) {
-			int id = customerId_C.getInt(customerId_C.getColumnIndex("customerId"));
-			customerId_C.close();
-			return id;
-		} else {
-			customerId_C.close();
-
-			SQLiteDatabase db = getWritableDatabase();
-			ContentValues contentValues = new ContentValues();
-			contentValues.put("customerName", c_name);
-			contentValues.put("customerNumber", c_number);
-			contentValues.put("sellerId", sid);
-
-			if (db.insert("customers", null, contentValues) != -1) {
-				return get_customersId(c_name, c_number, sid);
-			} else {
-
-				return -2;
-			}
-		}
-	}
-
-	//    Bill id is unique every time so no need of email =[select * from display where billId =? ]
-	// Gst | price | quantity | subtotal | product(name)[productTable] | indexs
-	public Cursor DisplayList(int billId) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-		String bID = String.valueOf(billId);
-		return DB.rawQuery("SELECT d.indexs,d.productId, p.productName product, d.quantity, d.subtotal, d.Gst, d.price " +
-										                   "FROM display d " +
-										                   "JOIN products p ON d.productId = p.productId " +
-										                   "WHERE d.billId = ?", new String[]{bID});
-	}
-
-	//    Remove from list ====================================[delete from display where index =? ]
-	@SuppressLint("Recycle")
-	public boolean RemoveItem(String id) {
-		SQLiteDatabase DB = this.getWritableDatabase();
-		return DB.rawQuery("DELETE FROM display WHERE indexs = ?", new String[]{id}).getCount() > -1;
-	}
-
-	//    Remove from list =============================[Update Quantity in display where index =? ]
-	public boolean UpdateQuantity(int quantity, double subtotal, int index) {
-
-		SQLiteDatabase DB = this.getWritableDatabase();
-
-		//        Getting all values in
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("quantity", String.valueOf(quantity));
-		contentValues.put("subtotal", subtotal);
-
-		return DB.update("display", contentValues, "indexs =?", new String[]{String.valueOf(index)}) != -1;
-	}
-
-	// Checking Total without saving ===============================================================
-	@SuppressLint("Range")
-	public String  CheckTotal(int billID) {
-		Cursor displayList_subtotal = DisplayList(billID);
-		double total = 0d;
-		displayList_subtotal.moveToFirst();
-		if (displayList_subtotal.getCount() == 0) {
-			displayList_subtotal.close();
-			return "-1";
-		}
-		do {
-			total +=  displayList_subtotal.getDouble(displayList_subtotal.getColumnIndex("subtotal"));
-		} while (displayList_subtotal.moveToNext());
-		displayList_subtotal.close();
-		return convertScientificToNormal(total);
-	}
-
-	public static String convertScientificToNormal(double scientificNotation) {
-		BigDecimal bd = new BigDecimal(scientificNotation);
-		bd = bd.setScale(2, RoundingMode.HALF_UP);
-		return bd.toPlainString();
-	}
-
-	//    Generating BILL ID ===============================================[select * from customer]
-	public int GetBillId() {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		int id = 0;
-		try {
-			@SuppressLint("Recycle") Cursor customer_billId_list_cursor = DB.rawQuery("select * from customer ORDER BY billId ASC", null);
-			if (customer_billId_list_cursor.getCount() > 0) {
-				customer_billId_list_cursor.moveToLast();
-				id = Integer.parseInt(customer_billId_list_cursor.getString(0));
-			}
-			id++;
-			customer_billId_list_cursor.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return id;
-	}
-
-	//    Fetching all customer ============================[select * from customer where seller =?]
-	public Cursor CustomerInformation(String email) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(email));
-
-		return DB.rawQuery("select * from customers where sellerId =?", new String[]{sellerId});
-	}
-
-	public String[] customersName_arr(String email) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(email));
-
-		Cursor nameCursor = DB.rawQuery("SELECT DISTINCT customerName FROM customers WHERE sellerId = ?;", new String[]{sellerId});
-
-		String[] name = new String[nameCursor.getCount()];
-
-		nameCursor.moveToFirst();
-		if (nameCursor.getCount() > 0) {
-			int count = 0;
-			do {
-				name[count] = nameCursor.getString(0);
-				count++;
-			} while (nameCursor.moveToNext());
-		}
+	public String getProductName(Integer ID) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor cursor = db.rawQuery("Select * from products where productId = ?", new String[]{String.valueOf(ID)});
+		cursor.moveToFirst();
+		String name = cursor.getString(cursor.getColumnIndex("productName"));
+		cursor.close();
 		return name;
 	}
 
-	// Fetching single customer =======[select * from customer where seller =? and customerName = ?]
-	public Cursor ParticularCustomerInformation(String email, String name) {
-		SQLiteDatabase DB = this.getReadableDatabase();
+	// ------------------------------------------------------------------------------------------------
 
-		String sellerId = String.valueOf(get_userId(email));
+	// Update -----------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------
 
-		return DB.rawQuery("select * from customers where sellerId = ? and customerName = ? ", new String[]{sellerId, name});
-	}
+	// Selection --------------------------------------------------------------------------------------
 
-	//    search based on customer name =[select * from display where customerName = ? and seller=?]
-	// billId | customerName | customerNumber | product | price | quantity | subtotal | date
-	public Cursor CustomerNameBill(String Name, String email) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(email));
-
-		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
-										                   "FROM display d " +
-										                   "JOIN products p ON d.productId = p.productId " +
-										                   "JOIN customers c ON d.customerId = c.customerId " +
-										                   "WHERE c.customerName = ? AND d.sellerId = ?", new String[]{Name, sellerId}
-		                  );
-	}
-
-	//    Search Based on single date =========[select * from display where date = ? and sellerId = ?]
-	// billId | customerName | customerNumber | product | price | quantity | subtotal | date
-	public Cursor CustomerDateBill(String date, String email) {
-
-		String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
-
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(email));
-
-		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
-										                   "FROM display d " +
-										                   "JOIN products p ON d.productId = p.productId " +
-										                   "JOIN customers c ON d.customerId = c.customerId " +
-										                   "WHERE d.date = ? AND  d.sellerId = ?", new String[]{formattedDate, sellerId}
-		                  );
-	}
-
-	//    Search Based on number =====[select * from display where customerNumber = ? and seller=? ]
-	public Cursor CustomerNumberBill(String Number, String email) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-//		String sellerId = String.valueOf(get_userId(email));
-
-		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
-										                   "FROM display d " +
-										                   "JOIN products p ON d.productId = p.productId " +
-										                   "JOIN customers c ON d.customerId = c.customerId " +
-										                   "JOIN users u ON d.sellerId = u.userId " +
-										                   "WHERE c.customerNumber = ? AND u.email = ?", new String[]{Number, email}
-		                  );
-
-	}
-
-	//    Search based on billID ===========[select * from display where billId = ? and sellerId = ? ]
-	public Cursor CustomerBillID(int billID, String email) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		String billId = String.valueOf(billID);
-
-//		String sellerId = String.valueOf(get_userId(email));
-
-		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
-										                   "FROM display d " +
-										                   "JOIN products p ON d.productId = p.productId " +
-										                   "JOIN customers c ON d.customerId = c.customerId " +
-										                   "JOIN users u ON d.sellerId = u.userId " +
-										                   "WHERE d.billId = ? AND u.email = ?", new String[]{billId, email}
-		                  );
-	}
-
-	//    Getting Bill TOTAL ==============================[select * from customer where billid = ?]
-	public Cursor BillTotal(int billID) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		//     billId   |   customerName   |   CustomerNumber    |    date    |    total    |
-		return DB.rawQuery("select c.billId, cs.customerName, cs.customerNumber , c.date , c.total  " +
-										                   "from customer c " +
-										                   "JOIN customers cs ON c.customerId = cs.customerId " +
-										                   "where billId = ? ", new String[]{String.valueOf(billID)});
-	}
-
-	//    Getting sub total from billID ==================[ select * from display where billId = ? ]
-	public Cursor GetSubTotal(int billID) {
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-		return DB.rawQuery("select * from display where billId = ? ", new String[]{String.valueOf(billID)});
-	}
-
-	//Searching in Date Range == [Select * from display where seller =? AND  date  BETWEEN ? AND ? ]
-	public Cursor RangeSearch(String date, String toDate, String email) {
-		String startDate_formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
-		String endDate_formattedDate = date_convertor.convertDateFormat(toDate, "dd/MM/yyyy", "yyyy-MM-dd");
-		SQLiteDatabase DB = this.getReadableDatabase();
-
-//		String sellerId = String.valueOf(get_userId(email));
-
-		Cursor cursor = DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst, d.price " +
-										                            "FROM display d " +
-										                            "JOIN products p ON d.productId = p.productId " +
-										                            "JOIN customers c ON d.customerId = c.customerId " +
-										                            "JOIN users u ON d.sellerId = u.userId " +
-										                            "WHERE u.email = ? AND d.date BETWEEN ? AND ?",
-		                            new String[]{email, startDate_formattedDate, endDate_formattedDate}
-		                           );
-		return cursor;
-	}
-
-	//    Insert customer info in customer Table ===================================================
+	//    Insert customer info in customer Table ******************************************************
+	//    [insert into customer values(?, ?, ?, ?, ?) ]
 	@SuppressLint("Range")
 	public boolean InsertCustomer(int billId, String name, String number, String date, String email, int state) {
 
@@ -798,15 +642,42 @@ public class DBManager extends SQLiteOpenHelper {
 		return DB.insert("customer", null, contentValues) != -1;
 	}
 
-	// confirming that data is entered =============================================================
-	public boolean ConfirmSale(int billId) {
-		Cursor cursor = GetSubTotal(billId);
-		boolean checkResult = cursor.getCount() > 0;
-		cursor.close();
-		return checkResult;
+	//   Generating BILL ID ***************************************************************************
+	//    [select * from customer]
+	public int GetBillId() {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		int id = 0;
+		try {
+			@SuppressLint("Recycle") Cursor customer_billId_list_cursor = DB.rawQuery("select * from customer ORDER BY billId ASC", null);
+			if (customer_billId_list_cursor.getCount() > 0) {
+				customer_billId_list_cursor.moveToLast();
+				id = Integer.parseInt(customer_billId_list_cursor.getString(0));
+			}
+			id++;
+			customer_billId_list_cursor.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return id;
 	}
 
-	// Deleting bills with bill id =================================================================
+	// ------------------------------------------------------------------------------------------------
+
+	// Deletion ---------------------------------------------------------------------------------------
+
+	//    Fetching all customer data ******************************************************************
+	//    [select * from customer where seller =?]
+	public Cursor CustomerInformation(String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		String sellerId = String.valueOf(get_userId(email));
+
+		return DB.rawQuery("select * from customers where sellerId =?", new String[]{sellerId});
+	}
+
+	// Deleting bills with bill id ********************************************************************
+	// delete bill from display and customer table
 	public boolean DeleteBillWithBillID(String billId, String email) {
 		SQLiteDatabase db = getWritableDatabase();
 		long delete_customer, delete_display;
@@ -815,9 +686,8 @@ public class DBManager extends SQLiteOpenHelper {
 		delete_display = db.delete("display", "billId = ? and sellerId = ?", new String[]{billId, sellerId});
 		return delete_customer != -1 && delete_display != -1;
 	}
-//    ----------------------------------- Managing Stock -------------------------------------------
 
-	// Delete Bill With Customer Number ============================================================
+	// Delete Bill With Customer Number ***************************************************************
 	public boolean DeleteBillWithCustomerNumber(String number, String email) {
 		SQLiteDatabase db = getWritableDatabase();
 		long delete_customer, delete_display;
@@ -825,13 +695,12 @@ public class DBManager extends SQLiteOpenHelper {
 
 		String getCustomerId = String.valueOf(get_customersId("", number, get_userId(email)));
 
-
 		delete_customer = db.delete("customer", "customerId = ? and sellerId = ?", new String[]{getCustomerId, sellerId});
 		delete_display = db.delete("display", "customerId = ? and sellerId = ?", new String[]{getCustomerId, sellerId});
 		return delete_customer != -1 && delete_display != -1;
 	}
 
-	// Deleting bills with Customer Name ===========================================================
+	// Deleting bills with Customer Name **************************************************************
 	public boolean DeleteBillWithCustomerName(String name, String email) {
 		SQLiteDatabase db = getWritableDatabase();
 		long delete_customer, delete_display;
@@ -841,7 +710,15 @@ public class DBManager extends SQLiteOpenHelper {
 		return delete_customer != -1 && delete_display != -1;
 	}
 
-	// Deleting bills with Date ====================================================================
+	// ------------------------------------------------------------------------------------------------
+
+//==================================================================================================
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// TODO Customers table ============================================================================
+
+	// Deleting bills with Date ***********************************************************************
 	@SuppressLint("Range")
 	public boolean DeleteBillWithDate(Cursor data, String email) {
 		data.moveToFirst();
@@ -852,67 +729,224 @@ public class DBManager extends SQLiteOpenHelper {
 		return true;
 	}
 
-	// setting current quantity ==[Select * from stockQuantity where sellerId = ? AND productName = ?]
-	public Cursor GetProductQuantity(String name, String seller) {
-
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(seller));
-
-		String productID = String.valueOf(get_productId(name, "all"));
-
-		return db.rawQuery("Select * from stockQuantity where sellerId = ? AND productId = ?", new String[]{sellerId, productID});
-	}
-
-	// checking if GST is available or not =========================================================
+	// Selection // Insertion -------------------------------------------------------------------------
+	// Get customerId *********************************************************************************
+	// [SELECT customerId FROM customers WHERE customerNumber = ?]
 	@SuppressLint("Range")
-	public Boolean CheckGstAvailability(String email) {
-		Cursor cursor = GetUser(email);
-		cursor.moveToFirst();
-		return !cursor.getString(cursor.getColumnIndex("gst")).equals("-1");
+	public int get_customersId(String c_name, String c_number, int sid) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+		Cursor customerId_C = DB.rawQuery("SELECT customerId FROM customers WHERE customerNumber = ? ", new String[]{c_number});
+
+		customerId_C.moveToFirst();
+		if (customerId_C.getCount() > 0) {
+			int id = customerId_C.getInt(customerId_C.getColumnIndex("customerId"));
+			customerId_C.close();
+			return id;
+		} else {
+			customerId_C.close();
+
+			SQLiteDatabase db = getWritableDatabase();
+			ContentValues contentValues = new ContentValues();
+			contentValues.put("customerName", c_name);
+			contentValues.put("customerNumber", c_number);
+			contentValues.put("sellerId", sid);
+
+			if (db.insert("customers", null, contentValues) != -1) {
+				return get_customersId(c_name, c_number, sid);
+			} else {
+
+				return -2;
+			}
+		}
 	}
+	// ------------------------------------------------------------------------------------------------
 
-	// getting current stock quantity ================[Select * from stockQuantity where sellerId = ?]
-	// productName | quantity |
-	public Cursor GetInventory(String seller) {
-		SQLiteDatabase db = this.getReadableDatabase();
+	// Selection --------------------------------------------------------------------------------------
 
-		String sellerId = String.valueOf(get_userId(seller));
-
-		return db.rawQuery("Select * " +
-										                   "from stockQuantity sq " +
-										                   "JOIN products p ON sq.productId = p.productId " +
-										                   "where sellerId = ?", new String[]{sellerId});
-//		return db.rawQuery("Select * from stockQuantity where sellerId = ?", new String[]{sellerId});
-	}
-
-	// getting the cursor of Category ========================[Select * from stock where sellerId = ?]
-	// category
-	public Cursor GetCategory(String seller) {
-
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(seller));
-
-		return db.rawQuery("Select * from stock s JOIN products p ON s.productId = p.productId where sellerId = ?", new String[]{sellerId});
-	}
-
+	// Selection // Update ----------------------------------------------------------------------------
+	// validate name and number **********************************************************************
+	// [select * from customers where customerNumber = ? AND sellerId = ? ]
 	@SuppressLint("Range")
-	public String getProductName(Integer ID) {
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cursor = db.rawQuery("Select * from products where productId = ?", new String[]{String.valueOf(ID)});
-		cursor.moveToFirst();
-		String name = cursor.getString(cursor.getColumnIndex("productName"));
-		cursor.close();
+	public void validateNameAndNumberConnection(final String name, final String number, final String email, final Context context, final Handler handler) {
+		new Thread(() -> {
+			SQLiteDatabase DB = getWritableDatabase();
+			String sellerId = String.valueOf(get_userId(email));
+
+			Cursor cursor = DB.rawQuery("SELECT customerName FROM customers WHERE customerNumber = ? AND sellerId = ? ", new String[]{number, sellerId});
+			int count = cursor.getCount();
+
+			if (count == 0) {
+				cursor.close();
+				Message message = handler.obtainMessage(1, true);
+				handler.sendMessage(message);
+			} else {
+				cursor.moveToFirst();
+				final String existingCustomerName = cursor.getString(cursor.getColumnIndex("customerName"));
+				if (existingCustomerName.equals(name)) {
+					cursor.close();
+					Message message = handler.obtainMessage(1, true);
+					handler.sendMessage(message);
+				} else {
+					cursor.close();
+					Handler mainHandler = new Handler(Looper.getMainLooper());
+					mainHandler.post(() -> {
+						AlertDialog.Builder alert = new AlertDialog.Builder(context);
+						alert.setTitle("Note!");
+						alert.setMessage("Customer :\"" + existingCustomerName + "\" already exist with this number.\nDo you want to update it's name to : \"" + name + "\"");
+						alert.setPositiveButton("Yes", (dialogInterface, i) -> {
+							new Thread(() -> {
+								ContentValues contentValues = new ContentValues();
+								contentValues.put("customerName", name);
+
+								boolean isUpdated = DB.update("customers", contentValues, "customerNumber = ? AND sellerId = ?", new String[]{number, sellerId}) != -1;
+								Message message = handler.obtainMessage(1, isUpdated);
+								handler.sendMessage(message);
+							}).start();
+							dialogInterface.dismiss();
+						});
+						alert.setNegativeButton("No", (dialogInterface, i) -> {
+							Message message = handler.obtainMessage(1, false);
+							handler.sendMessage(message);
+							dialogInterface.dismiss();
+						});
+						alert.show();
+					});
+				}
+			}
+		}).start();
+	}
+
+	// Fetching single customer ***********************************************************************
+	// [select * from customers where sellerId = ? and customerName = ? ]
+	public Cursor ParticularCustomerInformation(String email, String name) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		String sellerId = String.valueOf(get_userId(email));
+
+		return DB.rawQuery("select * from customers where sellerId = ? and customerName = ? ", new String[]{sellerId, name});
+	}
+
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Deletion ---------------------------------------------------------------------------------------
+
+
+	// ------------------------------------------------------------------------------------------------
+
+//==================================================================================================
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// TODO stock table ================================================================================
+
+	// insert -----------------------------------------------------------------------------------------
+
+	//   Fetching all customer names ******************************************************************
+	//    [select * from customers where sellerId = ? ]
+	public String[] customersName_arr(String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		String sellerId = String.valueOf(get_userId(email));
+
+		@SuppressLint("Recycle") Cursor nameCursor = DB.rawQuery("SELECT DISTINCT customerName FROM customers WHERE sellerId = ?;", new String[]{sellerId});
+
+		String[] name = new String[nameCursor.getCount()];
+
+		nameCursor.moveToFirst();
+		if (nameCursor.getCount() > 0) {
+			int count = 0;
+			do {
+				name[count] = nameCursor.getString(0);
+				count++;
+			} while (nameCursor.moveToNext());
+		}
 		return name;
 	}
 
-	// removing the sold product Quantity ==========================================================
+	// ------------------------------------------------------------------------------------------------
+
+// =================================================================================================
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// TODO StockQuantity table ========================================================================
+
+	// Insertion // update ----------------------------------------------------------------------------
+
+	// Adding Stock to stock table ********************************************************************
+	// insert stock and update/insert in stockQuantity
+	public boolean AddStock(String name, String category, String pPrice, String sPrice, String date, String quantity, String seller, String gst) {
+
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		String sellerId = String.valueOf(get_userId(seller));
+
+		String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
+
+		ContentValues cv = new ContentValues();
+		cv.put("productId", get_productId(name, category));
+		cv.put("purchasePrice", Double.parseDouble(pPrice));
+		cv.put("sellingPrice", Double.parseDouble(sPrice));
+		cv.put("date", formattedDate);
+		cv.put("quantity", quantity);
+		cv.put("sellerId", sellerId);
+		cv.put("Gst", gst);
+
+		long check;
+
+		check = db.insert("stock", null, cv);
+
+		if (check == -1) {
+			return false;
+		} else {
+			Cursor cursor = GetProductQuantity(name, seller);
+			cursor.moveToFirst();
+			if (cursor.getCount() > 0) {
+
+				@SuppressLint("Range") int qty = Integer.parseInt(cursor.getString(cursor.getColumnIndex("quantity")));
+				int newQty = Integer.parseInt(quantity) + qty;
+
+				ContentValues contentValues = new ContentValues();
+
+				contentValues.put("productId", get_productId(name, category));
+				contentValues.put("quantity", newQty);
+				contentValues.put("price", Double.parseDouble(sPrice));
+				contentValues.put("sellerId", sellerId);
+				contentValues.put("Gst", gst);
+
+				long result;
+				result = db.update("stockQuantity", contentValues, "sellerId = ? and productId = ? ", new String[]{sellerId, String.valueOf(get_productId(name, category))});
+
+				return result != -1;
+
+			} else {
+				ContentValues contentValues = new ContentValues();
+				contentValues.put("productId", get_productId(name, category));
+				contentValues.put("quantity", quantity);
+				contentValues.put("price", Double.parseDouble(sPrice));
+				contentValues.put("sellerId", sellerId);
+				contentValues.put("Gst", gst);
+				long result;
+
+				result = db.insert("stockQuantity", null, contentValues);
+
+				return result != -1;
+			}
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Update -----------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------
+
+	// Selection --------------------------------------------------------------------------------------
+
+	// removing the sold product Quantity *************************************************************
+	// [update stockQuantity set quantity = ? where productId = ? AND sellerId = ? ]
 	@SuppressLint("Range")
 	public Boolean RemoveSell(int billID, String seller) {
-
-		// p_ID*  |  quantity*  |   price*   | sellerId*   |    GST
-
 		String productID, quantity, productName;
 
 		String sellerId = String.valueOf(get_userId(seller));
@@ -941,10 +975,8 @@ public class DBManager extends SQLiteOpenHelper {
 				ContentValues contentValues = new ContentValues();
 				contentValues.put("productId", productID);
 				contentValues.put("quantity", newQty);
-//				contentValues.put("price", stockQuentityCursor.getString(stockQuentityCursor.getColumnIndex("price")));
 				contentValues.put("price", String.valueOf(Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("price")))));
 				contentValues.put("sellerId", sellerId);
-//				contentValues.put("Gst", displayListCursor.getString(displayListCursor.getColumnIndex("Gst")));
 				contentValues.put("Gst", Double.parseDouble(displayListCursor.getString(displayListCursor.getColumnIndex("Gst"))));
 
 				result = db.update("stockQuantity", contentValues, "sellerId = ? and productId = ? ", new String[]{sellerId, productID});
@@ -977,140 +1009,198 @@ public class DBManager extends SQLiteOpenHelper {
 		displayListCursor.close();
 		return result != -1;
 	}
+	// ------------------------------------------------------------------------------------------------
 
-	// Adding Stock to stock table =================================================================
-	public boolean AddStock(String name, String catagory, String pPrice, String sPrice, String date, String quantity, String seller, String gst) {
+	// Deletion ---------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------
 
+//==================================================================================================
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// TODO messages table =============================================================================
+
+	// Insertion --------------------------------------------------------------------------------------
+
+	// setting current quantity ***********************************************************************
+	// [Select * from stockQuantity where sellerId = ? AND productName = ?]
+	public Cursor GetProductQuantity(String name, String seller) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		return db.rawQuery("Select * from stockQuantity where sellerId = ? AND productId = ?",
+		                   new String[]{String.valueOf(get_userId(seller)),
+										                   String.valueOf(get_productId(name, "all"))});
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Update -----------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------
+
+	// Selection --------------------------------------------------------------------------------------
+
+	// Inserting message in messages table ************************************************************
+	public void insertMessage(ChatMessage message) {
 		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("message", message.getMessage());
+		values.put("is_sent_by_user", message.isSentByUser() ? 1 : 0);
+		values.put("timestamp", message.getTimestamp());
+		values.put("seller_id", message.getSellerId());
+		db.insert("messages", null, values);
+	}
 
-		String sellerId = String.valueOf(get_userId(seller));
+	// getChatData ************************************************************************************
+	// [select * from messages where seller_id = ? ]
+	public List<ChatMessage> getChatBySeller(int sellerId) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		List<ChatMessage> messages = new ArrayList<>();
+		Cursor cursor = null;
 
-		String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
+		try {
+			String[] selectionArgs = {String.valueOf(sellerId)};
+			cursor = db.query("messages",
+			                  new String[]{"_id", "message", "is_sent_by_user", "timestamp", "seller_id"},
+			                  "seller_id = ?", selectionArgs, null, null, "timestamp ASC");
 
-		ContentValues cv = new ContentValues();
-		cv.put("productId", get_productId(name, catagory));
-		cv.put("purchasePrice", Double.parseDouble(pPrice));
-		cv.put("sellingPrice", Double.parseDouble(sPrice));
-		cv.put("date", formattedDate);
-		cv.put("quantity", quantity);
-		cv.put("sellerId", sellerId);
-		cv.put("Gst", gst);
+			while (cursor.moveToNext()) {
+				int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+				String message = cursor.getString(cursor.getColumnIndexOrThrow("message"));
+				boolean isSentByUser = cursor.getInt(cursor.getColumnIndexOrThrow("is_sent_by_user")) == 1;
+				long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow("timestamp"));
+				int seller = cursor.getInt(cursor.getColumnIndexOrThrow("seller_id"));
 
-		long check;
-
-		check = db.insert("stock", null, cv);
-
-		if (check == -1) {
-			return false;
-		} else {
-			Cursor cursor = GetProductQuantity(name, seller);
-			cursor.moveToFirst();
-			if (cursor.getCount() > 0) {
-
-				@SuppressLint("Range") int qty = Integer.parseInt(cursor.getString(cursor.getColumnIndex("quantity")));
-				int newQty = Integer.parseInt(quantity) + qty;
-
-				ContentValues contentValues = new ContentValues();
-
-				contentValues.put("productId", get_productId(name, catagory));
-				contentValues.put("quantity", newQty);
-				contentValues.put("price", Double.parseDouble(sPrice));
-				contentValues.put("sellerId", sellerId);
-				contentValues.put("Gst", gst);
-
-//				contentValues.put("backup", 0);
-
-				long result;
-				result = db.update("stockQuantity", contentValues, "sellerId = ? and productId = ? ", new String[]{sellerId, String.valueOf(get_productId(name, catagory))});
-
-				return result != -1;
-
-			} else {
-				ContentValues contentValues = new ContentValues();
-//				contentValues.put("productName", name);
-				contentValues.put("productId", get_productId(name, catagory));
-				contentValues.put("quantity", quantity);
-				contentValues.put("price", Double.parseDouble(sPrice));
-				contentValues.put("sellerId", sellerId);
-				contentValues.put("Gst", gst);
-//				contentValues.put("backup", 0);
-				long result;
-
-				result = db.insert("stockQuantity", null, contentValues);
-
-				return result != -1;
+				messages.add(new ChatMessage(id, message, isSentByUser, timestamp, seller));
 			}
+		} catch (Exception e) {
+			// Handle exception
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+
+		return messages;
+	}
+
+	// getChatOfUser **********************************************************************************
+	// [select * from messages where seller_id = ? AND timestamp BETWEEN ? AND ? ]
+	public List<ChatMessage> getChatBySellerAndDate(int sellerId, String date) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		List<ChatMessage> chatMessages = new ArrayList<>();
+		long startTime = getStartOfDayInMillis(date);
+		long endTime = getEndOfDayInMillis(date);
+
+		String sql = "SELECT * FROM messages WHERE seller_id = ? AND timestamp BETWEEN ? AND ?";
+		Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(sellerId), String.valueOf(startTime), String.valueOf(endTime)});
+
+		if (cursor.moveToFirst()) {
+			do {
+				int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+				String message = cursor.getString(cursor.getColumnIndexOrThrow("message"));
+				boolean isUser = cursor.getInt(cursor.getColumnIndexOrThrow("is_sent_by_user")) == 1;
+				long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow("timestamp"));
+				ChatMessage chatMessage = new ChatMessage(id, message, isUser, timestamp, sellerId);
+				chatMessages.add(chatMessage);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return chatMessages;
+	}
+
+	// get start of the day in ms to get to days chat *************************************************
+	private long getStartOfDayInMillis(String date) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+			Date parsedDate = sdf.parse(date);
+			if (parsedDate != null) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(parsedDate);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				return calendar.getTimeInMillis();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Deletion ---------------------------------------------------------------------------------------
+
+	// get end of the day in ms to get to days chat ***************************************************
+	private long getEndOfDayInMillis(String date) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+			Date parsedDate = sdf.parse(date);
+			if (parsedDate != null) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(parsedDate);
+				calendar.set(Calendar.HOUR_OF_DAY, 23);
+				calendar.set(Calendar.MINUTE, 59);
+				calendar.set(Calendar.SECOND, 59);
+				calendar.set(Calendar.MILLISECOND, 999);
+				return calendar.getTimeInMillis();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+//==================================================================================================
+
+//TODO  Backup Working =============================================================================
+
+	//    Delete all messages *************************************************************************
+	// [DELETE FROM messages WHERE seller_id = ?]
+	public boolean clearChat(String sellerId) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "DELETE FROM messages WHERE seller_id = ?";
+		db.execSQL(sql, new String[]{sellerId});
+		return true;
+	}
+
+	// checking for permission
+	private boolean isPermissionGranted(Context context) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			return Environment.isExternalStorageManager();
+		} else {
+			int writePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+			int readPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+			return writePermission == PackageManager.PERMISSION_GRANTED && readPermission == PackageManager.PERMISSION_GRANTED;
 		}
 	}
 
-	// View current Stock Quantity ====================[Select * from stockQuantity where seller =?]
-	public Cursor ViewStock(String seller) {
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(seller));
-
-		return db.rawQuery("Select * from stockQuantity sq JOIN products p ON sq.productId = p.productId where sellerId =?", new String[]{sellerId});
+	// Generate secret key from password and salt
+	private SecretKey generateKey(char[] password, byte[] salt) throws GeneralSecurityException {
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		PBEKeySpec spec = new PBEKeySpec(password, salt, 65536, 256);
+		SecretKey tmp = factory.generateSecret(spec);
+		return new SecretKeySpec(tmp.getEncoded(), "AES");
 	}
 
-	// view when stock is entered in table ==[Select * from stock where seller =? AND productName=?]
-	public Cursor ViewProductHistory(String seller, String product) {
-
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(seller));
-
-		return db.rawQuery("SELECT * FROM stock " +
-										                   "JOIN products ON stock.productId = products.productId " +
-										                   "WHERE sellerId = ? AND products.productName = ?", new String[]{sellerId, product});
-	}
-
-	// view stock history but category wise ====[Select * from stock where seller =? AND catagory=?]
-	public Cursor ViewCategoryHistory(String seller, String catagory) {
-
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		return db.rawQuery("SELECT * FROM stock JOIN products ON stock.productId = products.productId WHERE sellerId = ? AND products.category = ?",
-		                   new String[]{String.valueOf(get_userId(seller)), catagory});
-	}
-
-	// Salse data of a perticular product
-	// =[Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND sellerId = ?]
-	public Cursor ViewSaleProductHistory(String seller, String product) {
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(seller));
-
-		return db.rawQuery("Select SUM(quantity), SUM(price) ,AVG(price) " +
-										                   "from display " +
-										                   "where productId = (SELECT productId FROM products WHERE productName = ?) " +
-										                   "AND sellerId = ?",
-		                   new String[]{product, sellerId});
-	}
-
-	// Sales data of a particular category
-	//[Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND category = ?]
-	public Cursor ViewSaleCategoryHistory(String seller, String category) {
-
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		String sellerId = String.valueOf(get_userId(seller));
-
-		return db.rawQuery("Select DISTINCT productName " +
-										                   "FROM stock " +
-										                   "JOIN products ON stock.productId = products.productId " +
-										                   "WHERE sellerId = ? " +
-										                   "AND products.category = ? ",
-		                   new String[]{sellerId, category});
-	}
-
-
-	// Download backup =============================================================================
-
+	// downloading db ---------------------------------------------------------------------------------
 	@SuppressLint("Range")
 	public String DownloadBackup(Context context, String email) {
 
+		// Get current date and time using Calendar
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+
+		// Format date and time
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("_dd-MM-yyyy_HH:mm_");
+		String currentDateTime = sdf.format(date);
+
 		String password = "963258741";
-		Cursor user = getdata();
+		Cursor user = getData();
 		user.moveToFirst();
 		boolean passwordFetched = false;
 		do {
@@ -1121,11 +1211,9 @@ public class DBManager extends SQLiteOpenHelper {
 			}
 		} while (user.moveToNext());
 
-		while (!passwordFetched) {}
+		if (!passwordFetched) return "ERROR Password not fetched";
 
-		if (!isPermissionGranted(context)) {
-			return "Permission Denied";
-		}
+		if (!isPermissionGranted(context)) return "Permission Denied";
 
 		try {
 			// Get the path to the app's internal database
@@ -1136,12 +1224,10 @@ public class DBManager extends SQLiteOpenHelper {
 			// Create the backup file on external storage or other location
 			String backupPath = context.getExternalFilesDir(null) + "/Backups/";
 			File backupFolder = new File(backupPath);
-			if (!backupFolder.exists()) {
-				if (!backupFolder.mkdirs()) {
-					return "Error Creating Directory";
-				}
-			}
-			String backupDatabasePath = backupPath + "Biller_Backup.db";
+
+			if (!backupFolder.exists()) if (!backupFolder.mkdirs()) return "Error Creating Directory";
+
+			String backupDatabasePath = backupPath + "Biller_Backup" + currentDateTime + ".db";
 			// Generate salt and secret key
 			byte[] salt = new byte[16];
 			SecureRandom secureRandom = new SecureRandom();
@@ -1182,20 +1268,10 @@ public class DBManager extends SQLiteOpenHelper {
 			return "Error";
 		}
 	}
-	private boolean isPermissionGranted(Context context) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-			return Environment.isExternalStorageManager();
-		} else {
-			int writePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-			int readPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
-			return writePermission == PackageManager.PERMISSION_GRANTED && readPermission == PackageManager.PERMISSION_GRANTED;
-		}
-	}
 
-	// upload backup from either login screen or normally ==========================================
+// =================================================================================================
 
-	// Upload local backup method with decryption
-// Upload local backup method with decryption and validation
+	// Upload local backup method with decryption and validation --------------------------------------
 	public boolean UploadLocalBackup(Context context, File selectedFile, char[] password) {
 		File dbFile = context.getDatabasePath("Biller");
 		try {
@@ -1236,16 +1312,12 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 	}
 
-	// Generate secret key from password and salt
-	private SecretKey generateKey(char[] password, byte[] salt) throws GeneralSecurityException {
-		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-		PBEKeySpec spec = new PBEKeySpec(password, salt, 65536, 256);
-		SecretKey tmp = factory.generateSecret(spec);
-		return new SecretKeySpec(tmp.getEncoded(), "AES");
-	}
 
+// TODO ALL JOIN Query =============================================================================
 
-	// Work for GEMINI ==============================================================================
+	// Focus on Display Table -------------------------------------------------------------------------
+
+	// Work for GEMINI ================================================================================
 	// Method to fetch data from a specific table
 	public JSONArray getTableData(String tableName, int sellerId) {
 		SQLiteDatabase db = null;
@@ -1293,119 +1365,184 @@ public class DBManager extends SQLiteOpenHelper {
 		return resultSet;
 	}
 
+	//    Bill id is unique every time so no need of email ********************************************
+	//    [select * from display where billId =? ]
+	public Cursor DisplayList(int billId) {
+		SQLiteDatabase DB = this.getReadableDatabase();
 
-	// working on Message table =====================================================================
-	public long insertMessage(ChatMessage message) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		ContentValues values = new ContentValues();
-		values.put("message", message.getMessage());
-		values.put("is_sent_by_user", message.isSentByUser() ? 1 : 0);
-		values.put("timestamp", message.getTimestamp());
-		values.put("seller_id", message.getSellerId());
-		return db.insert("messages", null, values);
+		// Gst | price | quantity | subtotal | product(name)[productTable] | indexs
+		return DB.rawQuery("SELECT d.indexs,d.productId, p.productName product, d.quantity, d.subtotal, d.Gst, d.price " +
+										                   "FROM display d " +
+										                   "JOIN products p ON d.productId = p.productId " +
+										                   "WHERE d.billId = ?", new String[]{String.valueOf(billId)});
 	}
 
-	public List<ChatMessage> getChatBySeller(int sellerId) {
+	//    search based on customer name ***************************************************************
+	//    [select * from display where customerName = ? and seller=?]
+	public Cursor CustomerNameBill(String Name, String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		// billId | customerName | customerNumber | product | price | quantity | subtotal | date
+		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
+										                   "FROM display d " +
+										                   "JOIN products p ON d.productId = p.productId " +
+										                   "JOIN customers c ON d.customerId = c.customerId " +
+										                   "WHERE c.customerName = ? AND d.sellerId = ?", new String[]{Name, String.valueOf(get_userId(email))}
+		                  );
+	}
+
+	//    Search Based on single date *****************************************************************
+	//    [select * from display where date = ? and email = ?]
+	public Cursor CustomerDateBill(String date, String email) {
+		String formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
+
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		// billId | customerName | customerNumber | product | price | quantity | subtotal | date
+		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
+										                   "FROM display d " +
+										                   "JOIN products p ON d.productId = p.productId " +
+										                   "JOIN customers c ON d.customerId = c.customerId " +
+										                   "WHERE d.date = ? AND  d.sellerId = ?", new String[]{formattedDate, String.valueOf(get_userId(email))}
+		                  );
+	}
+
+	//    Search Based on number **********************************************************************
+	//    [select * from display where customerNumber = ? and seller = ? ]
+	public Cursor CustomerNumberBill(String Number, String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		// indexs | billId | customerName | customerNumber | product | price | quantity | subtotal | date
+		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
+										                   "FROM display d " +
+										                   "JOIN products p ON d.productId = p.productId " +
+										                   "JOIN customers c ON d.customerId = c.customerId " +
+										                   "JOIN users u ON d.sellerId = u.userId " +
+										                   "WHERE c.customerNumber = ? AND u.email = ?", new String[]{Number, email}
+		                  );
+
+	}
+
+	//    Search based on billID **********************************************************************
+	//    [select * from display where billId = ? and email = ? ]
+	public Cursor CustomerBillID(int billID, String email) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		// indexs | billId | customerName | customerNumber | product | price | quantity | subtotal | date
+		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst ,d.price " +
+										                   "FROM display d " +
+										                   "JOIN products p ON d.productId = p.productId " +
+										                   "JOIN customers c ON d.customerId = c.customerId " +
+										                   "JOIN users u ON d.sellerId = u.userId " +
+										                   "WHERE d.billId = ? AND u.email = ?", new String[]{String.valueOf(billID), email}
+		                  );
+	}
+
+	// focus on customer ------------------------------------------------------------------------------
+
+	//Searching in Date Range *************************************************************************
+	// [Select * from display where seller =? AND  date  BETWEEN ? AND ? ]
+	public Cursor RangeSearch(String date, String toDate, String email) {
+		String startDate_formattedDate = date_convertor.convertDateFormat(date, "dd/MM/yyyy", "yyyy-MM-dd");
+		String endDate_formattedDate = date_convertor.convertDateFormat(toDate, "dd/MM/yyyy", "yyyy-MM-dd");
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		// indexs | billId | customerName | customerNumber | product | price | quantity | subtotal | date
+		return DB.rawQuery("SELECT d.indexs, p.productName product, d.quantity, d.subtotal, c.customerName, c.customerNumber, d.date, d.billId, d.Gst, d.price " +
+										                   "FROM display d " +
+										                   "JOIN products p ON d.productId = p.productId " +
+										                   "JOIN customers c ON d.customerId = c.customerId " +
+										                   "JOIN users u ON d.sellerId = u.userId " +
+										                   "WHERE u.email = ? AND d.date BETWEEN ? AND ?",
+		                   new String[]{email, startDate_formattedDate, endDate_formattedDate}
+		                  );
+	}
+
+	// Focus on stockQuantity table -------------------------------------------------------------------
+
+	//    Getting Bill TOTAL **************************************************************************
+	//    [select * from customer where billid = ?]
+	public Cursor BillTotal(int billID) {
+		SQLiteDatabase DB = this.getReadableDatabase();
+
+		//     billId   |   customerName   |   CustomerNumber    |    date    |    total    |
+		return DB.rawQuery("select c.billId, cs.customerName, cs.customerNumber , c.date , c.total  " +
+										                   "from customer c " +
+										                   "JOIN customers cs ON c.customerId = cs.customerId " +
+										                   "where billId = ? ", new String[]{String.valueOf(billID)});
+	}
+
+	// getting current stock quantity *****************************************************************
+	// [Select * from stockQuantity where sellerId = ?]
+	public Cursor GetInventory(String seller) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		List<ChatMessage> messages = new ArrayList<>();
-		Cursor cursor = null;
 
-		try {
-			String[] selectionArgs = {String.valueOf(sellerId)};
-			cursor = db.query("messages",
-			                  new String[]{"_id", "message", "is_sent_by_user", "timestamp", "seller_id"},
-			                  "seller_id = ?", selectionArgs, null, null, "timestamp ASC");
-
-			while (cursor.moveToNext()) {
-				int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
-				String message = cursor.getString(cursor.getColumnIndexOrThrow("message"));
-				boolean isSentByUser = cursor.getInt(cursor.getColumnIndexOrThrow("is_sent_by_user")) == 1;
-				long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow("timestamp"));
-				int seller = cursor.getInt(cursor.getColumnIndexOrThrow("seller_id"));
-
-				messages.add(new ChatMessage(id, message, isSentByUser, timestamp, seller));
-			}
-		} catch (Exception e) {
-			// Handle exception
-			e.printStackTrace();
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-
-		return messages;
+		return db.rawQuery("Select * " +
+										                   "from stockQuantity sq " +
+										                   "JOIN products p ON sq.productId = p.productId " +
+										                   "where sellerId = ?", new String[]{String.valueOf(get_userId(seller))});
 	}
 
+	// focus on stock table ---------------------------------------------------------------------------
 
-
-	public List<ChatMessage> getChatBySellerAndDate(int sellerId, String date) {
+	// View current Stock Quantity ********************************************************************
+	// [Select * from stockQuantity where seller =?]
+	public Cursor ViewStock(String seller) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		List<ChatMessage> chatMessages = new ArrayList<>();
-		long startTime = getStartOfDayInMillis(date);
-		long endTime = getEndOfDayInMillis(date);
 
-		String sql = "SELECT * FROM messages WHERE seller_id = ? AND timestamp BETWEEN ? AND ?";
-		Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(sellerId), String.valueOf(startTime), String.valueOf(endTime)});
-
-		if (cursor.moveToFirst()) {
-			do {
-				int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
-				String message = cursor.getString(cursor.getColumnIndexOrThrow("message"));
-				boolean isUser = cursor.getInt(cursor.getColumnIndexOrThrow("is_sent_by_user")) == 1;
-				long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow("timestamp"));
-				ChatMessage chatMessage = new ChatMessage(id, message, isUser, timestamp, sellerId);
-				chatMessages.add(chatMessage);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return chatMessages;
+		return db.rawQuery("Select * " +
+										                   "from stockQuantity sq " +
+										                   "JOIN products p ON sq.productId = p.productId " +
+										                   "where sellerId =?", new String[]{String.valueOf(get_userId(seller))});
 	}
 
-	private long getStartOfDayInMillis(String date) {
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-			Date parsedDate = sdf.parse(date);
-			if (parsedDate != null) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(parsedDate);
-				calendar.set(Calendar.HOUR_OF_DAY, 0);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.SECOND, 0);
-				calendar.set(Calendar.MILLISECOND, 0);
-				return calendar.getTimeInMillis();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
+	// getting the cursor of Category *****************************************************************
+	// [Select * from stock where sellerId = ?]
+	// category
+	public Cursor GetCategory(String seller) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		return db.rawQuery("Select * " +
+										                   "from stock s " +
+										                   "JOIN products p ON s.productId = p.productId " +
+										                   "where s.sellerId = ?", new String[]{String.valueOf(get_userId(seller))});
 	}
 
-	private long getEndOfDayInMillis(String date) {
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-			Date parsedDate = sdf.parse(date);
-			if (parsedDate != null) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(parsedDate);
-				calendar.set(Calendar.HOUR_OF_DAY, 23);
-				calendar.set(Calendar.MINUTE, 59);
-				calendar.set(Calendar.SECOND, 59);
-				calendar.set(Calendar.MILLISECOND, 999);
-				return calendar.getTimeInMillis();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
+	// view when stock is entered in table ************************************************************
+	// [Select * from stock where seller =? AND productName=?]
+	public Cursor ViewProductHistory(String seller, String product) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		return db.rawQuery("SELECT * FROM stock " +
+										                   "JOIN products ON stock.productId = products.productId " +
+										                   "WHERE sellerId = ? AND products.productName = ?", new String[]{String.valueOf(get_userId(seller)), product});
 	}
 
-public boolean clearChat(String sellerId){
-		SQLiteDatabase db = this.getWritableDatabase();
-	    String sql = "DELETE FROM messages WHERE seller_id = ?";
-	    db.execSQL(sql, new String[]{sellerId});
-	    return true;
-}
+	// view stock history but category wise ***********************************************************
+	// [Select * from stock where seller =? AND category=?]
+	public Cursor ViewCategoryHistory(String seller, String category) {
 
+		SQLiteDatabase db = this.getReadableDatabase();
 
+		return db.rawQuery("SELECT * " +
+										                   "FROM stock JOIN products ON stock.productId = products.productId " +
+										                   "WHERE sellerId = ? AND products.category = ?",
+		                   new String[]{String.valueOf(get_userId(seller)), category});
+	}
+
+// =================================================================================================
+
+	// Sales data of a particular category ************************************************************
+	//[Select SUM(quantity), SUM(price) ,AVG(price) from display where product = ? AND category = ?]
+	public Cursor ViewSaleCategoryHistory(String seller, String category) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		return db.rawQuery("Select DISTINCT productName " +
+										                   "FROM stock " +
+										                   "JOIN products ON stock.productId = products.productId " +
+										                   "WHERE sellerId = ? " +
+										                   "AND products.category = ? ",
+		                   new String[]{String.valueOf(get_userId(seller)), category});
+	}
+	// ================================================================================================
 }

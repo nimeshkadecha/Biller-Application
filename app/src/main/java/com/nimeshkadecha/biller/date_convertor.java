@@ -13,8 +13,7 @@ public class date_convertor {
 
 		try {
 			Date date = inputDateFormat.parse(inputDate);
-			String convertedDate = outputDateFormat.format(date);
-			return convertedDate;
+			return outputDateFormat.format(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return null;

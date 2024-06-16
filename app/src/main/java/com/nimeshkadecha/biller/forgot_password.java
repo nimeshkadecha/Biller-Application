@@ -4,15 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,100 +29,72 @@ public class forgot_password extends AppCompatActivity {
 
 	private EditText Email;
 
-	private ImageView menuclick;
-
 	private View PlodingView;
 
-	private TextView heading;
-
-	//    Verifying internet is ON =====================================================================
-	boolean checkConnection() {
-		ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-		NetworkInfo net = manager.getActiveNetworkInfo();
-
-		return net != null;
-	}
-//--------------------------------------------------------------------------------------------------
-
-	@SuppressLint("MissingInflatedId")
+	@SuppressLint({"MissingInflatedId", "SetTextI18n"})
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.forgot_password);
 
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-
-
 //        WORKING WITH TOOLBAR Starts ==============================================================
 		//        Removing Support bar / top line containing name
 		Objects.requireNonNull(getSupportActionBar()).hide();
 
-		//        FINDING menu
-		menuclick = findViewById(R.id.Menu);
-
-		//        Keeping menu Invisible
-		menuclick.setVisibility(View.INVISIBLE);
+		// hiding menu button
+		findViewById(R.id.Menu).setVisibility(View.INVISIBLE);
 //        WORKING WITH TOOLBAR Ends-----------------------------------------------------------------
 
 //        Finding  ---------------------------------------------------------------------------------
-		Email = findViewById(R.id.contactnumber);
-		heading = findViewById(R.id.textView5);
-
-		// Getting Data From Intent to find where it come from
-		// if KEY "origin" has value CLoud then it come from Login CLoud Button and it change function according to it
-		Bundle bundle = getIntent().getExtras();
-		String origin = bundle.getString("Origin");
-		if (origin != null && origin.equalsIgnoreCase("Cloud")) {
-			heading.setText("Cloud Login");
-		}
+		Email = findViewById(R.id.userEmailInput_fp);
 //--------------------------------------------------------------------------------------------------
 
 //        Finding progressbar
 		PlodingView = findViewById(R.id.Ploding);
-
-
 	}
 
-	//    Code for validating email starts--------------------------------------------------------------
+	//    Code for validating email ===================================================================
 	public boolean EmailValidation(String email) {
-		String emailinput = email;
-		return !emailinput.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(emailinput).matches();
+		return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
 	}
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 
-	//   "Get OTP" button On click -----------------------------------------------------------------------
+	//    Verifying internet is ON ====================================================================
+	boolean checkConnection() {
+		ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		return manager.getActiveNetworkInfo() != null;
+	}
+//==================================================================================================
+
+	//   "Get OTP" button On click ====================================================================
 	public void GetOTP(View view) {
 		if (checkConnection()) {
-			boolean NV = EmailValidation(Email.getText().toString().trim());
-			if (NV) {
-				//        finding button
-				Button getOTPButton = findViewById(R.id.button);
-
-				getOTPButton.setEnabled(false);
+			if (EmailValidation(Email.getText().toString().trim())) {
+				findViewById(R.id.button).setEnabled(false);
 				GenerateOtpWithEmail(Email.getText().toString().trim());
 				PlodingView.setVisibility(View.VISIBLE);
-
 			} else {
+				findViewById(R.id.button).setEnabled(true);
 				Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
 			}
 		} else {
+			findViewById(R.id.button).setEnabled(true);
 			Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
+	// =================================================================================================
+	// generate OTP ===================================================================================
 	@SuppressLint("DefaultLocale")
 	private String getrandom() {
 		Random rnd = new Random();
 		int otp = rnd.nextInt(999999);
 		return String.format("%06d", otp);
 	}
+	// ================================================================================================
 
+	// Hitting API to get OTP =========================================================================
 	private void GenerateOtpWithEmail(String email) {
 		// Replace "your_api_url" with the actual URL of the API endpoint you want to call
 		String apiUrl = "https://solution-nimesh.000webhostapp.com/otp.php";
@@ -161,95 +129,54 @@ public class forgot_password extends AppCompatActivity {
 
 		// Execute the request in a background thread (AsyncTask, ThreadPool, etc.)
 		// For simplicity, we use a separate thread using Thread class here
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					// Execute the request and get the response
-					Response response = client.newCall(request).execute();
+		new Thread(() -> {
+			try {
+				// Execute the request and get the response
+				Response response = client.newCall(request).execute();
 
-					// Check if the request was successful (HTTP 2xx response codes)
-					if (response.isSuccessful()) {
+				// Check if the request was successful (HTTP 2xx response codes)
+				if (response.isSuccessful()) {
 
-						String responseData = response.body().string();
-						// Extract the JSON response part from the overall response data
-						String jsonResponseString = responseData.substring(responseData.indexOf("{"), responseData.lastIndexOf("}") + 1);
-						try {
-							// Parse the JSON response data
-							JSONObject jsonObject = new JSONObject(jsonResponseString);
+					assert response.body() != null;
+					String responseData = response.body().string();
+					// Extract the JSON response part from the overall response data
+					String jsonResponseString = responseData.substring(responseData.indexOf("{"), responseData.lastIndexOf("}") + 1);
+					try {
+						// Parse the JSON response data
+						JSONObject jsonObject = new JSONObject(jsonResponseString);
 
-							// Extract the relevant information from the JSON object
-							String message = jsonObject.getString("status");
+						// Extract the relevant information from the JSON object
+						String message = jsonObject.getString("status");
 
-							if (message.equals("false")) {
-								Log.d("ENimesh", "String = " + message);
-							} else {
-								Intent GETOTP = new Intent(forgot_password.this, otp_validation.class);
-								GETOTP.putExtra("Email", email);
-								GETOTP.putExtra("OTP", otp);
-								startActivity(GETOTP);
-								PlodingView.setVisibility(View.GONE);
-								forgot_password.this.runOnUiThread(new Runnable() {
-									@Override
-									public void run() {
-										finish();
-									}
-								});
+						if (message.equals("false")) {
+							Log.d("ENimesh", "String = " + message);
+						} else {
+							Intent GETOTP = new Intent(forgot_password.this, otp_validation.class);
+							GETOTP.putExtra("Email", email);
+							GETOTP.putExtra("OTP", otp);
+							startActivity(GETOTP);
+							PlodingView.setVisibility(View.GONE);
+							forgot_password.this.runOnUiThread(this::finish);
 
-							}
-
-						} catch (JSONException e) {
-							e.printStackTrace();
-							// Handle JSON parsing exceptions
 						}
-						// Process the response data here (responseData contains the API response)
-					} else {
-						Log.d("ENimesh", "Failed");
-						// Handle the error if the request was not successful
-						// For example, you can get the error message using response.message()
+
+					} catch (JSONException e) {
+						e.printStackTrace();
+						// Handle JSON parsing exceptions
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					Log.d("ENimesh", "catched " + e);
-					// Handle any exceptions that occurred during the request
+					// Process the response data here (responseData contains the API response)
+				} else {
+					Log.d("ENimesh", "Failed");
+					// Handle the error if the request was not successful
+					// For example, you can get the error message using response.message()
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.d("ENimesh", "catched " + e);
+				// Handle any exceptions that occurred during the request
 			}
 		}).start();
 	}
-//--------------------------------------------------------------------------------------------------
-
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        //        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-////        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-////  ================================================================================================
-//    }
+//==================================================================================================
 
 }

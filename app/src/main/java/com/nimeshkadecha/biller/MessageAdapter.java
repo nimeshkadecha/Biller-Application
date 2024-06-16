@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-	private List<ChatMessage> messageList;
+	private final List<ChatMessage> messageList;
 
 	private static final int VIEW_TYPE_USER = 1;
 	private static final int VIEW_TYPE_AI = 2;
@@ -58,7 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	}
 
 	static class UserMessageViewHolder extends RecyclerView.ViewHolder {
-		private TextView textViewMessage;
+		private final TextView textViewMessage;
 
 		public UserMessageViewHolder(@NonNull View itemView) {
 			super(itemView);
@@ -71,7 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	}
 
 	static class AIMessageViewHolder extends RecyclerView.ViewHolder {
-		private TextView textViewMessage;
+		private final TextView textViewMessage;
 
 		public AIMessageViewHolder(@NonNull View itemView) {
 			super(itemView);

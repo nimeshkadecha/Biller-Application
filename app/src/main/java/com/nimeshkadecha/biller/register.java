@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -25,12 +24,9 @@ public class register extends AppCompatActivity {
 	public static final String SHARED_PREFS = "sharedPrefs";
 	private final login_Screen MA = new login_Screen();
 	private DBManager DBM;
-	private Button show;
 	private ImageView menuclick;
 
 	private TextInputLayout gstLayout;
-
-	private Switch gstSwitch;
 
 	@SuppressLint("MissingInflatedId")
 	@Override
@@ -38,29 +34,18 @@ public class register extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.register);
 
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-
-//        WORKING WITH TOOLBAR Starts---------------------------------------------------------------
+//        WORKING WITH TOOLBAR =====================================================================
 		//        Removing Suport bar / top line containing name
 		Objects.requireNonNull(getSupportActionBar()).hide();
-
-		//        FINDING menu
-		menuclick = findViewById(R.id.Menu);
-
 		//        Keeping MENUE Invisible
-		menuclick.setVisibility(View.INVISIBLE);
-//--------------------------------------------------------------------------------------------------
+		findViewById(R.id.Menu).setVisibility(View.INVISIBLE);
+//==================================================================================================
 
-//        Assigning object it's value for SQLite Assess --------------------------------------------
+//        Assigning object it's value for SQLite Assess ============================================
 		DBM = new DBManager(this);
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 
-//        Finding editText and Buttons  ------------------------------------------------------------
+//        Finding editText and Buttons  ============================================================
 		name = findViewById(R.id.rName);
 		email = findViewById(R.id.email);
 		password = findViewById(R.id.password);
@@ -72,46 +57,41 @@ public class register extends AppCompatActivity {
 		gst.setText("-1");
 		contact = findViewById(R.id.contactNumber);
 		address = findViewById(R.id.address);
-		gstSwitch = findViewById(R.id.switch1GST);
-		gstSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-				if (isChecked) {
-					gst.setText("");
-					gst.setVisibility(View.VISIBLE);
-					gstLayout.setVisibility(View.VISIBLE);
-
-				} else {
-					gst.setVisibility(View.GONE);
-					gstLayout.setVisibility(View.GONE);
-					gst.setText("0");
-				}
+		@SuppressLint("UseSwitchCompatOrMaterialCode") Switch gstSwitch = findViewById(R.id.switch1GST);
+		gstSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+			if (isChecked) {
+				gst.setText("");
+				gst.setVisibility(View.VISIBLE);
+				gstLayout.setVisibility(View.VISIBLE);
+			} else {
+				gst.setVisibility(View.GONE);
+				gstLayout.setVisibility(View.GONE);
+				gst.setText("0");
 			}
 		});
 
-		show = findViewById(R.id.show);
+		Button show = findViewById(R.id.show);
 		show.setVisibility(View.INVISIBLE);
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 
-//        Display all information of users but it's hidden it is for testing purposes --------------
+//        Display all information of users but it's hidden it is for testing purposes ==============
 		show.setOnClickListener(new View.OnClickListener() {
 			@SuppressLint("Range")
 			@Override
 			public void onClick(View v) {
-				Cursor res = DBM.getdata();
+				Cursor res = DBM.getData();
 				if (res.getCount() == 0) {
 					Toast.makeText(register.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
 					return;
 				}
-
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				while (res.moveToNext()) {
-					buffer.append("E-mail: " + res.getString(res.getColumnIndex("email")) + "\n");
-					buffer.append("Name: " + res.getString(res.getColumnIndex("name")) + "\n");
-					buffer.append("Password: " + res.getString(res.getColumnIndex("password")) + "\n");
-					buffer.append("gst: " + res.getString(res.getColumnIndex("gst")) + "\n");
-					buffer.append("Contact: " + res.getString(res.getColumnIndex("contact")) + "\n");
-					buffer.append("Address: " + res.getString(res.getColumnIndex("address")) + "\n\n");
+					buffer.append("E-mail: ").append(res.getString(res.getColumnIndex("email"))).append("\n");
+					buffer.append("Name: ").append(res.getString(res.getColumnIndex("name"))).append("\n");
+					buffer.append("Password: ").append(res.getString(res.getColumnIndex("password"))).append("\n");
+					buffer.append("gst: ").append(res.getString(res.getColumnIndex("gst"))).append("\n");
+					buffer.append("Contact: ").append(res.getString(res.getColumnIndex("contact"))).append("\n");
+					buffer.append("Address: ").append(res.getString(res.getColumnIndex("address"))).append("\n\n");
 				}
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(register.this);
@@ -121,11 +101,11 @@ public class register extends AppCompatActivity {
 				builder.show();
 			}
 		});
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
 	}
 
-	//    Register button ------------------------------------------------------------------------------
-	public void register(View view) {
+	//    Register button =============================================================================
+	public void registerBtn_reg(View view) {
 		Intent login = new Intent(this, login_Screen.class);
 
 		String nameTXT = name.getText().toString();
@@ -150,8 +130,6 @@ public class register extends AppCompatActivity {
 				Toast.makeText(this, "Fill up Contact", Toast.LENGTH_SHORT).show();
 			} else if (addressTXT.isEmpty()) {
 				Toast.makeText(this, "Fill up address", Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 			}
 		} else {
 			boolean validEmail = MA.EmailValidation(emailTXT);
@@ -184,46 +162,9 @@ public class register extends AppCompatActivity {
 					Toast.makeText(this, "Invalid E-Mail", Toast.LENGTH_SHORT).show();
 				} else if (!validPassword) {
 					Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
 	}
-//--------------------------------------------------------------------------------------------------
-
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-//        Google ads code --------------------------------------------------------------------------
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//  ================================================================================================
-	}
-
+//==================================================================================================
 }

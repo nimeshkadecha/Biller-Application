@@ -69,4 +69,11 @@
     <string name="decrease_product_count">Decrease product count</string>
     <string name="increase_product_count">Increase product count</string>
     <string name="gst_percentage">GST percentage</string>
+    <string name="local_backup_managment">Local Backup Managment</string>
+    <string name="not_uploaded">Not Uploaded</string>
+    <string name="last_upload">Last Upload :</string>
+    <string name="not_downloaded">Not Downloaded</string>
+    <string name="last_download">Last Download :</string>
+    <string name="download">Download</string>
+    <string name="upload_data">Upload Data</string>
 </resources>

@@ -48,10 +48,9 @@ import java.util.Random;
 public class bill_management extends AppCompatActivity {
 
 	private final String[] shorting = {"Name", "Date"};
+	private final DBManager DB = new DBManager(this);
 	private TextInputEditText date_edt, toDate_edt;
 	private AutoCompleteTextView name_edt;
-	private final DBManager DB = new DBManager(this);
-
 	private String seller_txt;
 
 	private boolean date_picker_is_called = false;
@@ -64,6 +63,38 @@ public class bill_management extends AppCompatActivity {
 		BigDecimal bd = new BigDecimal(scientificNotation);
 		bd = bd.setScale(2, RoundingMode.HALF_UP);
 		return bd.toPlainString();
+	}
+	// OnCreate End ===================================================================================
+
+	private AlertDialog.Builder getBuilder(StringBuilder billData) {
+		AlertDialog.Builder builder_dialog = new AlertDialog.Builder(bill_management.this);
+		builder_dialog.setCancelable(true);
+		builder_dialog.setTitle("Bills");
+		builder_dialog.setMessage(billData.toString());
+
+		// download pdf btn ---------------------------------------------------------------------------
+		builder_dialog.setPositiveButton("Download PDF", (dialog, which) -> {
+			PlodingView.setVisibility(View.VISIBLE);
+			loadingBlur.setVisibility(View.VISIBLE);
+			dialog.dismiss();
+			Toast.makeText(this, "Started Generating PDF", Toast.LENGTH_SHORT).show();
+
+			new Handler().postDelayed(() -> {
+				try {
+					createPDF(); // to create PDF
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}, 200); // Delay in milliseconds
+		});
+		return builder_dialog;
+	}
+
+	@SuppressLint("DefaultLocale")
+	private String getRandom() {
+		Random rnd = new Random();
+		int otp = rnd.nextInt(999999999);
+		return String.format("%09d", otp);
 	}
 
 	@SuppressLint({"Range", "ClickableViewAccessibility"})
@@ -141,7 +172,6 @@ public class bill_management extends AppCompatActivity {
 		}
 		name_edt.setAdapter(new ArrayAdapter<>(bill_management.this, android.R.layout.simple_list_item_1, Names));
 		// -----------------------------------------------------------------------------------------------
-
 
 
 		// adding Contact number in to Autocomplete Text view --------------------------------------------
@@ -474,38 +504,38 @@ public class bill_management extends AppCompatActivity {
 			builder.show();
 		});
 // =================================================================================================
-	} // OnCreate End =================================================================================
-
-	private AlertDialog.Builder getBuilder(StringBuilder billData) {
-		AlertDialog.Builder builder_dialog = new AlertDialog.Builder(bill_management.this);
-		builder_dialog.setCancelable(true);
-		builder_dialog.setTitle("Bills");
-		builder_dialog.setMessage(billData.toString());
-
-		// download pdf btn ---------------------------------------------------------------------------
-		builder_dialog.setPositiveButton("Download PDF", (dialog, which) -> {
-			PlodingView.setVisibility(View.VISIBLE);
-			loadingBlur.setVisibility(View.VISIBLE);
-			dialog.dismiss();
-			Toast.makeText(this, "Started Generating PDF", Toast.LENGTH_SHORT).show();
-
-			new Handler().postDelayed(() -> {
-				try {
-					createPDF(); // to create PDF
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			}, 200); // Delay in milliseconds
-		});
-		return builder_dialog;
 	}
+	// Create PDF End =================================================================================
 
-	@SuppressLint("DefaultLocale")
-	private String getRandom() {
-		Random rnd = new Random();
-		int otp = rnd.nextInt(999999999);
-		return String.format("%09d", otp);
+	// ================================================================================================
+
+	// Showing Date picker and hiding input filed =====================================================
+	public void show_date_time_picker(TextInputEditText edt) {
+		date_picker_is_called = true;
+
+		// Delay showing the date picker to ensure the keyboard is hidden first
+
+		final Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH);
+		int day = c.get(Calendar.DAY_OF_MONTH);
+
+		DatePickerDialog datePickerDialog = new DatePickerDialog(bill_management.this, new DatePickerDialog.OnDateSetListener() {
+			@SuppressLint("SetTextI18n")
+			@Override
+			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+				assert edt != null;
+				edt.setText("");
+				edt.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+				date_picker_is_called = false;
+			}
+		}, year, month, day);
+		datePickerDialog.show();
+		datePickerDialog.setOnCancelListener(dialog -> date_picker_is_called = false);
+		datePickerDialog.setOnDismissListener(dialog -> date_picker_is_called = false);
+
 	}
+//  ================================================================================================
 
 	@SuppressLint("Range")
 	private void createPDF() throws FileNotFoundException {
@@ -874,35 +904,6 @@ public class bill_management extends AppCompatActivity {
 				// ---------------------------------------------------------------------------------------------
 			}
 		}
-	} // Create PDF End ===============================================================================
-
-	// =================================================================================================
-
-	// Showing Date picker and hiding input filed =====================================================
-	public void show_date_time_picker(TextInputEditText edt) {
-		date_picker_is_called = true;
-
-		// Delay showing the date picker to ensure the keyboard is hidden first
-
-		final Calendar c = Calendar.getInstance();
-		int year = c.get(Calendar.YEAR);
-		int month = c.get(Calendar.MONTH);
-		int day = c.get(Calendar.DAY_OF_MONTH);
-
-		DatePickerDialog datePickerDialog = new DatePickerDialog(bill_management.this, new DatePickerDialog.OnDateSetListener() {
-			@SuppressLint("SetTextI18n")
-			@Override
-			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-				assert edt != null;
-				edt.setText("");
-				edt.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-				date_picker_is_called = false;
-			}
-		}, year, month, day);
-		datePickerDialog.show();
-		datePickerDialog.setOnCancelListener(dialog -> date_picker_is_called = false);
-		datePickerDialog.setOnDismissListener(dialog -> date_picker_is_called = false);
-
 	}
-//  ================================================================================================
+	// ================================================================================================
 }
