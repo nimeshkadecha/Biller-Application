@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -537,6 +538,23 @@ public class bill_management extends AppCompatActivity {
 	}
 //  ================================================================================================
 
+	// This will Formate address ----------------------------------------------------------------------
+	private static @NonNull StringBuilder getStringBuilder(String address) {
+		String[] addressLines = address.split("\n");
+		StringBuilder formattedAddress = new StringBuilder();
+
+		// Add first line with "Address: "
+		formattedAddress.append("Address: ").append(addressLines[0]).append("\n");
+
+		// Add subsequent lines with indentation
+		String indentation = "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"; // Adjust the number of non-breaking spaces
+		// Add subsequent lines with indentation
+		for (int i = 1; i < addressLines.length; i++) {
+			formattedAddress.append(indentation).append(addressLines[i]).append("\n"); // Adjust the spaces for indentation
+		}
+		return formattedAddress;
+	}
+
 	@SuppressLint("Range")
 	private void createPDF() throws FileNotFoundException {
 		String name_txt, date_txt, billId_txt, contactTXT, ToDate;
@@ -578,11 +596,16 @@ public class bill_management extends AppCompatActivity {
 				do {
 					table1.addCell(new Cell().add(new Paragraph(sellerDATA.getString(sellerDATA.getColumnIndex("name"))).setFontSize(32)).setBorder(Border.NO_BORDER));
 
-					table1.addCell(new Cell().add(new Paragraph("Address: " + sellerDATA.getString(sellerDATA.getColumnIndex("address"))).setFontSize(14)).setBorder(Border.NO_BORDER));
+					// Formatting the address with indentation for multiple lines
+					String address = sellerDATA.getString(sellerDATA.getColumnIndex("address"));
+					StringBuilder formattedAddress = getStringBuilder(address);
+
+					table1.addCell(new Cell().add(new Paragraph(formattedAddress.toString()).setFontSize(14)).setBorder(Border.NO_BORDER));
 
 					table1.addCell(new Cell().add(new Paragraph("E=mail: " + sellerDATA.getString(sellerDATA.getColumnIndex("email"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 
 					table1.addCell(new Cell().add(new Paragraph("Mo: " + sellerDATA.getString(sellerDATA.getColumnIndex("contact"))).setFontSize(14)).setBorder(Border.NO_BORDER));
+
 
 					if (!sellerDATA.getString(sellerDATA.getColumnIndex("gst")).equals("-1")) {
 						haveGST = true;

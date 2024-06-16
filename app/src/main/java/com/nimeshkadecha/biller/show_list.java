@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -321,28 +323,32 @@ public class show_list extends AppCompatActivity {
 //        Want users||||| NAME EMail GST ADDRESS NUMBER
 //                           0  1     3   5       4
 
-			Cursor selerDATA = DB.GetUser(sellertxt);
-			if (selerDATA.getCount() == 0) {
+			Cursor sellerDATA = DB.GetUser(sellertxt);
+			if (sellerDATA.getCount() == 0) {
 				Toast.makeText(show_list.this, "No Entry Exist", Toast.LENGTH_SHORT).show();
 				return;
 			} else {
-				selerDATA.moveToFirst();
+				sellerDATA.moveToFirst();
 				do {
-					table1.addCell(new Cell().add(new Paragraph(selerDATA.getString(selerDATA.getColumnIndex("name"))).setFontSize(32)).setBorder(Border.NO_BORDER));
+					table1.addCell(new Cell().add(new Paragraph(sellerDATA.getString(sellerDATA.getColumnIndex("name"))).setFontSize(32)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-					table1.addCell(new Cell().add(new Paragraph("Address: " + selerDATA.getString(selerDATA.getColumnIndex("address"))).setFontSize(14)).setBorder(Border.NO_BORDER));
+					// Formatting the address with indentation for multiple lines
+					String address = sellerDATA.getString(sellerDATA.getColumnIndex("address"));
+					StringBuilder formattedAddress = getStringBuilder(address);
+
+					table1.addCell(new Cell().add(new Paragraph(formattedAddress.toString()).setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-					table1.addCell(new Cell().add(new Paragraph("E-mail: " + selerDATA.getString(selerDATA.getColumnIndex("email"))).setFontSize(14)).setBorder(Border.NO_BORDER));
+					table1.addCell(new Cell().add(new Paragraph("E-mail: " + sellerDATA.getString(sellerDATA.getColumnIndex("email"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-					table1.addCell(new Cell().add(new Paragraph("Mo: " + selerDATA.getString(selerDATA.getColumnIndex("contact"))).setFontSize(14)).setBorder(Border.NO_BORDER));
+					table1.addCell(new Cell().add(new Paragraph("Mo: " + sellerDATA.getString(sellerDATA.getColumnIndex("contact"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 // --------------------------------------------------------------------------------------------------
-					if (!selerDATA.getString(selerDATA.getColumnIndex("gst")).equals("-1")) {
+					if (!sellerDATA.getString(sellerDATA.getColumnIndex("gst")).equals("-1")) {
 						haveGST = true;
-						table1.addCell(new Cell().add(new Paragraph("GSTIN: " + selerDATA.getString(selerDATA.getColumnIndex("gst"))).setFontSize(14)).setBorder(Border.NO_BORDER));
+						table1.addCell(new Cell().add(new Paragraph("GSTIN: " + sellerDATA.getString(sellerDATA.getColumnIndex("gst"))).setFontSize(14)).setBorder(Border.NO_BORDER));
 					}
 // --------------------------------------------------------------------------------------------------
 					table1.addCell(new Cell());
-				} while (selerDATA.moveToNext());
+				} while (sellerDATA.moveToNext());
 			}
 
 // Table 2 writing customer data ----------------------------------------------------------------
@@ -443,10 +449,12 @@ public class show_list extends AppCompatActivity {
 			}
 
 
+			// adding line ----------------------------------------------------------------------------------
+			END.addCell(new Cell(2, 4).setBorder(Border.NO_BORDER)); // adding space
+			END.addCell(new Cell());// adding line
+			END.addCell(new Cell().setBorder(Border.NO_BORDER));// adding line
+
 //                    Adding signature
-//                    END.addCell(new Cell(2,4).setBorder(Border.NO_BORDER)); // adding space
-//			END.addCell(new Cell());// adding line
-//			END.addCell(new Cell().setBorder(Border.NO_BORDER));// adding line
 //			END.addCell(new Cell().add(new Paragraph("Signature: ")).setBorder(Border.NO_BORDER));
 
 //                Displaying data ------------------------------------------------------------------
@@ -462,7 +470,6 @@ public class show_list extends AppCompatActivity {
 			Toast.makeText(show_list.this, "PDF Created", Toast.LENGTH_SHORT).show();
 
 //                Opening PDf ----------------------------------------------------------------------
-
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
 				if (file.exists()) {
 					Uri uri = FileProvider.getUriForFile(show_list.this, getApplicationContext().getPackageName() + ".provider", file);
@@ -480,10 +487,31 @@ public class show_list extends AppCompatActivity {
 	}
 //==================================================================================================
 
+	// converting scientific notation to normal notation ==============================================
 	public static String convertScientificToNormal(double scientificNotation) {
 		BigDecimal bd = new BigDecimal(scientificNotation);
 		bd = bd.setScale(2, RoundingMode.HALF_UP);
 		return bd.toPlainString();
 	}
+// =================================================================================================
+
+	// This will Formate address ======================================================================
+	private static @NonNull StringBuilder getStringBuilder(String address) {
+		Log.d("ENimesh", " address" + address);
+		String[] addressLines = address.split("\n");
+		StringBuilder formattedAddress = new StringBuilder();
+
+		// Add first line with "Address: "
+		formattedAddress.append("Address: ").append(addressLines[0]).append("\n");
+
+		// Add subsequent lines with indentation
+		String indentation = "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"; // Adjust the number of non-breaking spaces
+		// Add subsequent lines with indentation
+		for (int i = 1; i < addressLines.length; i++)
+			formattedAddress.append(indentation).append(addressLines[i]).append("\n"); // Adjust the spaces for indentation
+
+		return formattedAddress;
+	}
+	// ================================================================================================
 
 }
