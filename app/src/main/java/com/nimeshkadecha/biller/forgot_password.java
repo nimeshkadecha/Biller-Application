@@ -166,13 +166,19 @@ public class forgot_password extends AppCompatActivity {
 					}
 					// Process the response data here (responseData contains the API response)
 				} else {
+					PlodingView.setVisibility(View.GONE);
+//					Toast.makeText(this, "Failed to hit API", Toast.LENGTH_SHORT).show();
 					Log.d("ENimesh", "Failed");
+					forgot_password.this.runOnUiThread(this::finish);
 					// Handle the error if the request was not successful
 					// For example, you can get the error message using response.message()
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				PlodingView.setVisibility(View.GONE);
+//				Toast.makeText(this, "Failed to hit API", Toast.LENGTH_SHORT).show();
 				Log.d("ENimesh", "catched " + e);
+				forgot_password.this.runOnUiThread(this::finish);
 				// Handle any exceptions that occurred during the request
 			}
 		}).start();
