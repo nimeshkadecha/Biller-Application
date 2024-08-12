@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +62,9 @@ public class login_Screen extends AppCompatActivity {
 
 	private String checkLogin, username, bio_matrix_lock;
 
+	private View PlodingView;
+	private LinearLayout loadingBlur;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,6 +79,13 @@ public class login_Screen extends AppCompatActivity {
 //          Removing Suport bar / top line containing name
 		Objects.requireNonNull(getSupportActionBar()).hide();
 
+		// loding animation
+		// Finding progressbar
+		PlodingView = findViewById(R.id.Ploding_ls);
+		loadingBlur = findViewById(R.id.LoadingBlur_ls);
+		PlodingView.setVisibility(View.INVISIBLE);
+		loadingBlur.setVisibility(View.INVISIBLE);
+
 		// Initialize Lottie animation view and show it
 		lottieAnimationView = findViewById(R.id.lottie_animation_login);
 		lottieAnimationView_GEMINI = findViewById(R.id.lottie_animation_login_gemini);
@@ -83,6 +94,38 @@ public class login_Screen extends AppCompatActivity {
 // Execute async task to perform initialization in the background
 		new InitTask().execute();
 //--------------------------------------------------------------------------------------------------
+
+//		Demo Login button
+
+		InsertDemoDataTask task = new InsertDemoDataTask(() -> {
+			Intent SucessfullyLogin = new Intent(login_Screen.this, home.class);
+			boolean verify;
+			String emailTXT = "contact@fastbites.com";
+			String passwordTXT = "1234567890";
+			verify = DBM.LoginUser(emailTXT, passwordTXT);
+			if (verify) {
+				SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+				SharedPreferences.Editor editor = sp.edit();
+				editor.putString("Login", "true");
+				editor.putString("UserName", emailTXT);
+				editor.apply();
+
+				SucessfullyLogin.putExtra("Email", emailTXT);
+				SucessfullyLogin.putExtra("Origin", "Login");
+				startActivity(SucessfullyLogin);
+				finish();
+			} else {
+				Toast.makeText(login_Screen.this, "wrong email OR password", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		Button d_login = findViewById(R.id.demoStart);
+		d_login.setOnClickListener(v -> {
+			PlodingView.setVisibility(View.VISIBLE);
+			loadingBlur.setVisibility(View.VISIBLE);
+			task.execute();
+		});
+//==================================================================================================
 	}
 //==================================================================================================
 
@@ -352,5 +395,41 @@ public class login_Screen extends AppCompatActivity {
 		}
 	}
 // =================================================================================================
+
+//	Insert Demo data in background ==================================================================
+
+	public interface OnDataInsertedListener {
+		void onDataInserted();
+	}
+
+	public class InsertDemoDataTask extends AsyncTask<Void, Void, Boolean> {
+
+		private OnDataInsertedListener listener;
+
+		// Constructor to accept listener
+		public InsertDemoDataTask(OnDataInsertedListener listener) {
+			this.listener = listener;
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... voids) {
+			// Assuming DBM.insertDemoData() returns a boolean indicating success
+			return DBM.insertDemoData();
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			PlodingView.setVisibility(View.INVISIBLE);
+			loadingBlur.setVisibility(View.INVISIBLE);
+			System.out.println(result );
+			System.out.println( listener);
+			if (result && listener != null) {
+				listener.onDataInserted();  // Notify listener if insertion was successful
+			}else{
+				Toast.makeText(login_Screen.this, "Error while logging in please clear Application data to insert demo data ", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+//	=================================================================================================
 
 }

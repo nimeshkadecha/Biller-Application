@@ -1545,4 +1545,100 @@ public class DBManager extends SQLiteOpenHelper {
 		                   new String[]{String.valueOf(get_userId(seller)), category});
 	}
 	// ================================================================================================
+
+
+	// inserting Demo data ----------------------------------------------------------------------------
+	public boolean insertDemoData() {
+		SQLiteDatabase DB = this.getWritableDatabase();
+		try {
+			// Insert data into 'users' (Sellers)
+			DB.execSQL("INSERT INTO users (name, email, password, gst, contact, address, apiKey) VALUES " +
+											           "('FastBites', 'contact@fastbites.com', '1234567890', '29ABCDE1234F2Z5', '9876543210', '123 Food Street, Tasty Town', '');");
+
+			// Insert data into 'products' (Product Records)
+			DB.execSQL("INSERT INTO products (productName, category) VALUES " +
+											           "('Cheeseburger', 'Burgers')," +
+											           "('Veggie Pizza', 'Pizzas')," +
+											           "('Chicken Nuggets', 'Snacks')," +
+											           "('French Fries', 'Sides')," +
+											           "('Soft Drink', 'Beverages')," +
+											           "('Grilled Chicken Sandwich', 'Burgers')," +
+											           "('Pepperoni Pizza', 'Pizzas')," +
+											           "('Onion Rings', 'Sides')," +
+											           "('Milkshake', 'Beverages')," +
+											           "('Fish & Chips', 'Meals')," +
+											           "('Hot Dog', 'Snacks')," +
+											           "('Caesar Salad', 'Salads')," +
+											           "('Ice Cream', 'Desserts')," +
+											           "('Spaghetti', 'Meals')," +
+											           "('Apple Pie', 'Desserts');");
+
+			// Insert data into 'customers' (Customer Data)
+			DB.execSQL("INSERT INTO customers (customerName, customerNumber, sellerId) VALUES " +
+											           "('John Doe', '9876543211', 1)," +
+											           "('Jane Smith', '9876543212', 1)," +
+											           "('Alice Johnson', '9876543213', 1)," +
+											           "('Bob Brown', '9876543214', 1)," +
+											           "('Charlie Davis', '9876543215', 1)," +
+											           "('Emily Clark', '9876543216', 1)," +
+											           "('David Wilson', '9876543217', 1)," +
+											           "('Sophia Lewis', '9876543218', 1)," +
+											           "('Lucas Hall', '9876543219', 1)," +
+											           "('Olivia Young', '9876543220', 1)," +
+											           "('James Walker', '9876543221', 1)," +
+											           "('Amelia Turner', '9876543222', 1)," +
+											           "('Liam King', '9876543223', 1)," +
+											           "('Mia Scott', '9876543224', 1)," +
+											           "('Isabella Green', '9876543225', 1);");
+
+			// Insert data into 'stock' (Stock Control)
+			for (int i = 1; i <= 15; i++) {
+				String date = "2024-08-" + ((i % 29) + 1); // Varying date between 2024-08-01 and 2024-08-29
+
+				DB.execSQL("INSERT INTO stock (productId, purchasePrice, sellingPrice, date, quantity, sellerId, Gst) VALUES " + "(" + i + ", " + (i * 2 + 18) + ".00, " + (i * 5 + 45) + ".00, '" + date + "', '" + (i * 10 + 40) + "', 1, " + i * 1.0 + "00);");
+			}
+
+			// Insert data into 'display' (Bill Records)
+			for (int i = 1; i <= 80; i++) {
+				int productId = (i % 15) + 1; // Cycle through product IDs
+				int customerId = (i % 15) + 1; // Cycle through customer IDs
+				int quantity = (i % 5) + 1; // Random quantity between 1 and 5
+				double price = (productId <= 5 ? 50.00 : productId <= 10 ? 30.00 : 20.00); // Pricing based on product category
+				double subtotal = price * quantity;
+				int billId = 100 + i;
+				double gst = subtotal * 0.05; // 5% GST
+				String date = "2024-08-" + ((i % 29) + 1); // Varying date between 2024-08-01 and 2024-08-29
+
+				DB.execSQL("INSERT INTO display (productId, quantity, price, subtotal, customerId, sellerId, date, billId, Gst) VALUES " +
+												           "(" + productId + ", " + quantity + ", " + price + ", " + subtotal + ", " + customerId + ", 1, '" + date + "', " + billId + ", " + gst + ");");
+			}
+
+			// Insert data into 'customer' (Customer Bill Data)
+			for (int i = 1; i <= 80; i++) {
+				int customerId = (i % 15) + 1; // Cycle through customer IDs
+				int billId = 100 + i;
+				double total = (i % 100) + 50.00; // Random total between 50 and 149.99
+				String date = "2024-08-" + ((i % 29) + 1); // Varying date between 2024-08-01 and 2024-08-29
+
+				DB.execSQL("INSERT INTO customer (billId, customerId, date, total, sellerId) VALUES " +
+												           "(" + billId + ", " + customerId + ", '" + date + "', " + total + ", 1);");
+			}
+
+			// Insert data into 'stockQuantity' (Stock Quantity Tracking)
+			for (int i = 1; i <= 15; i++) {
+				DB.execSQL("INSERT INTO stockQuantity (productId, quantity, price, sellerId, Gst) VALUES " +
+												           "(" + i + ", '50', " + (i <= 5 ? 50.00 : i <= 10 ? 30.00 : 20.00) + ", 1, 5);");
+			}
+
+			System.out.println("Demo data inserted successfully!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error inserting demo data: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+
+	// ================================================================================================
 }

@@ -44,7 +44,7 @@ public class profile_editing extends AppCompatActivity {
 		String number = "";
 
 		TextView header = findViewById(R.id.Header);
-		header.setText("Update data of E-Mail " + email);
+		header.setText("User : " + email);
 		name = findViewById(R.id.rName);
 		password = findViewById(R.id.password);
 		gst = findViewById(R.id.gst);

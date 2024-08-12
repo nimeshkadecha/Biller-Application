@@ -7,15 +7,12 @@
     android:backgroundTint="@color/white"
     android:backgroundTintMode="add"
     app:cardCornerRadius="16dp"
-    app:cardElevation="12dp"
-
-    >
+    app:cardElevation="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        >
+        android:layout_margin="16dp">
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -34,16 +31,15 @@
                 android:fontFamily="sans-serif-light"
                 android:id="@+id/stock_qty_name"
                 android:textColor="@color/black"
-                android:text="Records"
+                android:text="@string/records"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/stock_qty"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:fontFamily="sans-serif-light"
-                android:text="0"
+                android:text="@string/_0"
                 android:textAlignment="textEnd"
                 android:textColor="@color/color_one"
                 android:textSize="18sp"

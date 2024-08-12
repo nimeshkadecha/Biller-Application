@@ -132,7 +132,7 @@ public class Gemini_Home extends AppCompatActivity {
 				intent.putExtra("seller", email);
 				intent.putExtra("type", "business");
 				sp.edit().putString("tokenCount", String.valueOf(Integer.parseInt(sp.getString("tokenCount", "0")) + business_token_count)).apply();
-				used_tc.setText(sp.getString("tokenCount", "0"));
+//				used_tc.setText(sp.getString("tokenCount", "0"));
 
 				startActivity(intent);
 			} else {

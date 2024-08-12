@@ -72,13 +72,13 @@ public class Gemini_chat extends AppCompatActivity {
 		assert Query_type != null;
 		switch (Query_type) {
 			case "business":
-				GeminiInitialString += "Here is all data of my business.\n\n" + business_JO + "\n\nAnswer all follow up question as short as possible (in 2-3 sentences) and using only this data";
+				GeminiInitialString += "Here is the complete data for my business:\n\n" + business_JO + "\n\nFor all follow-up questions, please respond using only the information provided in JSON formate. Do not use any external sources or internet data. Keep responses brief and to the point (2-3 sentences). Avoid including IDs in your responses; use names instead and construct the output in a well-formatted manner (not in JSON). REMEMBER THIS TILL I UPDATE WITH NEW DATA.";
 				break;
 			case "stock":
-				GeminiInitialString += "Here is all data of my business about stock and products.\n\n" + business_JO + "\n\nAnswer all follow up question as short as possible (in 2-3 sentences) and using only this data";
+				GeminiInitialString += "Here is the complete stock data for my business:\n\n" + business_JO + "\n\nFor all follow-up questions, please respond using only the information provided in JSON formate. Do not use any external sources or internet data. Keep responses brief and to the point (2-3 sentences). Avoid including IDs in your responses; use names instead and construct the output in a well-formatted manner (not in JSON). REMEMBER THIS TILL I UPDATE WITH NEW DATA.";
 				break;
 			case "customer":
-				GeminiInitialString += "Here is all data of my business about customers.\n\n" + business_JO + "\n\nAnswer all follow up question as short as possible (in 2-3 sentences) and using only this data";
+				GeminiInitialString += "Here is the complete customers data for my business:\n\n" + business_JO + "\n\nFor all follow-up questions, please respond using only the information provided in JSON formate. Do not use any external sources or internet data. Keep responses brief and to the point (2-3 sentences). Avoid including IDs in your responses; use names instead and construct the output in a well-formatted manner (not in JSON). REMEMBER THIS TILL I UPDATE WITH NEW DATA.";
 				break;
 		}
 
@@ -134,13 +134,13 @@ public class Gemini_chat extends AppCompatActivity {
 					@Override
 					public void onSuccess(GenerateContentResponse result) {
 						String resultText = result.getText();
-						Toast.makeText(Gemini_chat.this, "Your app data has been successfully synced with GEMINI.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(Gemini_chat.this, "Data successfully synced.", Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onFailure(@NonNull Throwable t) {
 						t.printStackTrace();
-						Toast.makeText(Gemini_chat.this, "Failed to sync your app data with GEMINI. Please try again later", Toast.LENGTH_LONG).show();
+						Toast.makeText(Gemini_chat.this, "Failed to sync data. Please try again later", Toast.LENGTH_LONG).show();
 					}
 				}, getMainExecutor());
 			}

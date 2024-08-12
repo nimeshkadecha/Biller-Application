@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:theme="@style/Theme.MyApplication"
     tools:context=".login_Screen">
 
@@ -32,7 +31,7 @@
         android:id="@+id/poweredBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enhanced by :"
+        android:text="@string/enhanced_by"
         android:textSize="15sp"
         android:layout_marginStart="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -155,6 +154,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -173,8 +173,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="@string/permision_request"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
             tools:ignore="TextContrastCheck" />
 
@@ -188,7 +187,8 @@
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="@+id/login"
             app:layout_constraintStart_toStartOf="@+id/register"
-            app:layout_constraintTop_toBottomOf="@+id/register">
+            app:layout_constraintTop_toBottomOf="@+id/register"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 style="@style/TextInputLayout"
@@ -202,25 +202,57 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="Upload Backup File"
-                android:textSize="21dp" />
+                android:text="@string/upload_backup_file"
+                android:textSize="21sp" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/fingerprint_unlock"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:contentDescription="@string/fingerprint_login"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
             app:layout_constraintStart_toStartOf="@+id/linearLayout5"
             app:layout_constraintTop_toTopOf="@+id/permisions"
             app:srcCompat="@drawable/fingerprint_dialog_fp_icon" />
+
+        <Button
+            android:id="@+id/demoStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/demo_login"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/LoadingBlur_ls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/loadingBlur"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+    </LinearLayout>
 
-
-
-
+    <ProgressBar
+        android:id="@+id/Ploding_ls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp"
+        android:indeterminateDrawable="@drawable/progress_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

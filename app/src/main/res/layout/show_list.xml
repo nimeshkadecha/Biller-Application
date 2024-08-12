@@ -8,23 +8,7 @@
     <include
         android:id="@+id/include3"
         layout="@layout/toolbar">
-
     </include>
-
-
-<!--    <com.google.android.gms.ads.AdView-->
-<!--        android:id="@+id/adView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        app:adSize="BANNER"-->
-<!--        android:visibility="gone"-->
-<!--        app:adUnitId="ca-app-pub-6774391225250306/5183271503"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/recyclerview"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="60dp"
@@ -107,7 +91,7 @@
             android:id="@+id/CheckTotalBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check Total"
+            android:text="@string/check_total"
             app:layout_constraintEnd_toStartOf="@+id/print"
             app:layout_constraintHorizontal_bias="0.526"
             app:layout_constraintStart_toEndOf="@+id/addMore"

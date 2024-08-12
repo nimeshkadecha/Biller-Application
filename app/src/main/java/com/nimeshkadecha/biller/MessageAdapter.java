@@ -1,5 +1,7 @@
 package com.nimeshkadecha.biller;
 
+import android.text.Html;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 
 import java.util.List;
 
@@ -66,7 +71,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 		}
 
 		public void bind(ChatMessage message) {
-			textViewMessage.setText(message.getMessage());
+			// Markdown text including tables
+			String markdownText = message.getMessage();
+			// Parse Markdown to HTML
+			Parser parser = Parser.builder().build();
+			HtmlRenderer renderer = HtmlRenderer.builder().build();
+			String html = renderer.render(parser.parse(markdownText));
+
+			textViewMessage.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
 		}
 	}
 
@@ -79,7 +91,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 		}
 
 		public void bind(ChatMessage message) {
-			textViewMessage.setText(message.getMessage());
+			// Markdown text including tables
+			String markdownText = message.getMessage();
+			// Parse Markdown to HTML
+			Parser parser = Parser.builder().build();
+			HtmlRenderer renderer = HtmlRenderer.builder().build();
+			String html = renderer.render(parser.parse(markdownText));
+
+			textViewMessage.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
 		}
 	}
 }

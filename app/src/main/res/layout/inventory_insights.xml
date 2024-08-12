@@ -65,14 +65,14 @@
             android:layout_margin="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Product"
+            android:text="@string/product"
             android:textSize="20sp" />
 
         <Switch
             android:id="@+id/switchSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Switch Search"
+            android:text="@string/switch_search"
             android:textSize="15sp"
             android:layout_marginStart="10dp"
             tools:ignore="UseSwitchCompatOrMaterialXml"/>
@@ -82,7 +82,7 @@
             style="@style/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Category"
+            android:text="@string/category"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -96,7 +96,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="32dp"
         android:layout_marginRight="10dp"
-        android:hint="Enter Category name"
+        android:hint="@string/enter_category_name"
         app:endIconMode="clear_text"
         app:helperTextTextColor="#FF002E"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="switch Record"
+            android:text="@string/switch_record"
             android:textSize="15sp"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
@@ -151,7 +151,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Sales"
+            android:text="@string/sales"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -160,7 +160,7 @@
         android:id="@+id/QTY_Chart_BTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quantity chart"
+        android:text="@string/quantity_chart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/nameLayout_IM"
         app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout" />
@@ -169,21 +169,9 @@
         android:id="@+id/showRecord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Record"
+        android:text="@string/show_record"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/nameLayout_IM"
         app:layout_constraintTop_toBottomOf="@+id/catagoryTextInputLayout" />
-
-<!--    <com.google.android.gms.ads.AdView-->
-<!--        android:id="@+id/adView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        app:adSize="BANNER"-->
-<!--        app:adUnitId="ca-app-pub-6774391225250306/5183271503"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
