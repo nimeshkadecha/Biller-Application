@@ -33,6 +33,9 @@ Secure access to your Biller account with the integrated fingerprint unlock feat
 ### 9. Business Reports:
 Gain valuable insights into your business performance with comprehensive and customizable business reports. Biller generates detailed reports on sales, expenses, profits, and other key metrics, enabling data-driven decision-making.
 
+### 10. GEMINI AI
+User can select how much data they want to send and according to that the data is shared with custom engineered prompt. so now user can ask insights about their business and GEMINI will reply just like an CA/DA/DS/CFO. See video to know how.
+
 ## System Requirements:
 
 - Platform: Android 7.0 or higher
