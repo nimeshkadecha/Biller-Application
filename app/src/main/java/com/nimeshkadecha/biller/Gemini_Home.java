@@ -1,6 +1,7 @@
 package com.nimeshkadecha.biller;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -46,7 +48,9 @@ public class Gemini_Home extends AppCompatActivity {
 
 	private TextView custom_tc, product_tc, business_tc, used_tc;
 
-	public static JSONObject customer_JO, stock_JO, business_JO;
+	public static String customer_JO;
+	public static String stock_JO;
+	public static String business_JO;
 
 	private GenerativeModelFutures model;
 
@@ -204,7 +208,7 @@ public class Gemini_Home extends AppCompatActivity {
 				interface_layout.setVisibility(View.VISIBLE);
 
 				if(checkConnection()){
-
+//NOTE : WE are fetching all data here so that we can display the count of tokens
 				new FetchDataAsyncTask_BusinessInsights(this).execute(sellerId);
 				new FetchDataAsyncTask_AnalyzeStoke().execute(sellerId);
 				new FetchDataAsyncTask_CustomerData().execute(sellerId);
@@ -219,6 +223,7 @@ public class Gemini_Home extends AppCompatActivity {
 
 
 	// AsyncTask to fetch and combine data from multiple tables =======================================
+	@TargetApi(Build.VERSION_CODES.CUPCAKE)
 	@SuppressLint("StaticFieldLeak")
 	private class FetchDataAsyncTask_CustomerData extends AsyncTask<Integer, Void, JSONObject> {
 
@@ -243,12 +248,17 @@ public class Gemini_Home extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			// Handle the fetched data here
-			customer_JO = result;
+			try {
+				customer_JO = tokenOptimizer.convertJson(String.valueOf(result));
+			} catch (JSONException e) {
+				customer_JO = String.valueOf(result);
+				Log.d("ENimesh","failed to get token |" + e.toString());
+			}
 			runOnUiThread(() -> {
 
 				Content.Builder userContentBuilder3 = new Content.Builder();
 				userContentBuilder3.setRole("user");
-				userContentBuilder3.addText(result.toString());
+				userContentBuilder3.addText(customer_JO);
 				Content userContent3 = userContentBuilder3.build();
 
 				// token count
@@ -271,8 +281,8 @@ public class Gemini_Home extends AppCompatActivity {
 		}
 	}
 
-
 	// AsyncTask to fetch and combine data from multiple tables =======================================
+	@TargetApi(Build.VERSION_CODES.CUPCAKE)
 	@SuppressLint("StaticFieldLeak")
 	private class FetchDataAsyncTask_AnalyzeStoke extends AsyncTask<Integer, Void, JSONObject> {
 
@@ -297,12 +307,17 @@ public class Gemini_Home extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			// Handle the fetched data here
-			stock_JO = result;
+			try {
+				stock_JO = tokenOptimizer.convertJson(String.valueOf(result));
+			} catch (JSONException e) {
+				stock_JO = String.valueOf(result);
+				Log.d("ENimesh","failed to get token |" + e.toString());
+			}
 			runOnUiThread(() -> {
 
 				Content.Builder userContentBuilder3 = new Content.Builder();
 				userContentBuilder3.setRole("user");
-				userContentBuilder3.addText(result.toString());
+				userContentBuilder3.addText(stock_JO);
 				Content userContent3 = userContentBuilder3.build();
 
 				// token count
@@ -328,6 +343,7 @@ public class Gemini_Home extends AppCompatActivity {
 	}
 
 	// AsyncTask to fetch and combine data from multiple tables =======================================
+	@TargetApi(Build.VERSION_CODES.CUPCAKE)
 	@SuppressLint("StaticFieldLeak")
 	private class FetchDataAsyncTask_BusinessInsights extends AsyncTask<Integer, Void, JSONObject> {
 
@@ -350,16 +366,22 @@ public class Gemini_Home extends AppCompatActivity {
 				e.printStackTrace();
 			}
 
+
 			return combinedData;
 		}
 
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			business_JO = result;
+			try {
+				business_JO = tokenOptimizer.convertJson(String.valueOf(result));
+			} catch (JSONException e) {
+				business_JO = String.valueOf(result);
+				Log.d("ENimesh","failed to get token |" + e.toString());
+			}
 			runOnUiThread(() -> {
 				Content.Builder userContentBuilder3 = new Content.Builder();
 				userContentBuilder3.setRole("user");
-				userContentBuilder3.addText(result.toString());
+				userContentBuilder3.addText(business_JO);
 				Content userContent3 = userContentBuilder3.build();
 
 				ListenableFuture<CountTokensResponse> countTokensResponse = model.countTokens(userContent3);
@@ -374,7 +396,9 @@ public class Gemini_Home extends AppCompatActivity {
 
 						@Override
 						public void onFailure(@NonNull Throwable t) {
+							business_tc.setText("Unable to get");
 							t.printStackTrace();
+
 						}
 					}, getMainExecutor());
 				}

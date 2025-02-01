@@ -58,7 +58,7 @@ public class login_Screen extends AppCompatActivity {
 	private TextView local_upload;
 	//    Creating object
 	private DBManager DBM;
-	private ImageView fingerprintUnlock;
+	private ImageView fingerprintUnlock,billerLogo;
 
 	private String checkLogin, username, bio_matrix_lock;
 
@@ -90,8 +90,13 @@ public class login_Screen extends AppCompatActivity {
 		lottieAnimationView = findViewById(R.id.lottie_animation_login);
 		lottieAnimationView_GEMINI = findViewById(R.id.lottie_animation_login_gemini);
 		loginForm = findViewById(R.id.loginForm);
+		billerLogo = findViewById(R.id.billerImage);
 
 // Execute async task to perform initialization in the background
+		// In your activity's onCreate() or appropriate method
+		lottieAnimationView.setVisibility(View.VISIBLE);
+		lottieAnimationView_GEMINI.setVisibility(View.VISIBLE);
+		findViewById(R.id.poweredBy).setVisibility(View.VISIBLE);
 		new InitTask().execute();
 //--------------------------------------------------------------------------------------------------
 
@@ -294,27 +299,14 @@ public class login_Screen extends AppCompatActivity {
 	@SuppressLint("StaticFieldLeak")
 	private class InitTask extends AsyncTask<Void, Void, Void> {
 
-		//    Background Initialization
 		@Override
 		protected Void doInBackground(Void... voids) {
-			// Perform background initialization tasks
-			email = findViewById(R.id.email);
-			password = findViewById(R.id.password);
+			// Background tasks (non-UI work only)
 			DBM = new DBManager(login_Screen.this);
-			local_upload = findViewById(R.id.local_upload);
-			fingerprintUnlock = findViewById(R.id.fingerprint_unlock);
-			//        Working with Permission ---------------------------------------------------------------
-			permisions = findViewById(R.id.permisions);
-			email = findViewById(R.id.email);
-			password = findViewById(R.id.password);
-
-
-			// Check if user is already logged in
 			sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 			checkLogin = sharedPreferences.getString("Login", "");
 			username = sharedPreferences.getString("UserName", "");
 			bio_matrix_lock = sharedPreferences.getString("bioLock", "");
-
 			return null;
 		}
 
@@ -322,76 +314,81 @@ public class login_Screen extends AppCompatActivity {
 		protected void onPostExecute(Void aVoid) {
 			super.onPostExecute(aVoid);
 
-			// Check login status after animation
-			new Handler().postDelayed(() -> {
-				lottieAnimationView.setVisibility(View.GONE);
-				lottieAnimationView_GEMINI.setVisibility(View.GONE);
-				findViewById(R.id.poweredBy).setVisibility(View.GONE);
-				if (Objects.equals(checkLogin, "true")) {
-					Intent SuccessfullyLogin = new Intent(login_Screen.this, home.class);
-					SuccessfullyLogin.putExtra("Email", username);
-					SuccessfullyLogin.putExtra("Origin", "Login");
-					startActivity(SuccessfullyLogin);
-					finish();
+			// UI thread work - initialize views after background tasks complete
+			email = findViewById(R.id.email);
+			password = findViewById(R.id.password);
+			local_upload = findViewById(R.id.local_upload);
+			fingerprintUnlock = findViewById(R.id.fingerprint_unlock);
+			permisions = findViewById(R.id.permisions);
+
+			// Hide animations immediately
+			lottieAnimationView.setVisibility(View.GONE);
+			lottieAnimationView_GEMINI.setVisibility(View.GONE);
+			findViewById(R.id.poweredBy).setVisibility(View.GONE);
+
+			// Check login status immediately
+			if (Objects.equals(checkLogin, "true")) {
+				Intent SuccessfullyLogin = new Intent(login_Screen.this, home.class);
+				SuccessfullyLogin.putExtra("Email", username);
+				SuccessfullyLogin.putExtra("Origin", "Login");
+				startActivity(SuccessfullyLogin);
+				finish();
+			} else {
+				// Show login UI
+				loginForm.setVisibility(View.VISIBLE);
+				permisions.setVisibility(View.INVISIBLE);
+				billerLogo.setVisibility(View.GONE);
+
+				if (bio_matrix_lock.equals("true")) {
+					fingerprintUnlock.setVisibility(View.VISIBLE);
 				}
-				// displaying UI  -----------------------------------------------------------------------------
-				else {
-					loginForm.setVisibility(View.VISIBLE);
-					permisions.setVisibility(View.INVISIBLE);
 
-					if (bio_matrix_lock.equals("true")) {
-						fingerprintUnlock.setVisibility(View.VISIBLE);
-					}
-					//        Login From Local button ------------------------------------------------------------
-					local_upload.setOnClickListener(v -> {
+				setupButtonListeners();
+			}
+		}
 
-						AlertDialog.Builder builder = new AlertDialog.Builder(login_Screen.this);
-						builder.setTitle("Enter Password");
+		private void setupButtonListeners() {
+			local_upload.setOnClickListener(v -> showPasswordDialog());
+			fingerprintUnlock.setOnClickListener(v -> handleFingerprintLogin());
+		}
 
-						// Set up the input
-						final EditText input = new EditText(login_Screen.this);
-						input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-						builder.setView(input);
+		private void showPasswordDialog() {
+			AlertDialog.Builder builder = new AlertDialog.Builder(login_Screen.this);
+			builder.setTitle("Enter Password");
+			final EditText input = new EditText(login_Screen.this);
+			input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+			builder.setView(input);
 
-						// Set up the buttons
-						builder.setPositiveButton("OK", (dialog, which) -> {
-							passwordUpload[0] = input.getText().toString();
-							if (!passwordUpload[0].isEmpty()) {
-								selectBackupFile();
-							} else {
-								Toast.makeText(login_Screen.this, "Please Enter Password", Toast.LENGTH_SHORT).show();
-							}
-						});
-						builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+			builder.setPositiveButton("OK", (dialog, which) -> {
+				String password = input.getText().toString();
+				if (!password.isEmpty()) {
+					selectBackupFile();
+				} else {
+					Toast.makeText(login_Screen.this, "Please Enter Password", Toast.LENGTH_SHORT).show();
+				}
+			});
+			builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+			builder.show();
+		}
 
-						// Show the dialog
-						builder.show();
-
-					});
-					//--------------------------------------------------------------------------------------------
-
-					//        Fingerprint unlock -----------------------------------------------------------------
-					fingerprintUnlock.setOnClickListener(v -> {
-						if (EmailValidation(email.getText().toString())) {
-							boolean verify = DBM.ValidateUser(email.getText().toString());
-							if (verify) {
-								Intent FingerprintVerification = new Intent(login_Screen.this, fingerprint_lock.class);
-
-								FingerprintVerification.putExtra("Email", email.getText().toString());
-								FingerprintVerification.putExtra("Origin", "Login");
-
-								startActivity(FingerprintVerification);
-							} else {
-								Toast.makeText(login_Screen.this, "Email Don't Exists", Toast.LENGTH_SHORT).show();
-							}
+		private void handleFingerprintLogin() {
+			if (EmailValidation(email.getText().toString())) {
+				new Thread(() -> { // Move database operation to background
+					final boolean verify = DBM.ValidateUser(email.getText().toString());
+					runOnUiThread(() -> {
+						if (verify) {
+							Intent FingerprintVerification = new Intent(login_Screen.this, fingerprint_lock.class);
+							FingerprintVerification.putExtra("Email", email.getText().toString());
+							FingerprintVerification.putExtra("Origin", "Login");
+							startActivity(FingerprintVerification);
 						} else {
-							Toast.makeText(login_Screen.this, "Enter Email for login", Toast.LENGTH_SHORT).show();
+							Toast.makeText(login_Screen.this, "Email Doesn't Exist", Toast.LENGTH_SHORT).show();
 						}
 					});
-					//--------------------------------------------------------------------------------------------------
-
-				}
-			}, 3000); // Delay for 3 seconds while showing the animation
+				}).start();
+			} else {
+				Toast.makeText(login_Screen.this, "Enter Valid Email", Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 // =================================================================================================
