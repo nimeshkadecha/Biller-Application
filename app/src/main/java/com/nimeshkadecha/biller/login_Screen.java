@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.text.InputType;
 import android.util.Patterns;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -50,7 +52,8 @@ public class login_Screen extends AppCompatActivity {
 	private LottieAnimationView lottieAnimationView , lottieAnimationView_GEMINI;
 	private ConstraintLayout loginForm;
 
-	//    initlizing varablwe
+	//    initlizing varable
+	private Animation alpha;
 	private EditText email, password;
 	SharedPreferences sharedPreferences;
 
@@ -62,7 +65,7 @@ public class login_Screen extends AppCompatActivity {
 
 	private String checkLogin, username, bio_matrix_lock;
 
-	private View PlodingView;
+	private ImageView PlodingView;
 	private LinearLayout loadingBlur;
 
 	@Override
@@ -72,8 +75,8 @@ public class login_Screen extends AppCompatActivity {
 
 		//          menu Button ----------------------------------------------------------------------------
 		ImageView menuclick = findViewById(R.id.Menu);
-//          Keeping MENUE Invisible
-		menuclick.setVisibility(View.INVISIBLE);
+//          Keeping MENUE GONE
+		menuclick.setVisibility(View.GONE);
 
 //      WORKING WITH TOOLBAR Starts ----------------------------------------------------------------
 //          Removing Suport bar / top line containing name
@@ -82,9 +85,12 @@ public class login_Screen extends AppCompatActivity {
 		// loding animation
 		// Finding progressbar
 		PlodingView = findViewById(R.id.Ploding_ls);
+		alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
+
 		loadingBlur = findViewById(R.id.LoadingBlur_ls);
-		PlodingView.setVisibility(View.INVISIBLE);
-		loadingBlur.setVisibility(View.INVISIBLE);
+		PlodingView.setVisibility(View.GONE);
+		PlodingView.clearAnimation();
+		loadingBlur.setVisibility(View.GONE);
 
 		// Initialize Lottie animation view and show it
 		lottieAnimationView = findViewById(R.id.lottie_animation_login);
@@ -126,7 +132,9 @@ public class login_Screen extends AppCompatActivity {
 
 		Button d_login = findViewById(R.id.demoStart);
 		d_login.setOnClickListener(v -> {
+
 			PlodingView.setVisibility(View.VISIBLE);
+			PlodingView.startAnimation(alpha);
 			loadingBlur.setVisibility(View.VISIBLE);
 			task.execute();
 		});
@@ -336,7 +344,7 @@ public class login_Screen extends AppCompatActivity {
 			} else {
 				// Show login UI
 				loginForm.setVisibility(View.VISIBLE);
-				permisions.setVisibility(View.INVISIBLE);
+				permisions.setVisibility(View.GONE);
 				billerLogo.setVisibility(View.GONE);
 
 				if (bio_matrix_lock.equals("true")) {
@@ -416,10 +424,9 @@ public class login_Screen extends AppCompatActivity {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			PlodingView.setVisibility(View.INVISIBLE);
-			loadingBlur.setVisibility(View.INVISIBLE);
-			System.out.println(result );
-			System.out.println( listener);
+			PlodingView.setVisibility(View.GONE);
+			PlodingView.clearAnimation();
+			loadingBlur.setVisibility(View.GONE);
 			if (result && listener != null) {
 				listener.onDataInserted();  // Notify listener if insertion was successful
 			}else{

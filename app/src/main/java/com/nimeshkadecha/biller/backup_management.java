@@ -21,8 +21,11 @@ import android.provider.Settings;
 import android.text.Html;
 import android.text.InputType;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +55,7 @@ public class backup_management extends AppCompatActivity {
 
 	private final DBManager dbManager = new DBManager(this);
 
-	private View PlodingView;
+	private ImageView PlodingView;
 	private LinearLayout loadingBlur;
 
 	// Getting Current Date to put ====================================================================
@@ -60,6 +63,9 @@ public class backup_management extends AppCompatActivity {
 	private TextView Download,uploadDate;
 	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 	String formattedDate = df.format(c);
+
+	private Animation alpha;
+
 // =================================================================================================
 
 	// getting file from URL ==========================================================================
@@ -75,7 +81,9 @@ public class backup_management extends AppCompatActivity {
 			File outputFile = new File(context.getCacheDir(), "temp_file_biller");
 
 			// Create a stream to write data to the output file
-			output = Files.newOutputStream(outputFile.toPath());
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				output = Files.newOutputStream(outputFile.toPath());
+			}
 
 			byte[] data = new byte[4096];
 			int count;
@@ -106,10 +114,13 @@ public class backup_management extends AppCompatActivity {
 // working on view =================================================================================
 
 		// Finding progressbar
-		PlodingView = findViewById(R.id.Ploding);
-		PlodingView.setVisibility(View.INVISIBLE);
+		PlodingView = findViewById(R.id.Ploding_bk);
+		alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
+		PlodingView.startAnimation(alpha);
+		PlodingView.setVisibility(View.GONE);
+		PlodingView.clearAnimation();
 		loadingBlur = findViewById(R.id.LoadingBlur);
-		loadingBlur.setVisibility(View.INVISIBLE);
+		loadingBlur.setVisibility(View.GONE);
 
 		// Using Shared Preference to store Last Date
 		SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -129,12 +140,14 @@ public class backup_management extends AppCompatActivity {
 		Button DownloadBTN = findViewById(R.id.analyze_stock_btn);
 		DownloadBTN.setOnClickListener(view -> {
 			PlodingView.setVisibility(View.VISIBLE);
+			PlodingView.startAnimation(alpha);
 			loadingBlur.setVisibility(View.VISIBLE);
 			if (isPermissionGranted(backup_management.this)) {
 				new BackupTask().execute(sharedPreferences.getString("UserName", ""));
 			} else {
-				PlodingView.setVisibility(View.INVISIBLE);
-				loadingBlur.setVisibility(View.INVISIBLE);
+				PlodingView.setVisibility(View.GONE);
+				PlodingView.clearAnimation();
+				loadingBlur.setVisibility(View.GONE);
 				Toast.makeText(backup_management.this, "Please allow storage permission", Toast.LENGTH_SHORT).show();
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 					try {
@@ -258,6 +271,7 @@ public class backup_management extends AppCompatActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			PlodingView.setVisibility(View.VISIBLE);
+			PlodingView.startAnimation(alpha);
 		}
 
 		// downloading backup
@@ -271,8 +285,12 @@ public class backup_management extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			PlodingView.setVisibility(View.INVISIBLE);
-			loadingBlur.setVisibility(View.INVISIBLE);
+
+			Toast.makeText(backup_management.this, "change visibility", Toast.LENGTH_SHORT).show();
+
+			PlodingView.setVisibility(View.GONE);
+			PlodingView.clearAnimation();
+			loadingBlur.setVisibility(View.GONE);
 
 			if (!result.equals("false")) {
 				SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -281,12 +299,12 @@ public class backup_management extends AppCompatActivity {
 				editor.apply();
 				Download.setText(formattedDate);
 
-				Toast.makeText(backup_management.this, "Success", Toast.LENGTH_SHORT).show();
 				AlertDialog.Builder builder = new AlertDialog.Builder(backup_management.this);
 				builder.setCancelable(false);
 				builder.setTitle("Bills");
 				builder.setMessage(Html.fromHtml("<b>Notice:</b><br>Your current app password is used to encrypt this backup.<br>You must provide the same password to access it in the future.<br><br>Store securely; backup is deleted with app.<br><br>You can locate the backup at<br> \"" + result + "\" "));
 				builder.setNeutralButton("ok", (dialog, which) -> {
+
 				});
 				builder.show();
 			} else {

@@ -7,8 +7,11 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,8 @@ public class otp_validation extends AppCompatActivity {
 	private static final long TIMER_DURATION = 60000; // 1 minute in milliseconds
 	private static final long TIMER_INTERVAL = 1000; // 1 second in milliseconds
 
+	private Animation alpha;
+
 	//        finding textviews;
 	TextView timerTV;
 	TextView resendTV;
@@ -38,7 +43,7 @@ public class otp_validation extends AppCompatActivity {
 	//      Getting Verification ID from INTENT
 	String OTP;
 	private EditText otp;
-	private View PlodingView;
+	private ImageView PlodingView;
 	private final String b = "Biller";
 
 	@Override
@@ -63,6 +68,8 @@ public class otp_validation extends AppCompatActivity {
 
 //        progressbar
 		PlodingView = findViewById(R.id.Ploding);
+		alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
+
 
 //      Getting Verification ID from INTENT ========================================================
 		Bundle otpp = getIntent().getExtras();
@@ -104,6 +111,7 @@ public class otp_validation extends AppCompatActivity {
 		resendTV.setOnClickListener(view -> {
 			if (checkConnection()) {
 				PlodingView.setVisibility(View.VISIBLE);
+				PlodingView.startAnimation(alpha);
 				String otp = getrandom();
 				finalOTP[0] = otp;
 				GenerateOtpWithEmail(email, otp);
@@ -195,6 +203,7 @@ public class otp_validation extends AppCompatActivity {
 								resendTV.setVisibility(View.GONE);
 							});
 							PlodingView.setVisibility(View.GONE);
+							PlodingView.clearAnimation();
 						}
 
 					} catch (JSONException e) {

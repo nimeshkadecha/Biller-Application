@@ -152,7 +152,8 @@
         android:layout_marginTop="40dp"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:contentDescription="Biller" app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="Biller"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
         app:srcCompat="@drawable/biller" />

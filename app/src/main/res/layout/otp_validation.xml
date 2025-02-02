@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:maxLength="6"
+            android:maxLength="8"
             android:autofillHints="smsOTPCode"
             android:importantForAutofill="yes"
             />
@@ -110,15 +110,28 @@
         app:layout_constraintStart_toEndOf="@+id/textView13"
         app:layout_constraintTop_toTopOf="@+id/textView13" />
 
-    <ProgressBar
+    <ImageView
         android:id="@+id/Ploding"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:indeterminateDrawable="@drawable/progress_back"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:paddingTop="40dp"
         android:visibility="gone"
+        android:contentDescription="@string/loading"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/biller" />
+
+<!--    <ProgressBar-->
+<!--        android:id="@+id/Ploding"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:indeterminateDrawable="@drawable/progress_back"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,12 +11,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -56,8 +59,10 @@ public class bill_management extends AppCompatActivity {
 
 	private boolean date_picker_is_called = false;
 
-	private View PlodingView;
+	private ImageView PlodingView;
 	private LinearLayout loadingBlur;
+
+	private Animation alpha;
 
 	// Converting scientific notation to normal =======================================================
 	public static String convertScientificToNormal(double scientificNotation) {
@@ -76,6 +81,7 @@ public class bill_management extends AppCompatActivity {
 		// download pdf btn ---------------------------------------------------------------------------
 		builder_dialog.setPositiveButton("Download PDF", (dialog, which) -> {
 			PlodingView.setVisibility(View.VISIBLE);
+			PlodingView.startAnimation(alpha);
 			loadingBlur.setVisibility(View.VISIBLE);
 			dialog.dismiss();
 			Toast.makeText(this, "Started Generating PDF", Toast.LENGTH_SHORT).show();
@@ -113,9 +119,12 @@ public class bill_management extends AppCompatActivity {
 
 		// Finding progressbar
 		PlodingView = findViewById(R.id.PLoading_bm);
+		alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
+
 		loadingBlur = findViewById(R.id.LoadingBlur_bm);
-		PlodingView.setVisibility(View.INVISIBLE);
-		loadingBlur.setVisibility(View.INVISIBLE);
+		PlodingView.setVisibility(View.GONE);
+		PlodingView.clearAnimation();
+		loadingBlur.setVisibility(View.GONE);
 
 // notifying user to select from dropdown menu =====================================================
 		TextInputLayout dl = findViewById(R.id.datelayout);
@@ -909,16 +918,18 @@ public class bill_management extends AppCompatActivity {
 				//  Opening PDF --------------------------------------------------------------------------------
 				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
 					if (file.exists()) {
-						PlodingView.setVisibility(View.INVISIBLE);
-						loadingBlur.setVisibility(View.INVISIBLE);
+						PlodingView.setVisibility(View.GONE);
+						PlodingView.clearAnimation();
+						loadingBlur.setVisibility(View.GONE);
 						Uri uri = FileProvider.getUriForFile(bill_management.this, getApplicationContext().getPackageName() + ".provider", file);
 						Intent intent = new Intent(Intent.ACTION_VIEW);
 						intent.setDataAndType(uri, "application/pdf");
 						intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 						startActivity(intent);
 					} else {
-						PlodingView.setVisibility(View.INVISIBLE);
-						loadingBlur.setVisibility(View.INVISIBLE);
+						PlodingView.setVisibility(View.GONE);
+						PlodingView.clearAnimation();
+						loadingBlur.setVisibility(View.GONE);
 						Toast.makeText(bill_management.this, "File can't be created", Toast.LENGTH_SHORT).show();
 					}
 				}

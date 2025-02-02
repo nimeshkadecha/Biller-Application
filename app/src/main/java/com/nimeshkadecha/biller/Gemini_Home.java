@@ -73,6 +73,11 @@ public class Gemini_Home extends AppCompatActivity {
 		interface_layout = findViewById(R.id.Gemini_layout);
 		interface_layout.setVisibility(View.GONE);
 
+		product_tc = findViewById(R.id.stockTokenCount);
+		custom_tc = findViewById(R.id.customerTokenCount);
+		used_tc = findViewById(R.id.totalUsedToken);
+		business_tc = findViewById(R.id.businessTokenCount);
+
 		//        Adding Spinner (Dropdown menu) =========================================================
 		Spinner spinner = findViewById(R.id.spinner);
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(Gemini_Home.this, android.R.layout.simple_spinner_item, shorting);
@@ -96,15 +101,6 @@ public class Gemini_Home extends AppCompatActivity {
 			DisplayUi("Interface");
 		}
 
-
-		/* modelName */
-		// Access your API key as a Build Configuration variable (see "Set up your API key" above)
-		/* apiKey */
-		GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-1.5-flash",
-// Access your API key as a Build Configuration variable (see "Set up your API key" above)
-										/* apiKey */ dbManager.getApiKey(email));
-		model = GenerativeModelFutures.from(gm);
-
 		// setup GEMINI ==================================================================================
 		EditText api_key_et = findViewById(R.id.gemini_api_key);
 		findViewById(R.id.submit_api_key).setOnClickListener(v -> {
@@ -112,7 +108,7 @@ public class Gemini_Home extends AppCompatActivity {
 				api_key_et.setError("Enter API Key");
 			} else {
 				if (dbManager.insertApiKey(api_key_et.getText().toString().trim(), email)) {
-					Toast.makeText(Gemini_Home.this, "Submitted", Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, "Welcome to AI world", Toast.LENGTH_SHORT).show();
 					DisplayUi("Interface");
 				} else {
 					Toast.makeText(Gemini_Home.this, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -121,11 +117,8 @@ public class Gemini_Home extends AppCompatActivity {
 		});
 
 		// interface ! =================================================================================
+
 		if (interface_layout.getVisibility() == View.VISIBLE) {
-			product_tc = findViewById(R.id.stockTokenCount);
-			custom_tc = findViewById(R.id.customerTokenCount);
-			used_tc = findViewById(R.id.totalUsedToken);
-			business_tc = findViewById(R.id.businessTokenCount);
 			used_tc.setText(sp.getString("tokenCount", "0"));
 		}
 
@@ -209,9 +202,16 @@ public class Gemini_Home extends AppCompatActivity {
 
 				if(checkConnection()){
 //NOTE : WE are fetching all data here so that we can display the count of tokens
-				new FetchDataAsyncTask_BusinessInsights(this).execute(sellerId);
-				new FetchDataAsyncTask_AnalyzeStoke().execute(sellerId);
-				new FetchDataAsyncTask_CustomerData().execute(sellerId);
+					if (type.equals("Interface")) {
+						/* modelName */
+						// Access your API key as a Build Configuration variable (see "Set up your API key" above)
+						GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-1.5-flash", dbManager.getApiKey(email));
+						model = GenerativeModelFutures.from(gm);
+
+						new FetchDataAsyncTask_BusinessInsights(this).execute(sellerId);
+						new FetchDataAsyncTask_AnalyzeStoke().execute(sellerId);
+						new FetchDataAsyncTask_CustomerData().execute(sellerId);
+					}
 
 				}else{
 					Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
@@ -396,7 +396,9 @@ public class Gemini_Home extends AppCompatActivity {
 
 						@Override
 						public void onFailure(@NonNull Throwable t) {
-							business_tc.setText("Unable to get");
+//							if(business_tc != null){
+//							business_tc.setText("Unable to get");
+//							}
 							t.printStackTrace();
 
 						}

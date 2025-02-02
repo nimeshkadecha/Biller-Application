@@ -15,6 +15,9 @@
         <item name="android:colorBackground">@color/day_back</item><!-- >// background color -->
         <item name="android:textColor" >#000000</item> <!--  // text color -->
 
+        <item name="android:fillColor" >#000000</item> <!--  // text color -->
+
+
     </style>
 
     <style name="layoutBackground">

@@ -1633,10 +1633,11 @@ public class DBManager extends SQLiteOpenHelper {
 												           "(" + i + ", '50', " + (i <= 5 ? 50.00 : i <= 10 ? 30.00 : 20.00) + ", 1, 5);");
 			}
 
-			System.out.println("Demo data inserted successfully!");
 		} catch (Exception e) {
+			if( e.getMessage().contains("UNIQUE constraint failed:")){
+				return true;
+			}
 			e.printStackTrace();
-			System.out.println("Error inserting demo data: " + e.getMessage());
 			return false;
 		}
 		return true;
