@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.nimeshkadecha.biller'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId 'com.nimeshkadecha.Biller'
-        minSdk 26
-        targetSdk 34
+        minSdk 23
+        targetSdk 35
         versionCode 2
-        versionName "1.0.1"
+        versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -47,10 +47,10 @@ dependencies {
 
 //    PDF
     implementation 'com.itextpdf:itext7-core:8.0.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     implementation 'junit:junit:4.13.2'
     implementation 'junit:junit:4.13.2'
-    implementation 'androidx.activity:activity:1.9.1'
+    implementation 'androidx.activity:activity:1.10.0'
 
 //    Firebase
     testImplementation 'junit:junit:4.13.2'
@@ -67,10 +67,6 @@ dependencies {
 
 //    okHTTP
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-
-//    for ads
-//    implementation 'com.google.android.gms:play-services-ads:23.1.0'
-
 
     //Lottie animation
     implementation 'com.airbnb.android:lottie:5.0.3'

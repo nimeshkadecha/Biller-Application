@@ -40,7 +40,7 @@ public class Gemini_chat extends AppCompatActivity {
 	DBManager dbManager = new DBManager(this);
 
 	int sellerId;
-	private RecyclerView recyclerView;
+	private static RecyclerView recyclerView;
 	private MessageAdapter messageAdapter;
 	private List<ChatMessage> messageList;
 	private EditText editTextMessage;
@@ -87,7 +87,7 @@ public class Gemini_chat extends AppCompatActivity {
 												"- Total = Σ all salesData.subtotal - Σ (purchasePrice×quantity)\n" +
 												"\n" +
 												"2. GST Checks:\n" +
-												"- For my my GST is my TAX.\n" +
+												"- For me my GST is TAX.\n" +
 												"- Verify salesData.Gst matches productData.category's typical rate\n" +
 												"- Flag deviations >±1% from category norms\n" +
 												"\n" +
@@ -108,15 +108,71 @@ public class Gemini_chat extends AppCompatActivity {
 												"6. Simplest and sortest that contains only important details no explanation unless asked for";
 				break;
 			case "stock":
-				GeminiInitialString += "Here is the complete stock data for my business:\n\n" + business_JO + "\n\nFor all follow-up questions, please respond using only the information provided in JSON formate. Do not use any external sources or internet data. Keep responses brief and to the point (2-3 sentences). Avoid including IDs in your responses; use names instead and construct the output in a well-formatted manner (not in JSON). REMEMBER THIS TILL I UPDATE WITH NEW DATA.";
+				GeminiInitialString += "Act as Chief stock Analyst + Data Analysist + Data Scientest using this Stock data: \n\n"+ business_JO + ".\n\n" +
+												"Data Map :\n" +
+												"1. prods: [ID: [Name, Category, Cost, TargetPrice, CurrentStock, GST%]]\n" +
+												"2. sales: [Date, BillNo, ProdID, CustID, Qty, SoldPrice, GST%]" +
+												" Follow this decision tree:\n\n" +
+												"1. For profits:\n" +
+												"- Per Sale = (salesData.price × quantity) - (stockData.purchasePrice × quantity)\n" +
+												"- Margin % = ((price - purchasePrice)/price)×100\n" +
+												"- Total = Σ all salesData.subtotal - Σ (purchasePrice×quantity)\n" +
+												"\n" +
+												"2. GST Checks:\n" +
+												"- For me my GST is TAX.\n" +
+												"- Verify salesData.Gst matches productData.category's typical rate\n" +
+												"- Flag deviations >±1% from category norms\n" +
+												"\n" +
+												"3. Inventory Analysis:\n" +
+												"- Sales Velocity = total sold/(max_date - min_date in salesData)\n" +
+												"- Stock Coverage = stockQuantityData.quantity / velocity\n" +
+												"\n" +
+												"4. Customer Value:\n" +
+												"- Lifetime Spend = Σ subtotal by customerId\n" +
+												"- Visit Frequency = salesData entries count per customerId\n" +
+												"\n" +
+												"Response MUST:\n" +
+												"1. Convert ALL IDs → names immediately\n" +
+												"2. Show 1-line formula context (e.g., \"60% margin = (50-20)/50\")\n" +
+												"3. Highlight negative margins as LOSSES\n" +
+												"4. Compare prices: stockData.sellingPrice vs salesData.price\n" +
+												"5. 3 sentences max, bold** key figures\n" +
+												"6. Simplest and sortest that contains only important details no explanation unless asked for";
 				break;
 			case "customer":
-				GeminiInitialString += "Here is the complete customers data for my business:\n\n" + business_JO + "\n\nFor all follow-up questions, please respond using only the information provided in JSON formate. Do not use any external sources or internet data. Keep responses brief and to the point (2-3 sentences). Avoid including IDs in your responses; use names instead and construct the output in a well-formatted manner (not in JSON). REMEMBER THIS TILL I UPDATE WITH NEW DATA.";
+				GeminiInitialString += "Act as Chief data Analyst + Data Scientest using this customer data:\n\n" + business_JO + business_JO + ".\n\n" +
+												"Data Map :\n" +
+												"1. prods: [ID: [Name, Category, Cost, TargetPrice, CurrentStock, GST%]]\n" +
+												"2. custs: [ID: [Name, Phone]]\n" +
+												"3. sales: [Date, BillNo, ProdID, CustID, Qty, SoldPrice, GST%]" +
+												" Follow this decision tree:\n\n" +
+												"1. For profits:\n" +
+												"- Per Sale = (salesData.price × quantity) - (stockData.purchasePrice × quantity)\n" +
+												"- Margin % = ((price - purchasePrice)/price)×100\n" +
+												"- Total = Σ all salesData.subtotal - Σ (purchasePrice×quantity)\n" +
+												"\n" +
+												"2. GST Checks:\n" +
+												"- For me my GST is TAX.\n" +
+												"- Verify salesData.Gst matches productData.category's typical rate\n" +
+												"- Flag deviations >±1% from category norms\n" +
+												"\n" +
+												"3. Inventory Analysis:\n" +
+												"- Sales Velocity = total sold/(max_date - min_date in salesData)\n" +
+												"- Stock Coverage = stockQuantityData.quantity / velocity\n" +
+												"\n" +
+												"4. Customer Value:\n" +
+												"- Lifetime Spend = Σ subtotal by customerId\n" +
+												"- Visit Frequency = salesData entries count per customerId\n" +
+												"\n" +
+												"Response MUST:\n" +
+												"1. Convert ALL IDs → names immediately\n" +
+												"2. Show 1-line formula context (e.g., \"60% margin = (50-20)/50\")\n" +
+												"3. Highlight negative margins as LOSSES\n" +
+												"4. Compare prices: stockData.sellingPrice vs salesData.price\n" +
+												"5. 3 sentences max, bold** key figures\n" +
+												"6. Simplest and sortest that contains only important details no explanation unless asked for";
 				break;
 		}
-
-
-		Log.d("Enimesh", GeminiInitialString.toString());
 
 		recyclerView = findViewById(R.id.recyclerView_gemini);
 		editTextMessage = findViewById(R.id.editTextMessage);
@@ -256,6 +312,7 @@ public class Gemini_chat extends AppCompatActivity {
 				messageList.clear();
 				messageList.addAll(chatMessages);
 				adapterRef.get().notifyDataSetChanged();
+				recyclerView.scrollToPosition(messageList.size() - 1); // Scroll to the bottom
 				if (dbManager != null) {
 					dbManager.close();
 				}

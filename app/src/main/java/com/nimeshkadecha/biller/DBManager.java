@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
@@ -50,7 +49,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 	public DBManager(Context context) {
 //        Creating database with name = Biller
-		super(context, "Biller", null, 1);
+		super(context, "Biller", null, 2);
 	}
 
 	// convert scientific notation to normal notation =================================================
@@ -63,6 +62,8 @@ public class DBManager extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase DB, int oldVersion, int newVersion) {
 
+//		Upgrade for db verison
+		if (oldVersion < 2) {
 		DB.execSQL("DROP TABLE IF EXISTS users"); // Seller (User)
 
 		DB.execSQL("DROP TABLE IF EXISTS display"); // bill record
@@ -76,6 +77,7 @@ public class DBManager extends SQLiteOpenHelper {
 		// customer data along with there purchase history
 		DB.execSQL("DROP TABLE IF EXISTS customer"); // customer bill data
 		DB.execSQL("DROP TABLE IF EXISTS customers"); // all customer data
+		}
 	}
 
 // TODO Users Table ================================================================================
